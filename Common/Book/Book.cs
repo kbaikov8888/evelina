@@ -1,26 +1,40 @@
-﻿using BookInterface;
+﻿namespace BookImpl;
 
-namespace BookImpl;
-
-internal class Book : IBook
+public class Book
 {
-    public string Name { get; set; }
+    public string Name { get; }
 
-    public long CreateDate { get; set; }
+    private readonly List<Entry> _entries = new();
 
 
-    internal Book(string name)
+    public Book(string name)
     {
         Name = name;
     }
 
-    public IList<ICategory> GetAllCategories()
+
+    public List<Entry> GetEntries()
     {
-        throw new NotImplementedException();
+        return _entries.ToList();
     }
 
-    public IList<IEntry> GetAllEntries()
+    public HashSet<Account> GetAccounts()
     {
-        throw new NotImplementedException();
+        var accounts = new HashSet<Account>();
+        foreach (var entry in _entries)
+        {
+            switch (entry)
+            {
+                case ExternalEntry externalEntry:
+                    accounts.Add(externalEntry.Account);
+                    break;
+                case TransferEntry transferEntry:
+                    accounts.Add(transferEntry.Sender);
+                    accounts.Add(transferEntry.Receiver);
+                    break;
+            }
+        }
+
+        return accounts;
     }
 }

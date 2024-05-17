@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.14" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Interfaces\IBook\BookInterface.csproj" />
-  </ItemGroup>
-
 </Project>
