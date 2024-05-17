@@ -7,7 +7,7 @@ public interface IBook
     long CreateDate { get; }
 
 
-    IList<IEntry> GetAllTransactions();
+    IList<IEntry> GetAllEntries();
 
     IList<ICategory> GetAllCategories();
 }

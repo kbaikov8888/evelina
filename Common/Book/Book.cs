@@ -4,16 +4,22 @@ namespace BookImpl;
 
 internal class Book : IBook
 {
-    public string Name => throw new NotImplementedException();
+    public string Name { get; set; }
 
-    public long CreateDate => throw new NotImplementedException();
+    public long CreateDate { get; set; }
+
+
+    internal Book(string name)
+    {
+        Name = name;
+    }
 
     public IList<ICategory> GetAllCategories()
     {
         throw new NotImplementedException();
     }
 
-    public IList<IEntry> GetAllTransactions()
+    public IList<IEntry> GetAllEntries()
     {
         throw new NotImplementedException();
     }
