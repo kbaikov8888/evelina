@@ -1,17 +1,16 @@
-﻿namespace Db
+﻿namespace PortfolioInterface;
+
+public interface IItem
 {
-    public interface IItem
-    {
-        string Id { get; }
+    string Id { get; }
 
-        string ParentId { get; }
+    string ParentId { get; }
 
-        long CreationDate { get; }
+    long CreationDate { get; }
 
-        EItemLevel Level { get; }
+    EItemLevel Level { get; }
 
-        string ToJson();
+    string ToJson();
 
-        void FromJson(string json);
-    }
+    void FromJson(string json);
 }

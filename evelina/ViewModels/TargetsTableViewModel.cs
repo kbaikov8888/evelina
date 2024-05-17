@@ -1,6 +1,7 @@
-﻿namespace evelina.ViewModels
+﻿using evelina.ViewModels.Common;
+
+namespace evelina.ViewModels;
+
+public class TargetsTableViewModel : ViewModelBase
 {
-    public class TargetsTableViewModel : ViewModelBase
-    {
-    }
 }

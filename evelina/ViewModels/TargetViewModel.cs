@@ -1,26 +1,21 @@
-﻿using Db;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using evelina.ViewModels.Common;
+using PortfolioInterface;
 
-namespace evelina.ViewModels
+namespace evelina.ViewModels;
+
+public class TargetViewModel : ViewModelBase, IDisposable
 {
-    public class TargetViewModel : ViewModelBase, IDisposable
+    internal ITarget Model { get; }
+
+
+    public TargetViewModel(ITarget model)
     {
-        internal ITarget Model { get; private set; }
+        Model = model;
+    }
 
 
-        public TargetViewModel(ITarget model)
-        {
-            Model = model;
-        }
-
-
-        public void Dispose()
-        {
-            Model = null;
-        }
+    public void Dispose()
+    {
     }
 }

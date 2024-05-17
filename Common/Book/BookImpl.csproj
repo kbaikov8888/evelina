@@ -3,18 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.14" />
-    <PackageReference Include="NLog" Version="5.2.8" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interfaces\IPortfolio\IPortfolio.csproj" />
+    <ProjectReference Include="..\..\Interfaces\IBook\BookInterface.csproj" />
   </ItemGroup>
 
 </Project>

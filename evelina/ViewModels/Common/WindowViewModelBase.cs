@@ -1,38 +1,38 @@
-﻿namespace evelina.ViewModels
+﻿using System;
+
+namespace evelina.ViewModels.Common;
+
+/// <summary>
+/// VM, способные заменять активный UserControl основного окна
+/// </summary>
+public class WindowViewModelBase : ViewModelBase
 {
-    /// <summary>
-    /// VM, способные заменять активный UserControl основного окна
-    /// </summary>
-    public class WindowViewModelBase : ViewModelBase
+    internal event Action? ReturnBackEvent;
+
+    protected MainViewModel Main;
+
+    private readonly WindowViewModelBase? _previous;
+
+
+    public WindowViewModelBase(MainViewModel main)
     {
-        internal delegate void ReturnBack();
-        internal event ReturnBack ReturnBackEvent;
-
-
-        protected MainViewModel _main;
-        private WindowViewModelBase _previous;
-
-
-        public WindowViewModelBase(MainViewModel main)
-        {
-            _main = main;
-            _previous = _main.ActiveVM;
-        }
-
-
-        protected void TurnBack()
-        {
-            if (ReturnBackEvent != null)
-            {
-                // if needs not previous, it may be custom
-                ReturnBackEvent.Invoke();
-            }
-            else
-            {
-                _main.ActiveVM = _previous;
-            }
-        }
+        Main = main;
+        _previous = Main.ActiveWindow;
     }
 
-    public interface IMenuCompatible { }
+
+    protected void TurnBack()
+    {
+        if (ReturnBackEvent != null)
+        {
+            // if needs not previous, it may be custom
+            ReturnBackEvent.Invoke();
+        }
+        else
+        {
+            Main.ActiveWindow = _previous;
+        }
+    }
 }
+
+public interface IMenuCompatible { }

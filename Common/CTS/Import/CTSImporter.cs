@@ -1,102 +1,104 @@
-﻿using Db;
-using Microsoft.VisualBasic.FileIO;
+﻿using Microsoft.VisualBasic.FileIO;
+using PortfolioInterface;
 
-namespace CTS.Import
+namespace CTS.Import;
+
+public class CTSImporter : IDisposable
 {
-    public class CTSImporter : IDisposable
+    private readonly string _path;
+    private readonly List<CTS> _transactions = new();
+
+
+    public CTSImporter(string path)
     {
-        private string _path;
-        private List<CTS> _transactions;
+        _path = path;
+    }
 
 
-        public CTSImporter(string path)
+    public void Read()
+    {
+        Dictionary<ECTSFields, int> columnIndexes = new();
+
+        using (var parser = new TextFieldParser(_path))
         {
-            _path = path;
-            _transactions = new List<CTS>();
-        }
-
-
-        public void Read()
-        {
-            Dictionary<ECTSFields, int> columnIndexes = new();
-
-            using (TextFieldParser parser = new TextFieldParser(_path))
+            parser.TextFieldType = FieldType.Delimited;
+            parser.SetDelimiters(",");
+            while (!parser.EndOfData)
             {
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(",");
-                while (!parser.EndOfData)
+                //Processing row
+                var fields = parser.ReadFields();
+                if (fields is null)
                 {
-                    //Processing row
-                    string[] fields = parser.ReadFields();
+                    throw new Exception("fields is null");
+                }
 
-                    if (string.IsNullOrEmpty(fields[0]))
+                if (string.IsNullOrEmpty(fields[0]))
+                {
+                    // this means header row
+                    for (var i = 0; i < fields.Length; i++)
                     {
-                        // this means header row
-                        for (int i = 0; i < fields.Length; i++)
+                        if (Enum.TryParse<ECTSFields>(fields[i], out var res))
                         {
-                            if (Enum.TryParse<ECTSFields>(fields[i], out var res))
+                            if (columnIndexes.ContainsKey(res))
                             {
-                                if (columnIndexes.ContainsKey(res))
-                                {
-                                    throw new Exception("wrong header");
-                                }
-
-                                columnIndexes[res] = i;
+                                throw new Exception("wrong header");
                             }
+
+                            columnIndexes[res] = i;
                         }
-
-                        CheckAllRequiredExist(columnIndexes.Keys);
-
-                        continue;
                     }
 
-                    CTS cts = new CTS();
+                    CheckAllRequiredExist(columnIndexes.Keys);
 
-                    foreach (ECTSFields field in columnIndexes.Keys)
-                    {
-                        int i = columnIndexes[field];
-                        cts.SetField(field, fields[i]);
-                    }
-
-                    _transactions.Add(cts);
+                    continue;
                 }
+
+                var cts = new CTS();
+
+                foreach (var field in columnIndexes.Keys)
+                {
+                    var i = columnIndexes[field];
+                    cts.SetField(field, fields[i]);
+                }
+
+                _transactions.Add(cts);
             }
         }
+    }
 
-        public void Dispose()
-        {
-            _transactions.Clear();
-        }
+    public void Dispose()
+    {
+        _transactions.Clear();
+    }
 
-        public void AddToPortfolio(IPortfolio portfolio, bool createNewAssets = true)
+    public void AddToPortfolio(IPortfolio portfolio, bool createNewAssets = true)
+    {
+        foreach (var cts in _transactions)
         {
-            foreach (CTS cts in _transactions)
+            var asset = portfolio.GetAsset(cts.Symbol);
+            if (asset is null)
             {
-                IAsset asset = portfolio.GetAsset(cts.Symbol);
-                if (asset is null)
+                if (!createNewAssets)
                 {
-                    if (!createNewAssets)
-                    {
-                        continue;
-                    }
-
-                    asset = portfolio.CreateAsset(cts.Symbol);
+                    continue;
                 }
 
-                ETransaction type = cts.Type == EType.buy ? ETransaction.Buy : ETransaction.Sell;
-
-                asset.CreateTransaction(cts.Datetime, type, cts.Price, cts.Amount);
+                asset = portfolio.CreateAsset(cts.Symbol);
             }
-        }
 
-        private void CheckAllRequiredExist(IEnumerable<ECTSFields> source)
+            var type = cts.Type == EType.buy ? ETransaction.Buy : ETransaction.Sell;
+
+            asset.CreateTransaction(cts.Datetime, type, cts.Price, cts.Amount);
+        }
+    }
+
+    private void CheckAllRequiredExist(IEnumerable<ECTSFields> source)
+    {
+        foreach (var field in (ECTSFields[])Enum.GetValues(typeof(ECTSFields)))
         {
-            foreach (ECTSFields field in (ECTSFields[])Enum.GetValues(typeof(ECTSFields)))
+            if (field.IsRequired() && !source.Contains(field))
             {
-                if (field.IsRequired() && !source.Contains(field))
-                {
-                    throw new Exception($"missed required column: {field}");
-                }
+                throw new Exception($"missed required column: {field}");
             }
         }
     }

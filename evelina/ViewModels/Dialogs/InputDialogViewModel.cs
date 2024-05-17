@@ -1,30 +1,26 @@
-﻿using ReactiveUI;
+﻿using evelina.ViewModels.Common;
+using ReactiveUI.Fody.Helpers;
 
-namespace evelina.ViewModels
+namespace evelina.ViewModels.Dialogs;
+
+public class InputDialogViewModel : ViewModelBase
 {
-    public class InputDialogViewModel : ViewModelBase
+    public string Title { get; }
+
+    public string Text { get; }
+
+    [Reactive]
+    public string Input { get; set; } = string.Empty;
+
+    public InputDialogViewModel(string title, string text)
     {
-        public string Title { get; }
+        Title = title;
+        Text = text;
+    }
 
-        public string Text { get; }
-
-        private string _input = string.Empty;
-        public string Input
-        {
-            get => _input;
-            set => this.RaiseAndSetIfChanged(ref _input, value);
-        }
-
-        public InputDialogViewModel(string title, string text)
-        {
-            Title = title;
-            Text = text;
-        }
-
-        public InputDialogViewModel()
-        {
-            Title = "Title";
-            Text = "Text";
-        }
+    public InputDialogViewModel()
+    {
+        Title = "Title";
+        Text = "Text";
     }
 }

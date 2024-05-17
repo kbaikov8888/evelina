@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace evelina.Views
+namespace evelina.Views;
+
+public partial class AssetEditingView : UserControl
 {
-    public partial class AssetEditingView : UserControl
+    public AssetEditingView()
     {
-        public AssetEditingView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

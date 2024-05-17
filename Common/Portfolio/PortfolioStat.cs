@@ -1,7 +1,8 @@
-﻿namespace Db
+﻿using PortfolioInterface;
+
+namespace PortfolioImpl;
+
+internal class PortfolioStat : IPortfolioStat
 {
-    internal class PortfolioStat : IPortfolioStat
-    {
-        public double Volume { get; set; }
-    }
+    public double Volume { get; set; }
 }

@@ -1,26 +1,25 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using evelina.ViewModels;
+using evelina.ViewModels.Dialogs;
 
-namespace evelina.Views
+namespace evelina.Views.Dialogs;
+
+public partial class InputDialogView : UserControl
 {
-    public partial class InputDialogView : UserControl
+    public InputDialogView()
     {
-        public InputDialogView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public void Ok_Click(object sender, RoutedEventArgs args)
-        {
-        }
+    public void Ok_Click(object sender, RoutedEventArgs args)
+    {
+    }
 
-        public void Cancel_Click(object sender, RoutedEventArgs args)
+    public void Cancel_Click(object sender, RoutedEventArgs args)
+    {
+        if (DataContext is InputDialogViewModel vm)
         {
-            if (DataContext is InputDialogViewModel vm)
-            {
-                vm.Input = string.Empty;
-            }
+            vm.Input = string.Empty;
         }
     }
 }

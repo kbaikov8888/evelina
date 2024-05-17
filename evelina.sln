@@ -11,21 +11,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "evelina.Desktop", "evelina.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{2022F36E-9BE4-4E6E-B772-EEDC6D57701E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IBook", "Interfaces\IBook\IBook.csproj", "{9ACB1596-6415-4E2A-96E1-D05C84F4F1AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookInterface", "Interfaces\IBook\BookInterface.csproj", "{9ACB1596-6415-4E2A-96E1-D05C84F4F1AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{4B98FFA5-9FF6-4DA1-AAA2-3613FB5B9E86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPortfolio", "Interfaces\IPortfolio\IPortfolio.csproj", "{82D3C934-4775-4A71-8756-20B8949843BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioInterface", "Interfaces\IPortfolio\PortfolioInterface.csproj", "{82D3C934-4775-4A71-8756-20B8949843BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book", "Common\Book\Book.csproj", "{B595F409-30C7-4A78-B1DF-90026770E0A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookImpl", "Common\Book\BookImpl.csproj", "{B595F409-30C7-4A78-B1DF-90026770E0A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio", "Common\Portfolio\Portfolio.csproj", "{4F6EFAA5-9281-437C-BF0B-7100D567C3F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioImpl", "Common\Portfolio\PortfolioImpl.csproj", "{4F6EFAA5-9281-437C-BF0B-7100D567C3F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualTools", "Common\VisualTools\VisualTools.csproj", "{CD0F7141-D95C-4EE3-A2FF-148CC847FD84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "evelina.Styles", "Common\evelina.Styles\evelina.Styles.csproj", "{6833B3B0-528C-40CA-86C0-79CF6EC13FBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "evelina.Styles", "Common\evelina.Styles\evelina.Styles.csproj", "{6833B3B0-528C-40CA-86C0-79CF6EC13FBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTS", "Common\CTS\CTS.csproj", "{896D4F75-5A62-47E3-80AD-2DA300FCAF82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTS", "Common\CTS\CTS.csproj", "{896D4F75-5A62-47E3-80AD-2DA300FCAF82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

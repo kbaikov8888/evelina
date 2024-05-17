@@ -1,114 +1,96 @@
-﻿using Db;
+﻿using evelina.ViewModels.Common;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Windows.Input;
+using PortfolioInterface;
 
-namespace evelina.ViewModels
+namespace evelina.ViewModels;
+
+public class AssetEditingViewModel : WindowViewModelBase, IDisposable
 {
-    public class AssetEditingViewModel : WindowViewModelBase, IDisposable
+    public ICommand ApplyCommand { get; }
+    public ICommand CancelCommand { get; }
+
+    [Reactive]
+    public string Name { get; set; }
+
+    [Reactive]
+    public double? TargetVolume { get; set; }
+
+    [Reactive]
+    public double? TargetSellPrice { get; set; }
+
+    [Reactive]
+    public double? TargetShare { get; set; }
+
+    private readonly PortfolioViewModel _portfolio;
+    private IAsset? _asset;
+
+
+    public AssetEditingViewModel(PortfolioViewModel vm, IAsset asset, MainViewModel main) : this(main)
     {
-        public ICommand ApplyCommand { get; }
-        public ICommand CancelCommand { get; }
+        _asset = asset;
+        _portfolio = vm;
 
-        private string _name;
-        public string Name
+        Name = asset.Name;
+        TargetVolume = asset.TargetVolume;
+        TargetSellPrice = asset.TargetSellPrice;
+        TargetShare = asset.TargetShare;
+    }
+
+    public AssetEditingViewModel(PortfolioViewModel vm, MainViewModel main) : this(main)
+    {
+        _asset = null;
+        _portfolio = vm;
+    }
+
+    private AssetEditingViewModel(MainViewModel main) : base(main)
+    {
+        ApplyCommand = ReactiveCommand.Create(Apply);
+        CancelCommand = ReactiveCommand.Create(Close);
+    }
+
+
+    public void Dispose()
+    {
+    }
+
+    private async void Apply()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
         {
-            get => _name;
-            set => this.RaiseAndSetIfChanged(ref _name, value);
+            var box = MessageBoxManager.GetMessageBoxStandard("Warning", "Fill Name!");
+
+            await box.ShowAsync();
+            return;
         }
 
-        private double? _targetVolume;
-        public double? TargetVolume
+        if (_asset is null)
         {
-            get => _targetVolume;
-            set => this.RaiseAndSetIfChanged(ref _targetVolume, value);
+            var asset = _portfolio.Model.CreateAsset(Name);
+            asset.TargetVolume = TargetVolume;
+            asset.TargetSellPrice = TargetSellPrice;
+            asset.TargetShare = TargetShare;
+
+            _portfolio.AddAsset(asset);
+        }
+        else
+        {
+            _asset.Name = Name;
+            _asset.TargetVolume = TargetVolume;
+            _asset.TargetSellPrice = TargetSellPrice;
+            _asset.TargetShare = TargetShare;
         }
 
-        private double? _targetSellPrice;
-        public double? TargetSellPrice
-        {
-            get => _targetSellPrice;
-            set => this.RaiseAndSetIfChanged(ref _targetSellPrice, value);
-        }
+        _portfolio.RefreshAssets();
 
-        private double? _targetShare;
-        public double? TargetShare
-        {
-            get => _targetShare;
-            set => this.RaiseAndSetIfChanged(ref _targetShare, value);
-        }
+        Close();
+    }
 
-        private PortfolioViewModel _portfolioVM;
-        private IAsset _asset;
-
-
-        public AssetEditingViewModel(PortfolioViewModel vm, IAsset asset, MainViewModel main) : this(main)
-        {
-            _asset = asset;
-            _portfolioVM = vm;
-
-            Name = asset.Name;
-            TargetVolume = asset.TargetVolume;
-            TargetSellPrice = asset.TargetSellPrice;
-            TargetShare = asset.TargetShare;
-        }
-
-        public AssetEditingViewModel(PortfolioViewModel vm, MainViewModel main) : this(main)
-        {
-            _asset = null;
-            _portfolioVM = vm;
-        }
-
-        private AssetEditingViewModel(MainViewModel main) : base(main)
-        {
-            ApplyCommand = ReactiveCommand.Create(Apply);
-            CancelCommand = ReactiveCommand.Create(Close);
-        }
-
-
-        public void Dispose()
-        {
-            _portfolioVM = null;
-            _asset = null;
-        }
-
-        private async void Apply()
-        {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                var box = MessageBoxManager.GetMessageBoxStandard("Warning", "Fill Name!", ButtonEnum.Ok);
-
-                await box.ShowAsync();
-                return;
-            }
-
-            if (_asset is null)
-            {
-                IAsset asset = _portfolioVM.Model.CreateAsset(Name);
-                asset.TargetVolume = TargetVolume;
-                asset.TargetSellPrice = TargetSellPrice;
-                asset.TargetShare = TargetShare;
-
-                _portfolioVM.AddAsset(asset);
-            }
-            else
-            {
-                _asset.Name = Name;
-                _asset.TargetVolume = TargetVolume;
-                _asset.TargetSellPrice = TargetSellPrice;
-                _asset.TargetShare = TargetShare;
-            }
-
-            _portfolioVM.RefreshAssets();
-
-            Close();
-        }
-
-        private void Close()
-        {
-            TurnBack();
-        }
+    private void Close()
+    {
+        TurnBack();
     }
 }

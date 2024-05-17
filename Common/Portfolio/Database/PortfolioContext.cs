@@ -1,23 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Db
+namespace PortfolioImpl.Database;
+
+internal sealed class PortfolioContext : DbContext
 {
-    internal class PortfolioContext : DbContext
+    public DbSet<Thing> Things => Set<Thing>();
+
+    private readonly string _path;
+
+    public PortfolioContext(string path)
     {
-        public DbSet<Thing> Things => Set<Thing>();
+        _path = path;
 
-        private string _path;
+        Database.EnsureCreated();
+    }
 
-        public PortfolioContext(string path)
-        {
-            _path = path;
-
-            Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite($"Data Source={_path}");
-        }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlite($"Data Source={_path}");
     }
 }

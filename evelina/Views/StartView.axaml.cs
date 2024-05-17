@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace evelina.Views
+namespace evelina.Views;
+
+public partial class StartView : UserControl
 {
-    public partial class StartView : UserControl
+    public StartView()
     {
-        public StartView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

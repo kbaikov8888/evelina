@@ -1,11 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace evelina.ViewModels;
+namespace evelina.ViewModels.Common;
 
 public class ViewModelBase : ReactiveObject
 {
-    internal virtual void OnPropertyChanged(string propertyName)
-    {
-        this.RaisePropertyChanged(propertyName);
-    }
 }

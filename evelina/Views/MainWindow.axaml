@@ -5,14 +5,16 @@
         xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
         xmlns:views="clr-namespace:evelina.Views"
         xmlns:vm="clr-namespace:evelina.ViewModels"
+        xmlns:dialogs="clr-namespace:evelina.ViewModels.Dialogs"
+        xmlns:dialogs1="clr-namespace:evelina.Views.Dialogs"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="evelina.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="evelina">
   <dialogHostAvalonia:DialogHost>
     <dialogHostAvalonia:DialogHost.DataTemplates>
-      <DataTemplate DataType="vm:InputDialogViewModel">
-        <views:InputDialogView />
+      <DataTemplate DataType="dialogs:InputDialogViewModel">
+        <dialogs1:InputDialogView />
       </DataTemplate>
     </dialogHostAvalonia:DialogHost.DataTemplates>
     <views:MainView />

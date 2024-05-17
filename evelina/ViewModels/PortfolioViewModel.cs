@@ -1,247 +1,227 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CTS.Import;
-using Db;
+using evelina.ViewModels.Common;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Avalonia;
+using PortfolioInterface;
 using VisualTools;
 
-namespace evelina.ViewModels
+namespace evelina.ViewModels;
+
+public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompatible
 {
-    public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompatible
+    public ICommand CloseCommand { get; }
+    public ICommand EditCommand { get; }
+    public ICommand CreateAssetCommand { get; }
+    public ICommand SaveCommand { get; }
+    public ICommand ImportCommand { get; }
+    public ICommand ExportCommand { get; }
+    public ICommand ShowTableCommand { get; }
+    public ICommand ShowAssetsCommand { get; }
+
+
+    public string Name => Model.Name;
+    public double? Volume => Model.Stat.Volume;
+
+    [Reactive]
+    public AssetViewModel? SelectedAsset { get; set; }
+
+    public ObservableCollection<AssetViewModel> Assets { get; private set; }
+
+
+    internal IPortfolio Model { get; }
+
+
+    public PortfolioViewModel(IPortfolio model, MainViewModel main) : base(main)
     {
-        public ICommand CloseCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand CreateAssetCommand { get; }
-        public ICommand SaveCommand { get; }
-        public ICommand ImportCommand { get; }
-        public ICommand ExportCommand { get; }
-        public ICommand ShowTableCommand { get; }
-        public ICommand ShowAssetsCommand { get; }
+        Model = model;
+        Model.UpdateVisualStatEvent += Model_UpdateVisualStatEvent;
 
-
-        public string Name => Model?.Name;
-        public double? Volume => Model?.Stat.Volume;
-
-        private AssetViewModel _selectedAsset = null;
-        public AssetViewModel SelectedAsset
+        Assets = new ObservableCollection<AssetViewModel>();
+        foreach (var existed in model.GetAssets())
         {
-            get => _selectedAsset;
-            set
-            {
-                if (value is null)
-                {
-                    return;
-                }
-
-                this.RaiseAndSetIfChanged(ref _selectedAsset, value);
-            }
+            AddAsset(existed);
         }
+        RefreshAssets();
+        SelectedAsset = Assets.FirstOrDefault();
 
-        public ObservableCollection<AssetViewModel> Assets { get; private set; }
+        CloseCommand = ReactiveCommand.Create(Close);
+        SaveCommand = ReactiveCommand.Create(Save);
+        EditCommand = ReactiveCommand.Create(EditPortfoliInfo);
+        CreateAssetCommand = ReactiveCommand.Create(CreateAsset);
+        ImportCommand = ReactiveCommand.Create(Import);
+        ShowTableCommand = ReactiveCommand.Create(ShowTable);
+        ShowAssetsCommand = ReactiveCommand.Create(ShowAssets);
+        ExportCommand = ReactiveCommand.Create(() => { });
+    }
 
 
-        internal IPortfolio Model { get; private set; }
-
-
-        public PortfolioViewModel(IPortfolio model, MainViewModel main) : base(main)
+    public void Dispose()
+    {
+        foreach (var vm in Assets)
         {
-            Model = model;
-            Model.UpdateVisualStatEvent += Model_UpdateVisualStatEvent;
-
-            Assets = new();
-            foreach (IAsset existed in model.GetAssets())
-            {
-                AddAsset(existed);
-            }
-            RefreshAssets();
-            SelectedAsset = Assets.FirstOrDefault();
-
-            CloseCommand = ReactiveCommand.Create(Close);
-            SaveCommand = ReactiveCommand.Create(Save);
-            EditCommand = ReactiveCommand.Create(EditPortfoliInfo);
-            CreateAssetCommand = ReactiveCommand.Create(CreateAsset);
-            ImportCommand = ReactiveCommand.Create(Import);
-            ShowTableCommand = ReactiveCommand.Create(ShowTable);
-            ShowAssetsCommand = ReactiveCommand.Create(ShowAssets);
-        }
-
-
-        public void Dispose()
-        {
-            foreach (AssetViewModel vm in Assets)
-            {
-                vm.DeleteMeEvent -= DeleteAsset;
-                vm.EditMeEvent -= EditAsset;
-                vm.Dispose();
-            }
-            Assets.Clear();
-
-            SelectedAsset = null;
-
-            Model.UpdateVisualStatEvent -= Model_UpdateVisualStatEvent;
-            Model = null;
-        }
-
-        private void Model_UpdateVisualStatEvent()
-        {
-            OnPropertyChanged(nameof(Volume));
-
-            foreach (AssetViewModel assetVM in Assets)
-            {
-                //TODO how rework? attrs?
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.Volume));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.SellPrice));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.Share));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.BuyedVolume));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.BuyedShare));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.Status));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.TargetVolume));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.TargetSellPrice));
-                assetVM.OnPropertyChanged(nameof(AssetViewModel.TargetShare));
-            }
-        }
-
-        private void Close()
-        {
-            Save();
-            TurnBack();
-        }
-
-        private void Save()
-        {
-            Model.Save();
-        }
-
-        private void EditPortfoliInfo()
-        {
-            var editorVM = new PortfolioEditingViewModel(Model, _main);
-            _main.ActiveVM = editorVM;
-        }
-
-        internal void AddAsset(IAsset asset)
-        {
-            if (Assets.Any(x => x.Model == asset))
-            {
-                return;
-            }
-
-            AssetViewModel vm = new AssetViewModel(asset, _main);
-            vm.DeleteMeEvent += DeleteAsset;
-            vm.EditMeEvent += EditAsset;
-
-            Assets.Add(vm);
-        }
-
-        private void EditAsset(AssetViewModel vm)
-        {
-            AssetEditingViewModel editorVM = new AssetEditingViewModel(this, vm.Model, _main);
-            _main.ActiveVM = editorVM;
-        }
-
-        private void CreateAsset()
-        {
-            AssetEditingViewModel editorVM = new AssetEditingViewModel(this, _main);
-            _main.ActiveVM = editorVM;
-
-            //var dialog = new InputDialogViewModel("Input name", "Input name of asset");
-            //await DialogHost.Show(dialog);
-
-            //string name = dialog.Input;
-        }
-
-        private async void DeleteAsset(AssetViewModel vm)
-        {
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                "Deleting",
-                $"Are you sure to delete {vm.Name}",
-                ButtonEnum.YesNo);
-
-            var res = await box.ShowAsync();
-
-            if (res != ButtonResult.Yes)
-            {
-                return;
-            }
-
-            Model.DeleteAsset(vm.Model);
-
             vm.DeleteMeEvent -= DeleteAsset;
             vm.EditMeEvent -= EditAsset;
-            Assets.Remove(vm);
+            vm.Dispose();
         }
+        Assets.Clear();
 
-        private async void Import()
+        Model.UpdateVisualStatEvent -= Model_UpdateVisualStatEvent;
+    }
+
+    private void Model_UpdateVisualStatEvent()
+    {
+        this.RaisePropertyChanged(nameof(Volume));
+
+        foreach (var asset in Assets)
         {
-            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
-
-            TopLevel topLevel = TopLevel.GetTopLevel(mainWindow);
-
-            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-            {
-                Title = "Select CSV file with CTS",
-                AllowMultiple = false,
-                FileTypeFilter = new FilePickerFileType[] { Constants.CSVFileType },
-            }); ;
-
-            if (files.Count == 0)
-            {
-                return;
-            }
-
-            try
-            {
-                using (CTSImporter importer = new CTSImporter(files[0].Path.AbsolutePath))
-                {
-                    importer.Read();
-                    importer.AddToPortfolio(Model);
-                }
-            }
-            catch (Exception ex)
-            {
-                //TODO
-                return;
-            }
-
-            foreach (IAsset existed in Model.GetAssets())
-            {
-                AddAsset(existed);
-            }
-            RefreshAssets();
-            SelectedAsset ??= Assets.FirstOrDefault();
+            //TODO how rework? attrs?
+            asset.RaisePropertyChanged(nameof(AssetViewModel.Volume));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.SellPrice));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.Share));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.BuyedVolume));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.BuyedShare));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.Status));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.TargetVolume));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.TargetSellPrice));
+            asset.RaisePropertyChanged(nameof(AssetViewModel.TargetShare));
         }
+    }
 
-        internal void RefreshAssets()
+    private void Close()
+    {
+        Save();
+        TurnBack();
+    }
+
+    private void Save()
+    {
+        Model.Save();
+    }
+
+    private void EditPortfoliInfo()
+    {
+        Main.ActiveWindow = new PortfolioEditingViewModel(Model, Main);
+    }
+
+    internal void AddAsset(IAsset asset)
+    {
+        if (Assets.Any(x => x.Model == asset))
         {
-            Assets = new ObservableCollection<AssetViewModel>(Assets.OrderBy(x => x.Name));
+            return;
         }
 
-        private void ShowTable()
+        var vm = new AssetViewModel(asset, Main);
+        vm.DeleteMeEvent += DeleteAsset;
+        vm.EditMeEvent += EditAsset;
+
+        Assets.Add(vm);
+    }
+
+    private void EditAsset(AssetViewModel vm)
+    {
+        Main.ActiveWindow = new AssetEditingViewModel(this, vm.Model, Main);
+    }
+
+    private void CreateAsset()
+    {
+        Main.ActiveWindow = new AssetEditingViewModel(this, Main);
+    }
+
+    private async void DeleteAsset(AssetViewModel vm)
+    {
+        var box = MessageBoxManager.GetMessageBoxStandard(
+            "Deleting",
+            $"Are you sure to delete {vm.Name}",
+            ButtonEnum.YesNo);
+
+        var res = await box.ShowAsync();
+
+        if (res != ButtonResult.Yes)
         {
-            if (_main.ActiveVM is AssetsTableViewModel)
-            {
-                return;
-            }
-
-            AssetsTableViewModel vm = new AssetsTableViewModel(this, _main);
-            _main.ActiveVM = vm;
+            return;
         }
 
-        private void ShowAssets()
+        Model.DeleteAsset(vm.Model);
+
+        vm.DeleteMeEvent -= DeleteAsset;
+        vm.EditMeEvent -= EditAsset;
+        Assets.Remove(vm);
+    }
+
+    private async void Import()
+    {
+        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+
+        var topLevel = TopLevel.GetTopLevel(mainWindow);
+        if (topLevel is null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            if (_main.ActiveVM is PortfolioViewModel)
-            {
-                return;
-            }
+            Title = "Select CSV file with CTS",
+            AllowMultiple = false,
+            FileTypeFilter = new[] { Constants.CSVFileType },
+        });
 
-            _main.ActiveVM = this;
+        if (files.Count == 0)
+        {
+            return;
         }
+
+        try
+        {
+            using (var importer = new CTSImporter(files[0].Path.AbsolutePath))
+            {
+                importer.Read();
+                importer.AddToPortfolio(Model);
+            }
+        }
+        catch (Exception ex)
+        {
+            //TODO
+            return;
+        }
+
+        foreach (var existed in Model.GetAssets())
+        {
+            AddAsset(existed);
+        }
+
+        RefreshAssets();
+        SelectedAsset ??= Assets.FirstOrDefault();
+    }
+
+    internal void RefreshAssets()
+    {
+        Assets = new ObservableCollection<AssetViewModel>(Assets.OrderBy(x => x.Name));
+    }
+
+    private void ShowTable()
+    {
+        if (Main.ActiveWindow is AssetsTableViewModel)
+        {
+            return;
+        }
+
+        Main.ActiveWindow = new AssetsTableViewModel(this, Main);
+    }
+
+    private void ShowAssets()
+    {
+        if (Main.ActiveWindow is PortfolioViewModel)
+        {
+            return;
+        }
+
+        Main.ActiveWindow = this;
     }
 }

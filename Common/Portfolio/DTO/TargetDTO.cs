@@ -1,10 +1,9 @@
-﻿namespace Db
-{
-    internal class TargetDTO
-    {
-        public double Price { get; set; }
-        public double Volume { get; set; }
+﻿namespace PortfolioImpl.DTO;
 
-        public TargetDTO() { }
-    }
+internal class TargetDTO
+{
+    public double Price { get; set; }
+    public double Volume { get; set; }
+
+    public TargetDTO() { }
 }

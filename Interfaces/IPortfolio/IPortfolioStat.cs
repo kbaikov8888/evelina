@@ -1,7 +1,6 @@
-﻿namespace Db
+﻿namespace PortfolioInterface;
+
+public interface IPortfolioStat
 {
-    public interface IPortfolioStat
-    {
-        double Volume { get; set; }
-    }
+    double Volume { get; set; }
 }

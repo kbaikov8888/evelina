@@ -1,12 +1,11 @@
-﻿namespace Db
-{
-    internal class AssetDTO
-    {
-        public string Name { get; set; }
-        public double? TargetVolume { get; set; }
-        public double? TargetSellPrice { get; set; }
-        public double? TargetShare { get; set; }
+﻿namespace PortfolioImpl.DTO;
 
-        public AssetDTO() { }
-    }
+internal class AssetDTO
+{
+    public string? Name { get; set; }
+    public double? TargetVolume { get; set; }
+    public double? TargetSellPrice { get; set; }
+    public double? TargetShare { get; set; }
+
+    public AssetDTO() { }
 }

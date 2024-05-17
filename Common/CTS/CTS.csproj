@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interfaces\IPortfolio\IPortfolio.csproj" />
+    <ProjectReference Include="..\..\Interfaces\IPortfolio\PortfolioInterface.csproj" />
   </ItemGroup>
 
 </Project>

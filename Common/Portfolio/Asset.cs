@@ -1,203 +1,196 @@
-﻿using System.Linq;
+﻿using PortfolioImpl.DTO;
+using PortfolioInterface;
 using System.Text.Json;
 
-namespace Db
+namespace PortfolioImpl;
+
+internal class Asset : Item, IAsset
 {
-    internal class Asset : Item, IAsset
+    public string Name { get; set; } = string.Empty;
+
+    private double? _targetVolume;
+    public double? TargetVolume
     {
-        public string Name { get; set; }
-
-        private double? _targetVolume;
-        public double? TargetVolume
+        get => _targetVolume;
+        set
         {
-            get => _targetVolume;
-            set
+            if (_targetVolume != value)
             {
-                if (_targetVolume != value)
-                {
-                    _targetVolume = value;
-                    _parent.UpdateStat();
-                }
+                _targetVolume = value;
+                _parent.UpdateStat();
             }
         }
+    }
 
-        private double? _targetSellPrice;
-        public double? TargetSellPrice
+    private double? _targetSellPrice;
+    public double? TargetSellPrice
+    {
+        get => _targetSellPrice;
+        set
         {
-            get => _targetSellPrice;
-            set
+            if (_targetSellPrice != value)
             {
-                if (_targetSellPrice != value)
-                {
-                    _targetSellPrice = value;
-                    _parent.UpdateStat();
-                }
+                _targetSellPrice = value;
+                _parent.UpdateStat();
             }
         }
+    }
 
-        private double? _targetShare;
-        public double? TargetShare
+    private double? _targetShare;
+    public double? TargetShare
+    {
+        get => _targetShare;
+        set
         {
-            get => _targetShare;
-            set
+            if (_targetShare != value)
             {
-                if (_targetShare != value)
-                {
-                    _targetShare = value;
-                    _parent.UpdateStat();
-                }
+                _targetShare = value;
+                _parent.UpdateStat();
             }
         }
+    }
 
-        public IAssetStat Stat => _stat;
+    public IAssetStat Stat => _stat;
 
-        private List<Transaction> _transactions;
-        private List<Target> _targets;
-        private Portfolio _parent;
-        private AssetStat _stat;
+    private readonly List<Transaction> _transactions;
+    private readonly List<Target> _targets;
+    private readonly Portfolio _parent;
+    private readonly AssetStat _stat;
 
 
-        internal Asset(string id, long creationDate, string parentId, Portfolio parent) : base(id, creationDate, parentId)
+    internal Asset(string id, long creationDate, string parentId, Portfolio parent) : base(id, creationDate, parentId)
+    {
+        Level = EItemLevel.Asset;
+        _transactions = new List<Transaction>();
+        _targets = new List<Target>();
+        _parent = parent;
+        _stat = new AssetStat();
+    }
+
+
+    #region IItem
+    public override string ToJson()
+    {
+        var dto = new AssetDTO()
         {
-            Level = EItemLevel.Asset;
-            _transactions = new List<Transaction>();
-            _targets = new List<Target>();
-            _parent = parent;
-            _stat = new AssetStat();
+            Name = Name,
+            TargetVolume = TargetVolume,
+            TargetSellPrice = TargetSellPrice,
+            TargetShare = TargetShare,
+        };
+
+        return JsonSerializer.Serialize(dto);
+    }
+
+    public override void FromJson(string json)
+    {
+        var dto = JsonSerializer.Deserialize<AssetDTO>(json);
+        if (dto is null) return;
+
+        Name = dto.Name;
+        TargetVolume = dto.TargetVolume;
+        TargetSellPrice = dto.TargetSellPrice;
+        TargetShare = dto.TargetShare;
+    }
+    #endregion
+
+    public IList<ITransaction> GetTransactions()
+    {
+        var transactions = new List<ITransaction>();
+        foreach (var transaction in _transactions)
+        {
+            transactions.Add(transaction);
+        }
+        return transactions;
+    }
+
+    public ITransaction CreateTransaction(long datetime, ETransaction type, double price, double amount)
+    {
+        var now = DateTime.Now.Ticks;
+        var uid = Guid.NewGuid().ToString();
+
+        var transaction = new Transaction(uid, now, Id, this)
+        {
+            Datetime = datetime,
+            Type = type,
+            Price = price,
+            Amount = amount,
+        };
+
+        _transactions.Add(transaction);
+        _parent.UpdateStat();
+
+        return transaction;
+    }
+
+    public void DeleteTransaction(ITransaction transaction)
+    {
+        if (transaction is not Transaction real || !_transactions.Contains(real))
+        {
+            throw new InvalidOperationException();
         }
 
+        _transactions.Remove(real);
+        _parent.UpdateStat();
+    }
 
-        #region IItem
-        public override string ToJson()
+    public IList<ITarget> GetTargets()
+    {
+        return _targets.Cast<ITarget>().ToList();
+    }
+
+    public ITarget CreateTarget(double price, double volume)
+    {
+        var now = DateTime.Now.Ticks;
+        var uid = Guid.NewGuid().ToString();
+
+        var target = new Target(uid, now, Id)
         {
-            AssetDTO dto = new AssetDTO()
-            {
-                Name = Name,
-                TargetVolume = TargetVolume,
-                TargetSellPrice = TargetSellPrice,
-                TargetShare = TargetShare,
-            };
+            Volume = volume,
+            Price = price,
+        };
 
-            return JsonSerializer.Serialize(dto);
+        _targets.Add(target);
+        _parent.UpdateStat();
+
+        return target;
+    }
+
+    public void DeleteTarget(ITarget target)
+    {
+        if (target is not Target real || !_targets.Contains(real))
+        {
+            throw new InvalidOperationException();
         }
 
-        public override void FromJson(string json)
-        {
-            AssetDTO dto = JsonSerializer.Deserialize<AssetDTO>(json);
+        _targets.Remove(real);
+        _parent.UpdateStat();
+    }
 
-            Name = dto.Name;
-            TargetVolume = dto.TargetVolume;
-            TargetSellPrice = dto.TargetSellPrice;
-            TargetShare = dto.TargetShare;
-        }
-        #endregion
-
-        public IList<ITransaction> GetTransactions()
+    internal void AddTransaction(Transaction transaction)
+    {
+        if (transaction.ParentId != Id)
         {
-            IList<ITransaction> transactions = new List<ITransaction>();
-            foreach (var transaction in _transactions)
-            {
-                transactions.Add(transaction);
-            }
-            return transactions;
+            throw new InvalidOperationException();
         }
 
-        public ITransaction CreateTransaction(long datetime, ETransaction type, double price, double amount)
+        _transactions.Add(transaction);
+        _parent.UpdateStat();
+    }
+
+    internal void AddTarget(Target target)
+    {
+        if (target.ParentId != Id)
         {
-            var now = DateTime.Now.Ticks;
-            string uid = Guid.NewGuid().ToString();
-
-            Transaction transaction = new Transaction(uid, now, Id, this);
-            transaction.Datetime = datetime;
-            transaction.Type = type;
-            transaction.Price = price;
-            transaction.Amount = amount;
-
-            _transactions.Add(transaction);
-            _parent.UpdateStat();
-
-            return transaction;
+            throw new InvalidOperationException();
         }
 
-        public void DeleteTransaction(ITransaction transaction)
-        {
-            Transaction real = transaction as Transaction;
+        _targets.Add(target);
+        _parent.UpdateStat();
+    }
 
-            if (!_transactions.Contains(real))
-            {
-                throw new InvalidOperationException();
-            }
-
-            _transactions.Remove(real);
-            _parent.UpdateStat();
-        }
-
-        public IList<ITarget> GetTargets()
-        {
-            IList<ITarget> targets = new List<ITarget>();
-            foreach (ITarget target in _targets)
-            {
-                targets.Add(target);
-            }
-
-            return targets;
-        }
-
-        public ITarget CreateTarget(double price, double volume)
-        {
-            var now = DateTime.Now.Ticks;
-            string uid = Guid.NewGuid().ToString();
-
-            Target target = new Target(uid, now, Id);
-            target.Volume = volume;
-            target.Price = price;
-
-            _targets.Add(target);
-            _parent.UpdateStat();
-
-            return target;
-        }
-
-        public void DeleteTarget(ITarget target)
-        {
-            Target real = target as Target;
-
-            if (!_targets.Contains(real))
-            {
-                throw new InvalidOperationException();
-            }
-
-            _targets.Remove(real);
-            _parent.UpdateStat();
-        }
-
-        #region internal
-        internal void AddTransaction(Transaction transaction)
-        {
-            if (transaction.ParentId != Id)
-            {
-                throw new InvalidOperationException();
-            }
-
-            _transactions.Add(transaction);
-            _parent.UpdateStat();
-        }
-
-        internal void AddTarget(Target target)
-        {
-            if (target.ParentId != Id)
-            {
-                throw new InvalidOperationException();
-            }
-
-            _targets.Add(target);
-            _parent.UpdateStat();
-        }
-
-        internal void UpdateStat()
-        {
-            _parent.UpdateStat();
-        }
-        #endregion
+    internal void UpdateStat()
+    {
+        _parent.UpdateStat();
     }
 }

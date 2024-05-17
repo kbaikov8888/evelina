@@ -1,6 +1,7 @@
-﻿using FluentIcons.Avalonia;
-using ReactiveUI;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System.Windows.Input;
+using evelina.ViewModels.Common;
 
 namespace evelina.ViewModels;
 
@@ -8,14 +9,14 @@ public class MainViewModel : ViewModelBase
 {
     public ICommand TriggerPaneCommand { get; }
 
-    private WindowViewModelBase _activeVM;
-    public WindowViewModelBase ActiveVM
+    private WindowViewModelBase? _activeWindow;
+    public WindowViewModelBase? ActiveWindow
     {
-        get => _activeVM;
+        get => _activeWindow;
         set
         {
-            this.RaiseAndSetIfChanged(ref _activeVM, value);
-            OnPropertyChanged(nameof(ShowMenu));
+            this.RaiseAndSetIfChanged(ref _activeWindow, value);
+            this.RaisePropertyChanged(nameof(ShowMenu));
 
             if (value is PortfolioViewModel p)
             {
@@ -24,28 +25,18 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private bool _isPaneOpen = true;
-    public bool IsPaneOpen
-    {
-        get => _isPaneOpen;
-        set => this.RaiseAndSetIfChanged(ref _isPaneOpen, value);
-    }
+    [Reactive]
+    public bool IsPaneOpen { get; set; }
 
-    public bool ShowMenu => ActiveVM is IMenuCompatible;
+    public bool ShowMenu => ActiveWindow is IMenuCompatible;
 
-    private PortfolioViewModel _currentPortfolio;
-    public PortfolioViewModel CurrentPortfolio
-    {
-        get => _currentPortfolio;
-        set => this.RaiseAndSetIfChanged(ref _currentPortfolio, value);
-    }
+    [Reactive]
+    public PortfolioViewModel? CurrentPortfolio { get; set; }
 
 
     public MainViewModel()
     {
-        var startVM = new StartViewModel(this);
-
-        ActiveVM = startVM;
+        ActiveWindow = new StartViewModel(this);
         TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
     }
 

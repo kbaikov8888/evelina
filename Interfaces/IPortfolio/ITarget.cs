@@ -1,10 +1,9 @@
-﻿namespace Db
-{
-    public interface ITarget : IItem
-    {
-        double Price { get; set; }
-        double Volume { get; set; }
+﻿namespace PortfolioInterface;
 
-        double Amount => Volume / Price;
-    }
+public interface ITarget : IItem
+{
+    double Price { get; set; }
+    double Volume { get; set; }
+
+    double Amount => Volume / Price;
 }

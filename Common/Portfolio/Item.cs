@@ -1,32 +1,27 @@
-﻿namespace Db
+﻿using PortfolioInterface;
+
+namespace PortfolioImpl;
+
+internal abstract class Item : IItem
 {
-    internal class Item : IItem
+    public string Id { get; }
+
+    public long CreationDate { get; }
+
+    public string ParentId { get; }
+
+    public EItemLevel Level { get; protected set; }
+
+
+    protected Item(string id, long creationDate, string parentId)
     {
-        public string Id { get; }
-
-        public long CreationDate { get; }
-
-        public string ParentId { get; }
-
-        public EItemLevel Level { get; protected set; }
-
-
-        public Item(string id, long creationDate, string parentId)
-        {
-            Id = id;
-            CreationDate = creationDate;
-            ParentId = parentId;
-        }
-
-
-        public virtual void FromJson(string json)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual string ToJson()
-        {
-            throw new NotImplementedException();
-        }
+        Id = id;
+        CreationDate = creationDate;
+        ParentId = parentId;
     }
+
+
+    public abstract void FromJson(string json);
+
+    public abstract string ToJson();
 }
