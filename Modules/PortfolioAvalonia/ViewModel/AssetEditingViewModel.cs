@@ -29,7 +29,7 @@ public class AssetEditingViewModel : WindowViewModelBase, IDisposable
     private IAsset? _asset;
 
 
-    public AssetEditingViewModel(PortfolioViewModel vm, IAsset asset, MainViewModel main) : this(main)
+    public AssetEditingViewModel(PortfolioViewModel vm, IAsset asset, IMainViewModel main) : this(main)
     {
         _asset = asset;
         _portfolio = vm;
@@ -40,13 +40,13 @@ public class AssetEditingViewModel : WindowViewModelBase, IDisposable
         TargetShare = asset.TargetShare;
     }
 
-    public AssetEditingViewModel(PortfolioViewModel vm, MainViewModel main) : this(main)
+    public AssetEditingViewModel(PortfolioViewModel vm, IMainViewModel main) : this(main)
     {
         _asset = null;
         _portfolio = vm;
     }
 
-    private AssetEditingViewModel(MainViewModel main) : base(main)
+    private AssetEditingViewModel(IMainViewModel main) : base(main)
     {
         ApplyCommand = ReactiveCommand.Create(Apply);
         CancelCommand = ReactiveCommand.Create(Close);

@@ -2,6 +2,13 @@
 
 namespace evelina.ViewModels.Common;
 
+public interface IMainViewModel
+{
+    WindowViewModelBase? ActiveWindow { get; set; }
+}
+
+public interface IMenuCompatible { }
+
 /// <summary>
 /// VM, способные заменять активный UserControl основного окна
 /// </summary>
@@ -9,12 +16,12 @@ public class WindowViewModelBase : ViewModelBase
 {
     internal event Action? ReturnBackEvent;
 
-    protected MainViewModel Main;
+    protected IMainViewModel Main;
 
     private readonly WindowViewModelBase? _previous;
 
 
-    public WindowViewModelBase(MainViewModel main)
+    public WindowViewModelBase(IMainViewModel main)
     {
         Main = main;
         _previous = Main.ActiveWindow;
@@ -34,5 +41,3 @@ public class WindowViewModelBase : ViewModelBase
         }
     }
 }
-
-public interface IMenuCompatible { }

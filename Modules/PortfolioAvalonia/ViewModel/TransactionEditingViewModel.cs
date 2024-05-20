@@ -1,16 +1,16 @@
 ﻿using evelina.ViewModels.Common;
 using MsBox.Avalonia;
+using PortfolioInterface;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using PortfolioInterface;
 
 namespace evelina.ViewModels;
 
-public class TransactionEditingViewModel : WindowViewModelBase, IDisposable
+public class TransactionEditingViewModel : WindowViewModelBase
 {
     public ICommand ApplyCommand { get; }
     public ICommand CancelCommand { get; }
@@ -37,7 +37,7 @@ public class TransactionEditingViewModel : WindowViewModelBase, IDisposable
     private ITransaction? _transaction;
 
 
-    public TransactionEditingViewModel(AssetViewModel asset, MainViewModel main) : this(main)
+    public TransactionEditingViewModel(AssetViewModel asset, IMainViewModel main) : this(main)
     {
         _asset = asset;
         _transaction = null;
@@ -46,7 +46,7 @@ public class TransactionEditingViewModel : WindowViewModelBase, IDisposable
         Type = ETransaction.Buy;
     }
 
-    public TransactionEditingViewModel(ITransaction transaction, AssetViewModel asset, MainViewModel main) : this(main)
+    public TransactionEditingViewModel(ITransaction transaction, AssetViewModel asset, IMainViewModel main) : this(main)
     {
         _asset = asset;
         _transaction = transaction;
@@ -58,16 +58,12 @@ public class TransactionEditingViewModel : WindowViewModelBase, IDisposable
         Note = transaction.Note;
     }
 
-    private TransactionEditingViewModel(MainViewModel main) : base(main)
+    private TransactionEditingViewModel(IMainViewModel main) : base(main)
     {
         ApplyCommand = ReactiveCommand.Create(Apply);
         CancelCommand = ReactiveCommand.Create(Close);
     }
 
-
-    public void Dispose()
-    {
-    }
 
     private async void Apply()
     {

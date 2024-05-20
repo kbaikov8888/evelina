@@ -8,7 +8,6 @@ using evelina.ViewModels.Dialogs;
 using ReactiveUI;
 using System.IO;
 using System.Windows.Input;
-using PortfolioImpl;
 using VisualTools;
 
 namespace evelina.ViewModels;

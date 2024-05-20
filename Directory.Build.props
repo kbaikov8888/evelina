@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
     <Nullable>enable</Nullable>
+    <TargetFramework>net7.0</TargetFramework>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AvaloniaVersion>11.0.2</AvaloniaVersion>
   </PropertyGroup>
 </Project>

@@ -21,7 +21,7 @@ public class PortfolioEditingViewModel : WindowViewModelBase, IDisposable
     internal IPortfolio Model { get; }
 
 
-    public PortfolioEditingViewModel(IPortfolio model, MainViewModel main) : base(main)
+    public PortfolioEditingViewModel(IPortfolio model, IMainViewModel main) : base(main)
     {
         Model = model;
         Name = model.Name;

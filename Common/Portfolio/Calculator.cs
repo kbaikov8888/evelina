@@ -1,4 +1,6 @@
-﻿using PortfolioInterface;
+﻿using System;
+using System.Collections.Generic;
+using PortfolioInterface;
 
 namespace PortfolioImpl;
 

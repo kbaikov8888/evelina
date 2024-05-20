@@ -1,4 +1,7 @@
-﻿namespace BookImpl;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace BookImpl;
 
 public class Book
 {

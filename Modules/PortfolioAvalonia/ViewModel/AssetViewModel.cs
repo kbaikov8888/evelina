@@ -64,7 +64,7 @@ public class AssetViewModel : WindowViewModelBase, IDisposable
     internal IAsset Model { get; }
 
 
-    public AssetViewModel(IAsset model, MainViewModel main) : base(main)
+    public AssetViewModel(IAsset model, IMainViewModel main) : base(main)
     {
         Model = model;
         Transactions = new ObservableCollection<TransactionViewModel>();

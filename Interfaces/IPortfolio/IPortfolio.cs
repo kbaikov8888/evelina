@@ -1,4 +1,7 @@
-﻿namespace PortfolioInterface;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace PortfolioInterface;
 
 public delegate void UpdateVisualStat();
 

@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
-using CTS.Import;
 using evelina.ViewModels.Common;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -13,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using PortfolioInterface;
+using CTS.Import;
 using VisualTools;
 
 namespace evelina.ViewModels;
@@ -28,7 +28,6 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     public ICommand ShowTableCommand { get; }
     public ICommand ShowAssetsCommand { get; }
 
-
     public string Name => Model.Name;
     public double? Volume => Model.Stat.Volume;
 
@@ -41,7 +40,7 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     internal IPortfolio Model { get; }
 
 
-    public PortfolioViewModel(IPortfolio model, MainViewModel main) : base(main)
+    public PortfolioViewModel(IPortfolio model, IMainViewModel main) : base(main)
     {
         Model = model;
         Model.UpdateVisualStatEvent += Model_UpdateVisualStatEvent;

@@ -1,4 +1,6 @@
-﻿namespace BookImpl;
+﻿using System;
+
+namespace BookImpl;
 
 public abstract class Entry
 {

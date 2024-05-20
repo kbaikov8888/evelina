@@ -5,7 +5,7 @@ using evelina.ViewModels.Common;
 
 namespace evelina.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : ViewModelBase, IMainViewModel
 {
     public ICommand TriggerPaneCommand { get; }
 
