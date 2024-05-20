@@ -2,20 +2,20 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
-using evelina.ViewModels.Common;
+using CTS.Import;
+using evelina.Controls;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using PortfolioInterface;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using PortfolioInterface;
-using CTS.Import;
 using VisualTools;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompatible
 {
@@ -35,7 +35,6 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     public AssetViewModel? SelectedAsset { get; set; }
 
     public ObservableCollection<AssetViewModel> Assets { get; private set; }
-
 
     internal IPortfolio Model { get; }
 

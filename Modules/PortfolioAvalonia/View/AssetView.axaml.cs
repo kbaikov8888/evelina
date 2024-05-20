@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using evelina.ViewModels;
+using PortfolioAvalonia.ViewModel;
 
-namespace evelina.Views;
+namespace PortfolioAvalonia.View;
 
 public partial class AssetView : UserControl
 {

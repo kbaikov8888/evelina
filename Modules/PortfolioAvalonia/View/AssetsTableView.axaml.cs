@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace evelina.Views;
+namespace PortfolioAvalonia.View;
 
 public partial class AssetsTableView : UserControl
 {

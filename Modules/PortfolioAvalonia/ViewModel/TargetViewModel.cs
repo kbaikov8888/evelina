@@ -1,8 +1,8 @@
 ﻿using System;
-using evelina.ViewModels.Common;
+using evelina.Controls;
 using PortfolioInterface;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class TargetViewModel : ViewModelBase, IDisposable
 {

@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:evelina.ViewModels"
+             xmlns:viewModel="clr-namespace:PortfolioAvalonia.ViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="evelina.Views.PortfolioEditingView"
-             x:DataType="vm:PortfolioEditingViewModel">
+             x:Class="PortfolioAvalonia.View.PortfolioEditingView"
+             x:DataType="viewModel:PortfolioEditingViewModel">
   <Grid HorizontalAlignment="Center"
         VerticalAlignment="Center"
         Width="300"

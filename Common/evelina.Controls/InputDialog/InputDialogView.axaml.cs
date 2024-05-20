@@ -1,8 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using evelina.ViewModels.Dialogs;
 
-namespace evelina.Views.Dialogs;
+namespace evelina.Controls.InputDialog;
 
 public partial class InputDialogView : UserControl
 {

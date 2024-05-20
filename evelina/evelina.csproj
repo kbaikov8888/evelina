@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\evelina.Controls\evelina.Controls.csproj" />
     <ProjectReference Include="..\Common\evelina.Styles\evelina.Styles.csproj" />
+    <ProjectReference Include="..\Common\Portfolio\PortfolioImpl.csproj" />
     <ProjectReference Include="..\Common\VisualTools\VisualTools.csproj" />
     <ProjectReference Include="..\Modules\BookAvalonia\BookAvalonia.csproj" />
     <ProjectReference Include="..\Modules\PortfolioAvalonia\PortfolioAvalonia.csproj" />

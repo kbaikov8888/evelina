@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:evelina.ViewModels"
+             xmlns:viewModel="clr-namespace:PortfolioAvalonia.ViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="evelina.Views.AssetView"
-             x:DataType="vm:AssetViewModel">
+             x:Class="PortfolioAvalonia.View.AssetView"
+             x:DataType="viewModel:AssetViewModel">
   <Grid RowDefinitions="auto,*">
     <Border Grid.Row="0"
             HorizontalAlignment="Stretch"
@@ -136,7 +136,7 @@
                 </Style>
               </ListBox.Styles>
               <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="vm:TransactionViewModel">
+                <DataTemplate x:DataType="viewModel:TransactionViewModel">
                   <Border Background="Transparent"
                           DoubleTapped="Border_DoubleTapped">
                     <Border.ContextMenu>
@@ -156,13 +156,13 @@
                                    Text="{Binding DatetimeString}"/>
                         <TextBlock Grid.Row="1">
                           <Run Text="{Binding Type}"/>
-                          <Run Text="{Binding Volume, StringFormat={}{0:f0} $}}"/>
+                          <Run Text="{Binding Volume, StringFormat={}{0:f0} $}"/>
                         </TextBlock>
                         
                         <TextBlock Grid.Row="2">
                           <Run Text="{Binding Amount}"/>
                           <Run Text="@"/>
-                          <Run Text="{Binding Price, StringFormat={}{0:f2}}}"/>
+                          <Run Text="{Binding Price, StringFormat={}{0:f2}}"/>
                         </TextBlock>
                       </Grid>
                     </Grid>

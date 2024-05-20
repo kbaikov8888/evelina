@@ -1,10 +1,10 @@
-﻿using evelina.ViewModels.Common;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Windows.Input;
 using PortfolioInterface;
+using evelina.Controls;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class TransactionViewModel : ViewModelBase, IDisposable
 {
@@ -21,8 +21,8 @@ public class TransactionViewModel : ViewModelBase, IDisposable
     public double? Amount => Model.Amount;
     public double? Price => Model.Price;
     public double? Volume => Model.Volume;
-    public string DatetimeString => $"{new DateTime(Model.Datetime) : 0)}";
-        
+    public string DatetimeString => $"{new DateTime(Model.Datetime): 0)}";
+
     internal ITransaction Model { get; }
 
 

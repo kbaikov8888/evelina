@@ -1,6 +1,6 @@
-﻿using evelina.ViewModels.Common;
+﻿using evelina.Controls;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class AssetsTableViewModel : WindowViewModelBase, IMenuCompatible
 {

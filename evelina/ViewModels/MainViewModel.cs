@@ -1,7 +1,8 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Windows.Input;
-using evelina.ViewModels.Common;
+using PortfolioAvalonia.ViewModel;
+using evelina.Controls;
 
 namespace evelina.ViewModels;
 

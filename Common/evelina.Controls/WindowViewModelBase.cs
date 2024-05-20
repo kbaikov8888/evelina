@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace evelina.ViewModels.Common;
+namespace evelina.Controls;
 
 public interface IMainViewModel
 {

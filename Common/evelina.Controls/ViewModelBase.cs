@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace evelina.ViewModels.Common;
+namespace evelina.Controls;
 
 public class ViewModelBase : ReactiveObject
 {

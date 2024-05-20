@@ -1,11 +1,11 @@
-﻿using evelina.ViewModels.Common;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Windows.Input;
 using PortfolioInterface;
+using evelina.Controls;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class PortfolioEditingViewModel : WindowViewModelBase, IDisposable
 {

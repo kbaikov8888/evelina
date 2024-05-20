@@ -1,7 +1,6 @@
-﻿using evelina.ViewModels.Common;
-using ReactiveUI.Fody.Helpers;
+﻿using ReactiveUI.Fody.Helpers;
 
-namespace evelina.ViewModels.Dialogs;
+namespace evelina.Controls.InputDialog;
 
 public class InputDialogViewModel : ViewModelBase
 {

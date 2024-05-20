@@ -1,4 +1,4 @@
-﻿using evelina.ViewModels.Common;
+﻿using evelina.Controls;
 using MsBox.Avalonia;
 using PortfolioInterface;
 using ReactiveUI;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace evelina.ViewModels;
+namespace PortfolioAvalonia.ViewModel;
 
 public class TransactionEditingViewModel : WindowViewModelBase
 {
@@ -70,7 +70,7 @@ public class TransactionEditingViewModel : WindowViewModelBase
         if (!Price.HasValue || !Amount.HasValue)
         {
             var box = MessageBoxManager.GetMessageBoxStandard("Warning", "Fill Amount and Price!");
-                
+
             await box.ShowAsync();
             return;
         }
