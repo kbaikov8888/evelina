@@ -1,5 +1,7 @@
-﻿using System;
-using ReactiveUI;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System;
+using System.Windows.Input;
 
 namespace evelina.Controls;
 
@@ -45,5 +47,38 @@ public class WindowViewModelBase : ReactiveObject
         {
             Main.ActiveWindow = _previous;
         }
+    }
+}
+
+public class MainViewModelBase : ReactiveObject, IMainViewModel
+{
+    private WindowViewModelBase? _activeWindow;
+    public WindowViewModelBase? ActiveWindow
+    {
+        get => _activeWindow;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _activeWindow, value);
+            this.RaisePropertyChanged(nameof(ShowMenu));
+        }
+    }
+
+    public bool ShowMenu => ActiveWindow is IMenuCompatible;
+
+    [Reactive]
+    public bool IsPaneOpen { get; set; }
+
+    public ICommand TriggerPaneCommand { get; }
+
+
+    protected MainViewModelBase()
+    {
+        TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
+    }
+
+
+    private void TriggerPane()
+    {
+        IsPaneOpen = !IsPaneOpen;
     }
 }

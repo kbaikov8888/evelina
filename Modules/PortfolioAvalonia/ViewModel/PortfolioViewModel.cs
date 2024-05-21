@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
-using Avalonia.ReactiveUI;
 using CTS.Import;
 using evelina.Controls;
 using MsBox.Avalonia;
@@ -18,21 +17,10 @@ using VisualTools;
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, IMenuCompatible, IReturnableToStart
+public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatible, IReturnableToStart
 {
     public event Action? ReturnToStart;
-
-    private WindowViewModelBase? _activeWindow;
-    public WindowViewModelBase? ActiveWindow
-    {
-        get => _activeWindow;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _activeWindow, value);
-            this.RaisePropertyChanged(nameof(ShowMenu));
-        }
-    }
-
+    
     public ICommand CloseCommand { get; }
     public ICommand EditCommand { get; }
     public ICommand CreateAssetCommand { get; }
@@ -41,7 +29,6 @@ public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, I
     public ICommand ExportCommand { get; }
     public ICommand ShowTableCommand { get; }
     public ICommand ShowAssetsCommand { get; }
-    public ICommand TriggerPaneCommand { get; }
 
     public string Name => Model.Name;
     public double? Volume => Model.Stat.Volume;
@@ -52,11 +39,6 @@ public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, I
     public ObservableCollection<AssetViewModel> Assets { get; private set; } = new();
 
     internal IPortfolio Model { get; }
-
-    [Reactive]
-    public bool IsPaneOpen { get; set; }
-
-    public bool ShowMenu => ActiveWindow is IMenuCompatible;
 
 
     public PortfolioViewModel(IPortfolio model)
@@ -79,7 +61,6 @@ public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, I
         ShowTableCommand = ReactiveCommand.Create(ShowTable);
         ShowAssetsCommand = ReactiveCommand.Create(ShowAssets);
         ExportCommand = ReactiveCommand.Create(() => { });
-        TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
 
         ActiveWindow = new AssetsPanelViewModel(this);
     }
@@ -98,11 +79,6 @@ public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, I
         Model.UpdateVisualStatEvent -= Model_UpdateVisualStatEvent;
     }
 
-
-    private void TriggerPane()
-    {
-        IsPaneOpen = !IsPaneOpen;
-    }
 
     private void Model_UpdateVisualStatEvent()
     {

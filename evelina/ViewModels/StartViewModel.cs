@@ -9,6 +9,7 @@ using PortfolioImpl;
 using ReactiveUI;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using VisualTools;
 
@@ -21,15 +22,18 @@ public class StartViewModel : ReactiveObject
     public ICommand CreatePortfolioCommand { get; }
     public ICommand OpenPortfolioCommand { get; }
 
+    public ICommand ReadSproutsCommand { get; }
+
 
     internal StartViewModel()
     {
         CreatePortfolioCommand = ReactiveCommand.Create(CreatePortfolio);
         OpenPortfolioCommand = ReactiveCommand.Create(OpenPortfolio);
+        ReadSproutsCommand = ReactiveCommand.Create(ReadSprouts);
     }
 
 
-    private async void CreatePortfolio()
+    private async Task CreatePortfolio()
     {
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
         var topLevel = TopLevel.GetTopLevel(mainWindow);
@@ -71,7 +75,7 @@ public class StartViewModel : ReactiveObject
         portfolio.Logger.Info("test");
     }
 
-    private async void OpenPortfolio()
+    private async Task OpenPortfolio()
     {
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
         var topLevel = TopLevel.GetTopLevel(mainWindow);
@@ -96,5 +100,26 @@ public class StartViewModel : ReactiveObject
         }
 
         SetNewModel?.Invoke(new PortfolioViewModel(portfolio));
+    }
+
+    private async Task ReadSprouts()
+    {
+        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+        var topLevel = TopLevel.GetTopLevel(mainWindow);
+        if (topLevel is null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Sprouts .csv",
+            AllowMultiple = false,
+            FileTypeFilter = new[] { Constants.CSVFileType },
+        });
+
+        if (files.Count == 0)
+        {
+            return;
+        }
+
+
     }
 }
