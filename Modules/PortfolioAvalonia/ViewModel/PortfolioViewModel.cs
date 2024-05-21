@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using Avalonia.ReactiveUI;
 using CTS.Import;
 using evelina.Controls;
 using MsBox.Avalonia;
@@ -17,8 +18,21 @@ using VisualTools;
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompatible
+public class PortfolioViewModel : ReactiveObject, IMainViewModel, IDisposable, IMenuCompatible, IReturnableToStart
 {
+    public event Action? ReturnToStart;
+
+    private WindowViewModelBase? _activeWindow;
+    public WindowViewModelBase? ActiveWindow
+    {
+        get => _activeWindow;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _activeWindow, value);
+            this.RaisePropertyChanged(nameof(ShowMenu));
+        }
+    }
+
     public ICommand CloseCommand { get; }
     public ICommand EditCommand { get; }
     public ICommand CreateAssetCommand { get; }
@@ -27,6 +41,7 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     public ICommand ExportCommand { get; }
     public ICommand ShowTableCommand { get; }
     public ICommand ShowAssetsCommand { get; }
+    public ICommand TriggerPaneCommand { get; }
 
     public string Name => Model.Name;
     public double? Volume => Model.Stat.Volume;
@@ -34,17 +49,21 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     [Reactive]
     public AssetViewModel? SelectedAsset { get; set; }
 
-    public ObservableCollection<AssetViewModel> Assets { get; private set; }
+    public ObservableCollection<AssetViewModel> Assets { get; private set; } = new();
 
     internal IPortfolio Model { get; }
 
+    [Reactive]
+    public bool IsPaneOpen { get; set; }
 
-    public PortfolioViewModel(IPortfolio model, IMainViewModel main) : base(main)
+    public bool ShowMenu => ActiveWindow is IMenuCompatible;
+
+
+    public PortfolioViewModel(IPortfolio model)
     {
         Model = model;
         Model.UpdateVisualStatEvent += Model_UpdateVisualStatEvent;
 
-        Assets = new ObservableCollection<AssetViewModel>();
         foreach (var existed in model.GetAssets())
         {
             AddAsset(existed);
@@ -60,6 +79,9 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
         ShowTableCommand = ReactiveCommand.Create(ShowTable);
         ShowAssetsCommand = ReactiveCommand.Create(ShowAssets);
         ExportCommand = ReactiveCommand.Create(() => { });
+        TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
+
+        ActiveWindow = new AssetsPanelViewModel(this);
     }
 
 
@@ -74,6 +96,12 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
         Assets.Clear();
 
         Model.UpdateVisualStatEvent -= Model_UpdateVisualStatEvent;
+    }
+
+
+    private void TriggerPane()
+    {
+        IsPaneOpen = !IsPaneOpen;
     }
 
     private void Model_UpdateVisualStatEvent()
@@ -98,7 +126,7 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
     private void Close()
     {
         Save();
-        TurnBack();
+        ReturnToStart?.Invoke();
     }
 
     private void Save()
@@ -108,7 +136,7 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
 
     private void EditPortfoliInfo()
     {
-        Main.ActiveWindow = new PortfolioEditingViewModel(Model, Main);
+        ActiveWindow = new PortfolioEditingViewModel(Model, this);
     }
 
     internal void AddAsset(IAsset asset)
@@ -118,7 +146,7 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
             return;
         }
 
-        var vm = new AssetViewModel(asset, Main);
+        var vm = new AssetViewModel(asset, this);
         vm.DeleteMeEvent += DeleteAsset;
         vm.EditMeEvent += EditAsset;
 
@@ -127,12 +155,12 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
 
     private void EditAsset(AssetViewModel vm)
     {
-        Main.ActiveWindow = new AssetEditingViewModel(this, vm.Model, Main);
+       ActiveWindow = new AssetEditingViewModel(this, vm.Model);
     }
 
     private void CreateAsset()
     {
-        Main.ActiveWindow = new AssetEditingViewModel(this, Main);
+        ActiveWindow = new AssetEditingViewModel(this);
     }
 
     private async void DeleteAsset(AssetViewModel vm)
@@ -205,21 +233,21 @@ public class PortfolioViewModel : WindowViewModelBase, IDisposable, IMenuCompati
 
     private void ShowTable()
     {
-        if (Main.ActiveWindow is AssetsTableViewModel)
+        if (ActiveWindow is AssetsTableViewModel)
         {
             return;
         }
 
-        Main.ActiveWindow = new AssetsTableViewModel(this, Main);
+        ActiveWindow = new AssetsTableViewModel(this);
     }
 
     private void ShowAssets()
     {
-        if (Main.ActiveWindow is PortfolioViewModel)
+        if (ActiveWindow is AssetsPanelViewModel)
         {
             return;
         }
 
-        Main.ActiveWindow = this;
+        ActiveWindow = new AssetsPanelViewModel(this);
     }
 }

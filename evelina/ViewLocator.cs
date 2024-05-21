@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using evelina.Controls;
+using ReactiveUI;
 using System;
 
 namespace evelina;
@@ -25,6 +25,6 @@ public class ViewLocator : IDataTemplate
 
     public bool Match(object? data)
     {
-        return data is ViewModelBase;
+        return data is ReactiveObject;
     }
 }

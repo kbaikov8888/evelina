@@ -1,8 +1,9 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace evelina.Controls.InputDialog;
 
-public class InputDialogViewModel : ViewModelBase
+public class InputDialogViewModel : ReactiveObject
 {
     public string Title { get; }
 

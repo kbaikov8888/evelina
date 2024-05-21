@@ -2,11 +2,11 @@
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class AssetsTableViewModel : WindowViewModelBase, IMenuCompatible
+public class AssetsPanelViewModel : WindowViewModelBase, IMenuCompatible
 {
     public PortfolioViewModel Portfolio { get; }
 
-    public AssetsTableViewModel(PortfolioViewModel portfolio) : base(portfolio)
+    internal AssetsPanelViewModel(PortfolioViewModel portfolio) : base(portfolio)
     {
         Portfolio = portfolio;
     }

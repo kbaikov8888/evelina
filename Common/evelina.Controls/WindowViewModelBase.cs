@@ -1,4 +1,5 @@
 ﻿using System;
+using ReactiveUI;
 
 namespace evelina.Controls;
 
@@ -7,16 +8,21 @@ public interface IMainViewModel
     WindowViewModelBase? ActiveWindow { get; set; }
 }
 
+public interface IReturnableToStart
+{
+    event Action? ReturnToStart;
+}
+
 public interface IMenuCompatible { }
 
 /// <summary>
 /// VM, способные заменять активный UserControl основного окна
 /// </summary>
-public class WindowViewModelBase : ViewModelBase
+public class WindowViewModelBase : ReactiveObject
 {
     internal event Action? ReturnBackEvent;
 
-    protected IMainViewModel Main;
+    public IMainViewModel Main { get; }
 
     private readonly WindowViewModelBase? _previous;
 

@@ -3,24 +3,26 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using DialogHostAvalonia;
-using evelina.Controls;
 using evelina.Controls.InputDialog;
 using PortfolioAvalonia.ViewModel;
 using PortfolioImpl;
 using ReactiveUI;
+using System;
 using System.IO;
 using System.Windows.Input;
 using VisualTools;
 
 namespace evelina.ViewModels;
 
-public class StartViewModel : WindowViewModelBase
+public class StartViewModel : ReactiveObject
 {
+    internal event Action<object?>? SetNewModel;
+
     public ICommand CreatePortfolioCommand { get; }
     public ICommand OpenPortfolioCommand { get; }
 
 
-    public StartViewModel(MainViewModel main) : base(main)
+    internal StartViewModel()
     {
         CreatePortfolioCommand = ReactiveCommand.Create(CreatePortfolio);
         OpenPortfolioCommand = ReactiveCommand.Create(OpenPortfolio);
@@ -59,13 +61,12 @@ public class StartViewModel : WindowViewModelBase
         var path = Path.Combine(folders[0].Path.ToString(), $"{name}.{Constants.DB_EXTENSION}");
 
         var success = await portfolio.SaveAs(path);
-
         if (!success)
         {
             return;
         }
 
-        Main.ActiveWindow = new PortfolioViewModel(portfolio, Main);
+        SetNewModel?.Invoke(new PortfolioViewModel(portfolio));
 
         portfolio.Logger.Info("test");
     }
@@ -89,7 +90,11 @@ public class StartViewModel : WindowViewModelBase
         }
 
         var portfolio = PortfolioFactory.ReadPortfolio(files[0].Path.ToString());
+        if (portfolio is null)
+        {
+            return;
+        }
 
-        Main.ActiveWindow = new PortfolioViewModel(portfolio, Main);
+        SetNewModel?.Invoke(new PortfolioViewModel(portfolio));
     }
 }

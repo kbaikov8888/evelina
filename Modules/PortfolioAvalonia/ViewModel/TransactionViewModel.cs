@@ -1,12 +1,11 @@
-﻿using ReactiveUI;
+﻿using PortfolioInterface;
+using ReactiveUI;
 using System;
 using System.Windows.Input;
-using PortfolioInterface;
-using evelina.Controls;
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class TransactionViewModel : ViewModelBase, IDisposable
+public class TransactionViewModel : ReactiveObject, IDisposable
 {
     internal delegate void DeleteMe(TransactionViewModel transaction);
     internal event DeleteMe? DeleteMeEvent;

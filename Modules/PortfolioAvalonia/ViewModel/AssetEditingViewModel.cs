@@ -14,7 +14,7 @@ public class AssetEditingViewModel : WindowViewModelBase, IDisposable
     public ICommand CancelCommand { get; }
 
     [Reactive]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Reactive]
     public double? TargetVolume { get; set; }
@@ -29,29 +29,23 @@ public class AssetEditingViewModel : WindowViewModelBase, IDisposable
     private IAsset? _asset;
 
 
-    public AssetEditingViewModel(PortfolioViewModel vm, IAsset asset, IMainViewModel main) : this(main)
+    internal AssetEditingViewModel(PortfolioViewModel portfolio, IAsset? asset = null) : base(portfolio)
     {
         _asset = asset;
-        _portfolio = vm;
+        _portfolio = portfolio;
 
-        Name = asset.Name;
-        TargetVolume = asset.TargetVolume;
-        TargetSellPrice = asset.TargetSellPrice;
-        TargetShare = asset.TargetShare;
-    }
+        if (asset is not null)
+        {
+            Name = asset.Name;
+            TargetVolume = asset.TargetVolume;
+            TargetSellPrice = asset.TargetSellPrice;
+            TargetShare = asset.TargetShare;
+        }
 
-    public AssetEditingViewModel(PortfolioViewModel vm, IMainViewModel main) : this(main)
-    {
-        _asset = null;
-        _portfolio = vm;
-    }
-
-    private AssetEditingViewModel(IMainViewModel main) : base(main)
-    {
         ApplyCommand = ReactiveCommand.Create(Apply);
         CancelCommand = ReactiveCommand.Create(Close);
     }
-
+    
 
     public void Dispose()
     {

@@ -10,12 +10,4 @@ public partial class PortfolioView : UserControl
     {
         InitializeComponent();
     }
-
-    private void Border_DoubleTapped(object sender, TappedEventArgs e)
-    {
-        if (sender is Control { DataContext: AssetViewModel vm })
-        {
-            vm.EditCommand.Execute(null);
-        }
-    }
 }

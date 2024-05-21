@@ -1,10 +1,10 @@
-﻿using System;
-using evelina.Controls;
-using PortfolioInterface;
+﻿using PortfolioInterface;
+using ReactiveUI;
+using System;
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class TargetViewModel : ViewModelBase, IDisposable
+public class TargetViewModel : ReactiveObject, IDisposable
 {
     internal ITarget Model { get; }
 

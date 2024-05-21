@@ -1,49 +1,36 @@
-﻿using ReactiveUI;
+﻿using evelina.Controls;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Windows.Input;
-using PortfolioAvalonia.ViewModel;
-using evelina.Controls;
 
 namespace evelina.ViewModels;
 
-public class MainViewModel : ViewModelBase, IMainViewModel
+public class MainViewModel : ReactiveObject
 {
-    public ICommand TriggerPaneCommand { get; }
+    [Reactive]
+    public object? ActiveWindow { get; set; }
 
-    private WindowViewModelBase? _activeWindow;
-    public WindowViewModelBase? ActiveWindow
+    private StartViewModel _start;
+
+    internal MainViewModel()
     {
-        get => _activeWindow;
-        set
+        _start = new StartViewModel();
+        _start.SetNewModel += OnSetNewModel;
+
+        ActiveWindow = _start;
+    }
+
+    private void OnSetNewModel(object? obj)
+    {
+        if (obj is IReturnableToStart returnable)
         {
-            this.RaiseAndSetIfChanged(ref _activeWindow, value);
-            this.RaisePropertyChanged(nameof(ShowMenu));
-
-            if (value is PortfolioViewModel p)
-            {
-                CurrentPortfolio = p;
-            }
+            returnable.ReturnToStart += OnReturnToStart;
         }
+
+        ActiveWindow = obj;
     }
 
-    [Reactive]
-    public bool IsPaneOpen { get; set; }
-
-    public bool ShowMenu => ActiveWindow is IMenuCompatible;
-
-    [Reactive]
-    public PortfolioViewModel? CurrentPortfolio { get; set; }
-
-
-    public MainViewModel()
+    private void OnReturnToStart()
     {
-        ActiveWindow = new StartViewModel(this);
-        TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
-    }
-
-
-    private void TriggerPane()
-    {
-        IsPaneOpen = !IsPaneOpen;
+        ActiveWindow = _start;
     }
 }
