@@ -96,7 +96,7 @@ public class StartViewModel : ReactiveObject
             return;
         }
 
-        var portfolio = PortfolioFactory.ReadPortfolio(files[0].Path.ToString());
+        var portfolio = PortfolioFactory.ReadPortfolio(files[0].Path.LocalPath);
         if (portfolio is null)
         {
             return;
@@ -113,7 +113,7 @@ public class StartViewModel : ReactiveObject
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Open Sprouts .csv",
+            Title = "Open Sprouts",
             AllowMultiple = false,
             FileTypeFilter = new[] { Constants.CSVFileType },
         });
@@ -125,7 +125,9 @@ public class StartViewModel : ReactiveObject
 
         using (var reader = new SproutsReader())
         {
-            var book = reader.Read(files[0].Path.ToString());
+            var book = reader.TryRead(files[0].Path.LocalPath);
+            if (book is null) return;
+
             SetNewModel?.Invoke(new BookViewModel(book));
         }
     }

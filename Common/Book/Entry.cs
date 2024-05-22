@@ -6,60 +6,52 @@ public abstract class Entry
 {
     public DateTime DateTime { get; }
     public double Amount { get; }
-    public double CurrencyRate { get; }
     public Project? Project { get; }
     public string? Note { get; }
 
-    protected Entry(
-        double currencyRate, 
-        double amount, 
-        DateTime dateTime)
+    protected Entry(double amount, DateTime dateTime)
     {
-        CurrencyRate = currencyRate;
         Amount = amount;
         DateTime = dateTime;
     }
 }
 
-public class ExternalEntry : Entry
+public abstract class ExternalEntry : Entry
 {
     public Account Account { get; }
 
-    public ExternalEntry(
-        double currencyRate, 
+    protected ExternalEntry(
         double amount, 
         DateTime dateTime, 
-        Account account) : base(currencyRate, amount, dateTime)
+        Account account) : base(amount, dateTime)
     {
         Account = account;
     }
 }
 
-public class ExpenseEntry : ExternalEntry
+public sealed class ExpenseEntry : ExternalEntry
 {
     public ExpenseCategory ExpenseCategory { get; }
 
     public ExpenseEntry(
-        double currencyRate, 
         double amount, 
         DateTime dateTime, 
         Account account,
-        ExpenseCategory expenseCategory) : base(currencyRate, amount, dateTime, account)
+        ExpenseCategory expenseCategory) : base(amount, dateTime, account)
     {
         ExpenseCategory = expenseCategory;
     }
 }
 
-public class IncomeEntry : ExternalEntry
+public sealed class IncomeEntry : ExternalEntry
 {
     public IncomeCategory IncomeCategory { get; }
 
     public IncomeEntry(
-        double currencyRate, 
         double amount, 
         DateTime dateTime, 
         Account account,
-        IncomeCategory incomeCategory) : base(currencyRate, amount, dateTime, account)
+        IncomeCategory incomeCategory) : base(amount, dateTime, account)
     {
         IncomeCategory = incomeCategory;
     }
@@ -71,25 +63,33 @@ public class TransferEntry : Entry
     public Account Receiver { get; }
 
     public TransferEntry(
-        double currencyRate, 
         double amount, 
         DateTime dateTime,
         Account sender,
-        Account receiver) : base(currencyRate, amount, dateTime)
+        Account receiver) : base(amount, dateTime)
     {
         Sender = sender;
         Receiver = receiver;
     }
 }
 
-public class InvestingEntry : TransferEntry
+public sealed class InvestingEntry : TransferEntry
 {
     public InvestingEntry(
-        double currencyRate, 
         double amount, 
         DateTime dateTime,
         Account sender,
-        Account receiver) : base(currencyRate, amount, dateTime, sender, receiver)
+        InvestAccount receiver) : base(amount, dateTime, sender, receiver)
+    {
+    }
+}
+public sealed class ReInvestingEntry : TransferEntry
+{
+    public ReInvestingEntry(
+        double amount, 
+        DateTime dateTime,
+        InvestAccount sender,
+        Account receiver) : base(amount, dateTime, sender, receiver)
     {
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BookImpl;
@@ -8,12 +9,14 @@ public class Book
     public string Name { get; }
 
     private readonly List<Entry> _entries = new();
+    private readonly List<ExpenseCategory> _expenses = new();
+    private readonly List<IncomeCategory> _incomes = new();
+    private readonly List<Account> _accounts = new();
 
 
-    public Book(string name, List<Entry> entries)
+    public Book(string name)
     {
         Name = name;
-        _entries = entries;
     }
 
 
@@ -22,23 +25,41 @@ public class Book
         return _entries.ToList();
     }
 
-    public HashSet<Account> GetAccounts()
+    public void AddEntry(Entry entry)
     {
-        var accounts = new HashSet<Account>();
-        foreach (var entry in _entries)
+        if (_entries.Contains(entry))
         {
-            switch (entry)
-            {
-                case ExternalEntry externalEntry:
-                    accounts.Add(externalEntry.Account);
-                    break;
-                case TransferEntry transferEntry:
-                    accounts.Add(transferEntry.Sender);
-                    accounts.Add(transferEntry.Receiver);
-                    break;
-            }
+            throw new InvalidOperationException();
         }
 
-        return accounts;
+        _entries.Add(entry);
+    }
+
+    public ExpenseCategory GetOrCreateExpenseCategory(string name)
+    {
+        var existed =
+            _expenses.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+        if (existed is not null)
+        {
+            return existed;
+        }
+
+        existed = new ExpenseCategory(name);
+        _expenses.Add(existed);
+        return existed;
+    }
+
+    public Account GetOrCreateAccount(string name)
+    {
+        var existed =
+            _accounts.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+        if (existed is not null)
+        {
+            return existed;
+        }
+
+        existed = new Account(name);
+        _accounts.Add(existed);
+        return existed;
     }
 }

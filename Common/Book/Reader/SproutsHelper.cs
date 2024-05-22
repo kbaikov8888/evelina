@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BookImpl.Reader;
 
-internal static class SproutsHeaders
+internal static class SproutsHelper
 {
-    private static readonly Dictionary<FieldRole, string> _keys = new()
+    private static readonly Dictionary<FieldRole, string> _headers = new()
     {
         { FieldRole.type, "Type" },
         { FieldRole.currency, "Currency" },
@@ -16,7 +16,7 @@ internal static class SproutsHeaders
         { FieldRole.parentCategory, "Parent Category" },
         { FieldRole.account, "Account" },
         { FieldRole.paymentAccount, "Payment account" },
-        { FieldRole.receivavleAccount, "Account receivable" },
+        { FieldRole.receivableAccount, "Account receivable" },
         { FieldRole.merchant, "Merchant" },
         { FieldRole.address, "Address" },
         { FieldRole.datetime, "Date time" },
@@ -25,11 +25,31 @@ internal static class SproutsHeaders
         { FieldRole.note, "Note" },
     };
 
+    private static readonly Dictionary<Type, string> _types = new()
+    {
+        { Type.expense, "Expense" },
+        { Type.income, "Income" },
+        { Type.transfer, "Transfer" },
+    };
+
     internal static FieldRole? FindFieldRole(string field)
     {
-        foreach ((var role, var key) in _keys)
+        foreach ((var role, var key) in _headers)
         {
             if (string.Equals(key, field, StringComparison.OrdinalIgnoreCase))
+            {
+                return role;
+            }
+        }
+
+        return null;
+    }
+
+    internal static Type? FindType(string type)
+    {
+        foreach ((var role, var key) in _types)
+        {
+            if (string.Equals(key, type, StringComparison.OrdinalIgnoreCase))
             {
                 return role;
             }

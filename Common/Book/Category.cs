@@ -10,14 +10,14 @@ public abstract class Category
     }
 }
 
-public class IncomeCategory : Category
+public sealed class IncomeCategory : Category
 {
     public IncomeCategory(string name) : base(name)
     {
     }
 }
 
-public class ExpenseCategory : Category
+public sealed class ExpenseCategory : Category
 {
     public ExpenseCategory(string name) : base(name)
     {

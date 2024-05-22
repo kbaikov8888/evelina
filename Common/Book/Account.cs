@@ -9,3 +9,10 @@ public class Account
         Name = name;
     }
 }
+
+public sealed class InvestAccount : Account
+{
+    public InvestAccount(string name) : base(name)
+    {
+    }
+}
