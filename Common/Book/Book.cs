@@ -10,9 +10,10 @@ public class Book
     private readonly List<Entry> _entries = new();
 
 
-    public Book(string name)
+    public Book(string name, List<Entry> entries)
     {
         Name = name;
+        _entries = entries;
     }
 
 

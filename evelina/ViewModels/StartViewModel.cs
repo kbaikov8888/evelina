@@ -2,10 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using BookAvalonia.ViewModel;
+using BookImpl.Reader;
 using DialogHostAvalonia;
 using evelina.Controls.InputDialog;
 using PortfolioAvalonia.ViewModel;
 using PortfolioImpl;
+using PortfolioInterface;
 using ReactiveUI;
 using System;
 using System.IO;
@@ -120,6 +123,10 @@ public class StartViewModel : ReactiveObject
             return;
         }
 
-
+        using (var reader = new SproutsReader())
+        {
+            var book = reader.Read(files[0].Path.ToString());
+            SetNewModel?.Invoke(new BookViewModel(book));
+        }
     }
 }

@@ -17,11 +17,8 @@ using VisualTools;
 
 namespace PortfolioAvalonia.ViewModel;
 
-public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatible, IReturnableToStart
+public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatible
 {
-    public event Action? ReturnToStart;
-    
-    public ICommand CloseCommand { get; }
     public ICommand EditCommand { get; }
     public ICommand CreateAssetCommand { get; }
     public ICommand SaveCommand { get; }
@@ -53,7 +50,6 @@ public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatibl
         RefreshAssets();
         SelectedAsset = Assets.FirstOrDefault();
 
-        CloseCommand = ReactiveCommand.Create(Close);
         SaveCommand = ReactiveCommand.Create(Save);
         EditCommand = ReactiveCommand.Create(EditPortfoliInfo);
         CreateAssetCommand = ReactiveCommand.Create(CreateAsset);
@@ -99,10 +95,9 @@ public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatibl
         }
     }
 
-    private void Close()
+    protected override void Close()
     {
         Save();
-        ReturnToStart?.Invoke();
     }
 
     private void Save()
@@ -131,7 +126,7 @@ public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatibl
 
     private void EditAsset(AssetViewModel vm)
     {
-       ActiveWindow = new AssetEditingViewModel(this, vm.Model);
+        ActiveWindow = new AssetEditingViewModel(this, vm.Model);
     }
 
     private void CreateAsset()

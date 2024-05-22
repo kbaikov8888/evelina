@@ -21,7 +21,7 @@ public class MainViewModel : ReactiveObject
 
     private void OnSetNewModel(object? obj)
     {
-        if (obj is IReturnableToStart returnable)
+        if (obj is IMainViewModel returnable)
         {
             returnable.ReturnToStart += OnReturnToStart;
         }

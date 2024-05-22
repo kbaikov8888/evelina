@@ -7,12 +7,9 @@ namespace evelina.Controls;
 
 public interface IMainViewModel
 {
-    WindowViewModelBase? ActiveWindow { get; set; }
-}
-
-public interface IReturnableToStart
-{
     event Action? ReturnToStart;
+
+    WindowViewModelBase? ActiveWindow { get; set; }
 }
 
 public interface IMenuCompatible { }
@@ -50,8 +47,12 @@ public class WindowViewModelBase : ReactiveObject
     }
 }
 
-public class MainViewModelBase : ReactiveObject, IMainViewModel
+public abstract class MainViewModelBase : ReactiveObject, IMainViewModel
 {
+    public event Action? ReturnToStart;
+
+    public ICommand CloseCommand { get; }
+
     private WindowViewModelBase? _activeWindow;
     public WindowViewModelBase? ActiveWindow
     {
@@ -74,8 +75,17 @@ public class MainViewModelBase : ReactiveObject, IMainViewModel
     protected MainViewModelBase()
     {
         TriggerPaneCommand = ReactiveCommand.Create(TriggerPane);
+        CloseCommand = ReactiveCommand.Create(Close_Internal);
     }
 
+
+    protected abstract void Close();
+
+    private void Close_Internal()
+    {
+        Close();
+        ReturnToStart?.Invoke();
+    }
 
     private void TriggerPane()
     {
