@@ -6,8 +6,8 @@ public abstract class Entry
 {
     public DateTime DateTime { get; }
     public double Amount { get; }
-    public Project? Project { get; }
-    public string? Note { get; }
+    public Project? Project { get; internal set; }
+    public string? Note { get; internal set; }
 
     protected Entry(double amount, DateTime dateTime)
     {

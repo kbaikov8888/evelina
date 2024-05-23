@@ -3,6 +3,7 @@
 public abstract class Category
 {
     public string Name { get; }
+    public Category? ParentCategory { get; internal set; }
 
     protected Category(string name)
     {

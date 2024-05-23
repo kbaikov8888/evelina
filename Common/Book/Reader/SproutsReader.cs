@@ -10,20 +10,18 @@ public class SproutsReader : IDisposable
     private readonly Dictionary<FieldRole, int> _columnIndexes = new();
     private readonly List<Transaction> _failedTransactions = new();
 
-    private Book? _book;
+    private Book _book = new("sprouts");
 
 
     public Book? TryRead(string path)
     {
-        _book = new Book("sprouts");
-
         try
         {
             Read(path);
         }
         catch (Exception ex)
         {
-            _book = null;
+            return null;
         }
 
         return _book;
@@ -117,17 +115,64 @@ public class SproutsReader : IDisposable
         amount *= currencyRate;
         var dateTime = transaction.Datetime ?? throw new InvalidOperationException();
 
-        if (transaction.Type == Type.expense)
-        {
-            amount *= -1;
+        Entry entry;
 
+        if (transaction.Type is Type.expense or Type.income)
+        {
             var account = transaction.Account ?? throw new InvalidOperationException();
             var category = transaction.Category ?? throw new InvalidOperationException();
 
-            var bookCategory = _book.GetOrCreateExpenseCategory(category);
-            var bookAccount = _book.GetOrCreateAccount(account);
+            var project = transaction.Project != null ? _book.GetOrCreateProject(transaction.Project) : null;
 
-            _book.AddEntry(new ExpenseEntry(amount, dateTime, bookAccount, bookCategory));
+            var bankAccount = _book.GetOrCreateBankAccount(account);
+
+            if (transaction.Type is Type.expense)
+            {
+                var expenseCategory = _book.GetOrCreateExpenseCategory(category, transaction.ParentCategory);
+
+                amount *= -1;
+
+                entry = new ExpenseEntry(amount, dateTime, bankAccount, expenseCategory);
+            }
+            else
+            {
+                var incomeCategory = _book.GetOrCreateIncomeCategory(category, transaction.ParentCategory);
+
+                entry = new IncomeEntry(amount, dateTime, bankAccount, incomeCategory);
+            }
+
+            entry.Project = project;
+            entry.Note = transaction.Note;
         }
+        else if (transaction.Type == Type.transfer)
+        {
+            var sender = transaction.ParentCategory ?? throw new InvalidOperationException();
+            var receiver = transaction.ReceivableAccount ?? throw new InvalidOperationException();
+
+            var senderInvest = sender.StartsWith("_i");
+            var receiverInvest = receiver.StartsWith("_i");
+
+            Account senderAccount = senderInvest ? _book.GetOrCreateInvestAccount(sender) : _book.GetOrCreateBankAccount(sender);
+            Account receiverAccount = receiverInvest ? _book.GetOrCreateInvestAccount(receiver) : _book.GetOrCreateBankAccount(receiver);
+
+            if (senderInvest == receiverInvest)
+            {
+                entry = new TransferEntry(amount, dateTime, senderAccount, receiverAccount);
+            }
+            else if (senderInvest)
+            {
+                entry = new ReInvestingEntry(amount, dateTime, (InvestAccount)senderAccount, receiverAccount);
+            }
+            else
+            {
+                entry = new InvestingEntry(amount, dateTime, senderAccount, (InvestAccount)receiverAccount);
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
+
+        _book.AddEntry(entry);
     }
 }
