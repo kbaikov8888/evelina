@@ -58,7 +58,7 @@ public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatibl
         ShowAssetsCommand = ReactiveCommand.Create(ShowAssets);
         ExportCommand = ReactiveCommand.Create(() => { });
 
-        ActiveWindow = new AssetsPanelViewModel(this);
+        ShowTable();
     }
 
 

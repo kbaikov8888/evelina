@@ -1,4 +1,5 @@
 ﻿using System;
+using BookImpl.Enum;
 
 namespace BookImpl;
 
@@ -8,6 +9,8 @@ public abstract class Entry
     public double Amount { get; }
     public Project? Project { get; internal set; }
     public string? Note { get; internal set; }
+
+    public abstract EntryType Type { get; }
 
     protected Entry(double amount, DateTime dateTime)
     {
@@ -19,6 +22,7 @@ public abstract class Entry
 public abstract class ExternalEntry : Entry
 {
     public Account Account { get; }
+    public abstract Category Category { get; }
 
     protected ExternalEntry(
         double amount, 
@@ -32,6 +36,9 @@ public abstract class ExternalEntry : Entry
 public sealed class ExpenseEntry : ExternalEntry
 {
     public ExpenseCategory ExpenseCategory { get; }
+    public override Category Category => ExpenseCategory;
+
+    public override EntryType Type => EntryType.Expense;
 
     public ExpenseEntry(
         double amount, 
@@ -46,6 +53,8 @@ public sealed class ExpenseEntry : ExternalEntry
 public sealed class IncomeEntry : ExternalEntry
 {
     public IncomeCategory IncomeCategory { get; }
+    public override Category Category => IncomeCategory;
+    public override EntryType Type => EntryType.Income;
 
     public IncomeEntry(
         double amount, 
@@ -62,6 +71,8 @@ public class TransferEntry : Entry
     public Account Sender { get; }
     public Account Receiver { get; }
 
+    public override EntryType Type => EntryType.Transfer;
+
     public TransferEntry(
         double amount, 
         DateTime dateTime,
@@ -75,6 +86,8 @@ public class TransferEntry : Entry
 
 public sealed class InvestingEntry : TransferEntry
 {
+    public override EntryType Type => EntryType.Invest;
+
     public InvestingEntry(
         double amount, 
         DateTime dateTime,
@@ -85,6 +98,8 @@ public sealed class InvestingEntry : TransferEntry
 }
 public sealed class ReInvestingEntry : TransferEntry
 {
+    public override EntryType Type => EntryType.ReInvest;
+
     public ReInvestingEntry(
         double amount, 
         DateTime dateTime,

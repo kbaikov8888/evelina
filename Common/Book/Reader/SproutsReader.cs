@@ -91,7 +91,7 @@ public class SproutsReader : IDisposable
     {
         var tr = new Transaction();
 
-        foreach (var field in (FieldRole[])Enum.GetValues(typeof(FieldRole)))
+        foreach (var field in (FieldRole[])System.Enum.GetValues(typeof(FieldRole)))
         {
             if (_columnIndexes.TryGetValue(field, out int index))
             {

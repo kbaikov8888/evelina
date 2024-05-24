@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:BookAvalonia.ViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BookAvalonia.View.EntryTableView"
+             x:DataType="viewModel:EntryTableViewModel">
+
+  <DataGrid ItemsSource="{Binding Entries}"
+            IsReadOnly="True"
+            CanUserReorderColumns="True"
+            CanUserResizeColumns="True"
+            CanUserSortColumns="True"
+            GridLinesVisibility="All"
+            BorderThickness="1"
+            BorderBrush="Gray">
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="Date Time" Binding="{Binding DateTime}"/>
+      <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat={}{0:0}}"/>
+      <DataGridTextColumn Header="Category" Binding="{Binding Category.Name}"/>
+      <DataGridTextColumn Header="Project" Binding="{Binding Project.Name}"/>
+      <DataGridTextColumn Header="Note" Binding="{Binding Note}"/>
+    </DataGrid.Columns>
+
+    <!--<DataGrid.RowTheme>
+      <ControlTheme TargetType="DataGridRow" 
+                    BasedOn="{StaticResource {x:Type DataGridRow}}">
+        <Setter Property="Background" Value="{ReflectionBinding DataContext.Color}" />
+      </ControlTheme>
+    </DataGrid.RowTheme>-->
+
+    <DataGrid.Styles>
+      <!--<Style Selector="DataGridRow" x:DataType="viewModel:EntryViewModel">
+              <Setter Property="Background" Value="{Binding Color}" />
+          </Style>-->
+      <!--<Style Selector="DataGridRow">
+              <Setter Property="Background" Value="{ReflectionBinding Color}" />
+          </Style>
+          <Style Selector="DataGridCell">
+              <Setter Property="Background" Value="{ReflectionBinding Color}" />
+          </Style>-->
+    </DataGrid.Styles>
+  </DataGrid>
+</UserControl>
