@@ -1,7 +1,7 @@
 ﻿using System;
 using BookImpl.Enum;
 
-namespace BookImpl;
+namespace BookImpl.Elements;
 
 public abstract class Entry
 {
@@ -25,8 +25,8 @@ public abstract class ExternalEntry : Entry
     public abstract Category Category { get; }
 
     protected ExternalEntry(
-        double amount, 
-        DateTime dateTime, 
+        double amount,
+        DateTime dateTime,
         Account account) : base(amount, dateTime)
     {
         Account = account;
@@ -41,8 +41,8 @@ public sealed class ExpenseEntry : ExternalEntry
     public override EntryType Type => EntryType.Expense;
 
     public ExpenseEntry(
-        double amount, 
-        DateTime dateTime, 
+        double amount,
+        DateTime dateTime,
         Account account,
         ExpenseCategory expenseCategory) : base(amount, dateTime, account)
     {
@@ -57,8 +57,8 @@ public sealed class IncomeEntry : ExternalEntry
     public override EntryType Type => EntryType.Income;
 
     public IncomeEntry(
-        double amount, 
-        DateTime dateTime, 
+        double amount,
+        DateTime dateTime,
         Account account,
         IncomeCategory incomeCategory) : base(amount, dateTime, account)
     {
@@ -74,7 +74,7 @@ public class TransferEntry : Entry
     public override EntryType Type => EntryType.Transfer;
 
     public TransferEntry(
-        double amount, 
+        double amount,
         DateTime dateTime,
         Account sender,
         Account receiver) : base(amount, dateTime)
@@ -89,7 +89,7 @@ public sealed class InvestingEntry : TransferEntry
     public override EntryType Type => EntryType.Invest;
 
     public InvestingEntry(
-        double amount, 
+        double amount,
         DateTime dateTime,
         Account sender,
         InvestAccount receiver) : base(amount, dateTime, sender, receiver)
@@ -101,7 +101,7 @@ public sealed class ReInvestingEntry : TransferEntry
     public override EntryType Type => EntryType.ReInvest;
 
     public ReInvestingEntry(
-        double amount, 
+        double amount,
         DateTime dateTime,
         InvestAccount sender,
         Account receiver) : base(amount, dateTime, sender, receiver)

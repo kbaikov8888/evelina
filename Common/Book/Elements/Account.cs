@@ -1,4 +1,4 @@
-﻿namespace BookImpl;
+﻿namespace BookImpl.Elements;
 
 public abstract class Account
 {

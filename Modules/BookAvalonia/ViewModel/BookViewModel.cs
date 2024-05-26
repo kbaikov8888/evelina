@@ -25,7 +25,7 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
     public BookViewModel(Book book)
     {
         _book = book;
-        _entries = book.GetEntries().Select(x => new EntryViewModel(x)).ToList();
+        _entries = book.GetEntriesFromLast().Select(x => new EntryViewModel(x)).ToList();
 
         ShowEntryTableCommand = ReactiveCommand.Create(ShowEntryTable);
         ShowGraphPanelCommand = ReactiveCommand.Create(ShowGraphPanel);

@@ -1,5 +1,5 @@
 ﻿using Avalonia.Media;
-using BookImpl;
+using BookImpl.Elements;
 using BookImpl.Enum;
 using ReactiveUI;
 using System;
@@ -12,6 +12,7 @@ public class EntryViewModel : ReactiveObject
     public DateTime DateTime => _entry.DateTime;
     public string? ProjectName => _entry.Project?.Name;
     public string? Note => _entry.Note;
+    public string? Type => _entry.Type.ToString();
     public Color Color => _entry.Type.GetColor();
 
     public string? CategoryName

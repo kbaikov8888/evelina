@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookImpl.Elements;
 
 namespace BookImpl;
 
@@ -8,23 +9,37 @@ public class Book
 {
     public string Name { get; }
 
+    public BookCalculatedData CalculatedData { get; }
+
     private readonly List<Entry> _entries = new();
+
     private readonly List<ExpenseCategory> _expenseCategories = new();
     private readonly List<IncomeCategory> _incomeCategories = new();
+
     private readonly List<BankAccount> _bankAccounts = new();
     private readonly List<InvestAccount> _investAccounts = new();
+
     private readonly List<Project> _projects = new();
 
 
     public Book(string name)
     {
         Name = name;
+        CalculatedData = new BookCalculatedData(this);
     }
 
 
-    public List<Entry> GetEntries()
+    public List<Entry> GetEntriesFromLast()
     {
         return _entries.ToList();
+    }
+
+    public List<Entry> GetEntriesFromFirst()
+    {
+        var res = _entries.ToList();
+        res.Reverse();
+
+        return res;
     }
 
     internal void AddEntry(Entry entry)
@@ -110,6 +125,7 @@ public class Book
         _investAccounts.Add(existed);
         return existed;
     }
+
     internal Project GetOrCreateProject(string name)
     {
         var existed = _projects.FirstOrDefault(x => NamesEqual(x.Name, name));

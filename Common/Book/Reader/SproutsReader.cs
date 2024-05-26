@@ -18,6 +18,7 @@ public class SproutsReader : IDisposable
         try
         {
             Read(path);
+            _book.CalculatedData.Calculate();
         }
         catch (Exception ex)
         {

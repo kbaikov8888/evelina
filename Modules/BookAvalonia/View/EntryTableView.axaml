@@ -17,6 +17,7 @@
             BorderBrush="Gray">
     <DataGrid.Columns>
       <DataGridTextColumn Header="Date Time" Binding="{Binding DateTime}"/>
+      <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
       <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat={}{0:0}}"/>
       <DataGridTextColumn Header="Parent Category" Binding="{Binding ParentCategoryName}"/>
       <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}"/>
