@@ -11,11 +11,14 @@ namespace BookAvalonia.ViewModel;
 public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
 {
     public ICommand ShowEntryTableCommand { get; }
+    private EntryTableViewModel? _entryTable;
+
+    public ICommand ShowGraphPanelCommand { get; }
+    private GraphPanelViewModel? _graphPanel;
 
     public string Name => _book.Name;
 
     private readonly IReadOnlyList<EntryViewModel> _entries;
-
     private readonly Book _book;
 
 
@@ -25,6 +28,7 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
         _entries = book.GetEntries().Select(x => new EntryViewModel(x)).ToList();
 
         ShowEntryTableCommand = ReactiveCommand.Create(ShowEntryTable);
+        ShowGraphPanelCommand = ReactiveCommand.Create(ShowGraphPanel);
 
         ShowEntryTable();
     }
@@ -41,7 +45,21 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
             return;
         }
 
-        ActiveWindow = new EntryTableViewModel(_entries, this);
+        _entryTable ??= new EntryTableViewModel(_entries, this);
+
+        ActiveWindow = _entryTable;
+    }
+
+    private void ShowGraphPanel()
+    {
+        if (ActiveWindow is GraphPanelViewModel)
+        {
+            return;
+        }
+
+        _graphPanel ??= new GraphPanelViewModel(_book, this);
+
+        ActiveWindow = _graphPanel;
     }
 
     protected override void Close()

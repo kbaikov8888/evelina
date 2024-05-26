@@ -47,6 +47,40 @@
           <Separator/>
 
           <Button Classes="inMenu"
+                  Command="{Binding ShowEntryTableCommand}">
+              <Grid ColumnDefinitions="40, *">
+                  <Viewbox Grid.Column="0"
+                           Width="28"
+                           Height="28">
+                      <avalonia:SymbolIcon Symbol="Table"/>
+                  </Viewbox>
+
+                  <TextBlock Grid.Column="1"
+                             Margin="4,0,0,0"
+                             VerticalAlignment="Center"
+                             Text="Table"/>
+              </Grid>
+          </Button>
+
+          <Button Classes="inMenu"
+                  Command="{Binding ShowGraphPanelCommand}">
+              <Grid ColumnDefinitions="40, *">
+                  <Viewbox Grid.Column="0"
+                           Width="28"
+                           Height="28">
+                      <avalonia:SymbolIcon Symbol="ChartMultiple"/>
+                  </Viewbox>
+
+                  <TextBlock Grid.Column="1"
+                             Margin="4,0,0,0"
+                             VerticalAlignment="Center"
+                             Text="Graphs"/>
+              </Grid>
+          </Button>
+
+          <Separator/>
+
+          <Button Classes="inMenu"
                  Command="{Binding CloseCommand}">
             <Grid ColumnDefinitions="40, *">
               <Viewbox Grid.Column="0"

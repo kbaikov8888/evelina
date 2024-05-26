@@ -10,7 +10,7 @@ public class SproutsReader : IDisposable
     private readonly Dictionary<FieldRole, int> _columnIndexes = new();
     private readonly List<Transaction> _failedTransactions = new();
 
-    private Book _book = new("sprouts");
+    private Book _book = new("book");
 
 
     public Book? TryRead(string path)

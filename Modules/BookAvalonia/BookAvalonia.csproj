@@ -10,6 +10,7 @@
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.ReactiveUI" />
     <PackageReference Include="ReactiveUI.Fody" />
+    <PackageReference Include="ScottPlot.Avalonia" Version="5.0.34" />
   </ItemGroup>
 
   <ItemGroup>

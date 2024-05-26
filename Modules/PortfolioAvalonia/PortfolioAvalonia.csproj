@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
     <ProjectReference Include="..\..\Interfaces\IPortfolio\PortfolioInterface.csproj" />
     <PackageReference Include="ReactiveUI.Fody" />
+    <PackageReference Include="ScottPlot.Avalonia" Version="5.0.34" />
   </ItemGroup>
   
 </Project>
