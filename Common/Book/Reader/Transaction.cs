@@ -5,7 +5,7 @@ namespace BookImpl.Reader;
 
 internal class Transaction
 {
-    public Type? Type { get; set; }
+    public TransactionType? Type { get; set; }
     public string? Currency { get; set; }
     public double? Amount { get; set; }
     public double? CurrencyRate { get; set; }
@@ -88,6 +88,74 @@ internal class Transaction
                 throw new NotImplementedException(nameof(role));
         }
     }
+
+    internal void CreateEntry(Book book)
+    {
+        var currencyRate = CurrencyRate ?? 1;
+        var amount = Amount ?? throw new InvalidOperationException();
+        amount *= currencyRate;
+        var dateTime = Datetime ?? throw new InvalidOperationException();
+
+        Entry entry;
+
+        if (Type is TransactionType.expense or TransactionType.income)
+        {
+            var account = Account ?? throw new InvalidOperationException();
+            var category = Category ?? throw new InvalidOperationException();
+
+            var project = Project != null ? book.GetOrCreateProject(Project) : null;
+
+            var bankAccount = book.GetOrCreateBankAccount(account);
+
+            if (Type is TransactionType.expense)
+            {
+                var expenseCategory = book.GetOrCreateExpenseCategory(category, ParentCategory);
+
+                amount *= -1;
+
+                entry = new ExpenseEntry(amount, dateTime, bankAccount, expenseCategory);
+            }
+            else
+            {
+                var incomeCategory = book.GetOrCreateIncomeCategory(category, ParentCategory);
+
+                entry = new IncomeEntry(amount, dateTime, bankAccount, incomeCategory);
+            }
+
+            entry.Project = project;
+            entry.Note = Note;
+        }
+        else if (Type == TransactionType.transfer)
+        {
+            var sender = ParentCategory ?? throw new InvalidOperationException();
+            var receiver = ReceivableAccount ?? throw new InvalidOperationException();
+
+            var senderInvest = sender.StartsWith("_i");
+            var receiverInvest = receiver.StartsWith("_i");
+
+            Account senderAccount = senderInvest ? book.GetOrCreateInvestAccount(sender) : book.GetOrCreateBankAccount(sender);
+            Account receiverAccount = receiverInvest ? book.GetOrCreateInvestAccount(receiver) : book.GetOrCreateBankAccount(receiver);
+
+            if (senderInvest == receiverInvest)
+            {
+                entry = new TransferEntry(amount, dateTime, senderAccount, receiverAccount);
+            }
+            else if (senderInvest)
+            {
+                entry = new ReInvestingEntry(amount, dateTime, (InvestAccount)senderAccount, receiverAccount);
+            }
+            else
+            {
+                entry = new InvestingEntry(amount, dateTime, senderAccount, (InvestAccount)receiverAccount);
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
+
+        book.AddEntry(entry);
+    }
 }
 
 internal enum FieldRole
@@ -110,7 +178,7 @@ internal enum FieldRole
     note,
 }
 
-internal enum Type
+internal enum TransactionType
 {
     expense,
     income,

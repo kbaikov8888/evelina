@@ -25,11 +25,11 @@ internal static class SproutsHelper
         { FieldRole.note, "Note" },
     };
 
-    private static readonly Dictionary<Type, string> _types = new()
+    private static readonly Dictionary<TransactionType, string> _types = new()
     {
-        { Type.expense, "Expense" },
-        { Type.income, "Income" },
-        { Type.transfer, "Transfer" },
+        { TransactionType.expense, "Expense" },
+        { TransactionType.income, "Income" },
+        { TransactionType.transfer, "Transfer" },
     };
 
     internal static FieldRole? FindFieldRole(string field)
@@ -45,7 +45,7 @@ internal static class SproutsHelper
         return null;
     }
 
-    internal static Type? FindType(string type)
+    internal static TransactionType? FindType(string type)
     {
         foreach ((var role, var key) in _types)
         {

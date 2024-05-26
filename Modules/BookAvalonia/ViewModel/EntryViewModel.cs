@@ -10,17 +10,30 @@ public class EntryViewModel : ReactiveObject
 {
     public double Amount => _entry.Amount;
     public DateTime DateTime => _entry.DateTime;
-    public Project? Project => _entry.Project;
+    public string? ProjectName => _entry.Project?.Name;
     public string? Note => _entry.Note;
     public Color Color => _entry.Type.GetColor();
 
-    public Category? Category
+    public string? CategoryName
     {
         get
         {
             if (_entry is ExternalEntry externalEntry)
             {
-                return externalEntry.Category;
+                return externalEntry.Category.Name;
+            }
+
+            return null;
+        }
+    }
+    
+    public string? ParentCategoryName
+    {
+        get
+        {
+            if (_entry is ExternalEntry externalEntry)
+            {
+                return externalEntry.Category.ParentCategory?.Name;
             }
 
             return null;

@@ -18,8 +18,9 @@
     <DataGrid.Columns>
       <DataGridTextColumn Header="Date Time" Binding="{Binding DateTime}"/>
       <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat={}{0:0}}"/>
-      <DataGridTextColumn Header="Category" Binding="{Binding Category.Name}"/>
-      <DataGridTextColumn Header="Project" Binding="{Binding Project.Name}"/>
+      <DataGridTextColumn Header="Parent Category" Binding="{Binding ParentCategoryName}"/>
+      <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}"/>
+      <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}"/>
       <DataGridTextColumn Header="Note" Binding="{Binding Note}"/>
     </DataGrid.Columns>
 

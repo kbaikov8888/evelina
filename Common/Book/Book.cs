@@ -37,9 +37,9 @@ public class Book
         _entries.Add(entry);
     }
 
-    internal ExpenseCategory GetOrCreateExpenseCategory(string name, string? parentName)
+    private static T GetOrCreateCategory<T>(ICollection<T> source, string name, string? parentName, Func<string, T> createFunc) where T : Category
     {
-        var existed = _expenseCategories.FirstOrDefault(x => NamesEqual(x.Name, name));
+        var existed = source.FirstOrDefault(x => NamesEqual(x.Name, name));
         if (existed is not null)
         {
             if (!NamesEqual(existed.ParentCategory?.Name, parentName))
@@ -50,11 +50,11 @@ public class Book
             return existed;
         }
 
-        existed = new ExpenseCategory(name);
+        existed = createFunc(name);
 
         if (parentName is not null)
         {
-            var existedParent = _expenseCategories.FirstOrDefault(x => NamesEqual(x.Name, parentName));
+            var existedParent = source.FirstOrDefault(x => NamesEqual(x.Name, parentName));
             if (existedParent is not null)
             {
                 if (existedParent.ParentCategory is not null)
@@ -64,28 +64,25 @@ public class Book
             }
             else
             {
-                existedParent = new ExpenseCategory(parentName);
-                _expenseCategories.Add(existedParent);
+                existedParent = createFunc(parentName);
+                source.Add(existedParent);
             }
 
             existed.ParentCategory = existedParent;
         }
 
-        _expenseCategories.Add(existed);
+        source.Add(existed);
         return existed;
+    }
+
+    internal ExpenseCategory GetOrCreateExpenseCategory(string name, string? parentName)
+    {
+        return GetOrCreateCategory<ExpenseCategory>(_expenseCategories, name, parentName, s => new ExpenseCategory(s));
     }
 
     internal IncomeCategory GetOrCreateIncomeCategory(string name, string? parentName)
     {
-        var existed = _incomeCategories.FirstOrDefault(x => NamesEqual(x.Name, name));
-        if (existed is not null)
-        {
-            return existed;
-        }
-
-        existed = new IncomeCategory(name);
-        _incomeCategories.Add(existed);
-        return existed;
+        return GetOrCreateCategory<IncomeCategory>(_incomeCategories, name, parentName, s => new IncomeCategory(s));
     }
 
     internal BankAccount GetOrCreateBankAccount(string name)
