@@ -1,4 +1,7 @@
-﻿using PortfolioImpl.Database;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using PortfolioImpl.Database;
 using PortfolioInterface;
 
 namespace PortfolioImpl;

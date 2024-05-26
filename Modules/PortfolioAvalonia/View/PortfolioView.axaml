@@ -1,0 +1,175 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:PortfolioAvalonia.ViewModel"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PortfolioAvalonia.View.PortfolioView"
+             x:DataType="viewModel:PortfolioViewModel">
+
+  <Grid>
+    <TransitioningContentControl Content="{Binding ActiveWindow}"
+                                 IsVisible="{Binding !ShowMenu}"/>
+
+    <SplitView IsPaneOpen="{Binding IsPaneOpen}"
+               IsVisible="{Binding ShowMenu}"
+               CompactPaneLength="40"
+               DisplayMode="CompactInline"
+               OpenPaneLength="200">
+      <SplitView.Pane>
+        <StackPanel Orientation="Vertical"
+                    Spacing="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top">
+
+          <Grid ColumnDefinitions="auto, *">
+            <Button Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    Width="40"
+                    Height="40"
+                    Background="Transparent"
+                    Command="{Binding TriggerPaneCommand}">
+              <Viewbox Width="28"
+                        Height="28">
+                <avalonia:SymbolIcon Symbol="LineHorizontal3" />
+              </Viewbox>
+            </Button>
+
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,4,0"
+                       Text="{Binding Name}"
+                       Classes="h1"/>
+          </Grid>
+
+          <Separator/>
+
+          <Button Classes="inMenu"
+                  Command="{Binding ShowAssetsCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="Channel" />
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Assets"/>
+            </Grid>
+          </Button>
+
+          <Button Classes="inMenu"
+                  Command="{Binding ShowTableCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="Table"/>
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Table"/>
+            </Grid>
+          </Button>
+
+          <Separator/>
+
+          <Button Classes="inMenu"
+                  Command="{Binding SaveCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="Save"/>
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Save"/>
+            </Grid>
+          </Button>
+
+          <Button Classes="inMenu"
+                  Command="{Binding EditCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="Edit" />
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Edit..."/>
+            </Grid>
+          </Button>
+
+          <Button Classes="inMenu"
+                  Command="{Binding ImportCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="ArrowDown" />
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Import..."/>
+            </Grid>
+          </Button>
+
+          <!--<Button Classes="inMenu"
+                  Command="{Binding ExportCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <ic:SymbolIcon Symbol="ArrowUp" />
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Export..."/>
+            </Grid>
+          </Button>-->
+
+          <Separator/>
+
+          <Button Classes="inMenu"
+                 Command="{Binding CloseCommand}">
+            <Grid ColumnDefinitions="40, *">
+              <Viewbox Grid.Column="0"
+                       Width="28"
+                       Height="28">
+                <avalonia:SymbolIcon Symbol="Dismiss" />
+              </Viewbox>
+
+              <TextBlock Grid.Column="1"
+                         Margin="4,0,0,0"
+                         VerticalAlignment="Center"
+                         Text="Save and Close"/>
+            </Grid>
+          </Button>
+        </StackPanel>
+      </SplitView.Pane>
+
+      <SplitView.Content>
+          <Border CornerRadius="12 0 0 0">
+              <TransitioningContentControl Content="{Binding ActiveWindow}" />
+          </Border>
+      </SplitView.Content>
+    </SplitView>
+  </Grid>
+
+</UserControl>

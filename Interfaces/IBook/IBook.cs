@@ -4,10 +4,7 @@ public interface IBook
 {
     string Name { get; }
 
-    long CreateDate { get; }
-
-
-    IList<IEntry> GetAllTransactions();
-
+    IList<IEntry> GetAllEntries();
     IList<ICategory> GetAllCategories();
+    IList<IAccount> GetAllAccounts();
 }

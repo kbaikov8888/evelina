@@ -2,31 +2,41 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using BookAvalonia.ViewModel;
+using BookImpl.Reader;
 using DialogHostAvalonia;
-using evelina.ViewModels.Common;
-using evelina.ViewModels.Dialogs;
-using ReactiveUI;
-using System.IO;
-using System.Windows.Input;
+using evelina.Controls.InputDialog;
+using PortfolioAvalonia.ViewModel;
 using PortfolioImpl;
+using PortfolioInterface;
+using ReactiveUI;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using VisualTools;
 
 namespace evelina.ViewModels;
 
-public class StartViewModel : WindowViewModelBase
+public class StartViewModel : ReactiveObject
 {
+    internal event Action<object?>? SetNewModel;
+
     public ICommand CreatePortfolioCommand { get; }
     public ICommand OpenPortfolioCommand { get; }
 
+    public ICommand ReadSproutsCommand { get; }
 
-    public StartViewModel(MainViewModel main) : base(main)
+
+    internal StartViewModel()
     {
         CreatePortfolioCommand = ReactiveCommand.Create(CreatePortfolio);
         OpenPortfolioCommand = ReactiveCommand.Create(OpenPortfolio);
+        ReadSproutsCommand = ReactiveCommand.Create(ReadSprouts);
     }
 
 
-    private async void CreatePortfolio()
+    private async Task CreatePortfolio()
     {
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
         var topLevel = TopLevel.GetTopLevel(mainWindow);
@@ -58,18 +68,17 @@ public class StartViewModel : WindowViewModelBase
         var path = Path.Combine(folders[0].Path.ToString(), $"{name}.{Constants.DB_EXTENSION}");
 
         var success = await portfolio.SaveAs(path);
-
         if (!success)
         {
             return;
         }
 
-        Main.ActiveWindow = new PortfolioViewModel(portfolio, Main);
+        SetNewModel?.Invoke(new PortfolioViewModel(portfolio));
 
         portfolio.Logger.Info("test");
     }
 
-    private async void OpenPortfolio()
+    private async Task OpenPortfolio()
     {
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
         var topLevel = TopLevel.GetTopLevel(mainWindow);
@@ -87,8 +96,39 @@ public class StartViewModel : WindowViewModelBase
             return;
         }
 
-        var portfolio = PortfolioFactory.ReadPortfolio(files[0].Path.ToString());
+        var portfolio = PortfolioFactory.ReadPortfolio(files[0].Path.LocalPath);
+        if (portfolio is null)
+        {
+            return;
+        }
 
-        Main.ActiveWindow = new PortfolioViewModel(portfolio, Main);
+        SetNewModel?.Invoke(new PortfolioViewModel(portfolio));
+    }
+
+    private async Task ReadSprouts()
+    {
+        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+        var topLevel = TopLevel.GetTopLevel(mainWindow);
+        if (topLevel is null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Sprouts",
+            AllowMultiple = false,
+            FileTypeFilter = new[] { Constants.CSVFileType },
+        });
+
+        if (files.Count == 0)
+        {
+            return;
+        }
+
+        using (var reader = new SproutsReader())
+        {
+            var book = reader.TryRead(files[0].Path.LocalPath);
+            if (book is null) return;
+
+            SetNewModel?.Invoke(new BookViewModel(book));
+        }
     }
 }

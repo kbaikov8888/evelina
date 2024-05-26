@@ -9,17 +9,19 @@
 
   <Border HorizontalAlignment="Center"
         VerticalAlignment="Center">
-    <Grid RowDefinitions="*,*">
-      <Button Grid.Row="0"
-              HorizontalAlignment="Stretch"
-              Command="{Binding OpenPortfolioCommand}" 
+    <Grid RowDefinitions="*,*"
+          ColumnDefinitions="*,*">
+      <Button Grid.Row="0" Grid.Column="0"
+              Command="{Binding OpenPortfolioCommand}"
               Content="Open portfolio"/>
-      
-      <Button Grid.Row="1"
-              HorizontalAlignment="Stretch"
-              Command="{Binding CreatePortfolioCommand}" 
+
+      <Button Grid.Row="1" Grid.Column="0"
+              Command="{Binding CreatePortfolioCommand}"
               Content="Create portfolio"/>
+
+      <Button Grid.Row="0" Grid.Column="1"
+              Command="{Binding ReadSproutsCommand}"
+              Content="Read Sprouts"/>
     </Grid>
   </Border>
-
 </UserControl>

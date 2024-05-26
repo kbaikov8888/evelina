@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;

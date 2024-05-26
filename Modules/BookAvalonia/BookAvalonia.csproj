@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="ReactiveUI.Fody" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Book\BookImpl.csproj" />
+    <ProjectReference Include="..\..\Common\evelina.Controls\evelina.Controls.csproj" />
+    <ProjectReference Include="..\..\Common\evelina.Styles\evelina.Styles.csproj" />
+    <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
+  </ItemGroup>
+
+</Project>

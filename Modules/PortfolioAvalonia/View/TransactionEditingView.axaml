@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:PortfolioAvalonia.ViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PortfolioAvalonia.View.TransactionEditingView"
+             x:DataType="viewModel:TransactionEditingViewModel">
+  
+  <Grid HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Width="300"
+        RowDefinitions="*,*,*,*,*,*">
+    <StackPanel Grid.Row="0">
+      <TextBlock Text="Datetime"/>
+      <DatePicker SelectedDate="{Binding Datetime}"/>
+    </StackPanel>
+    <StackPanel Grid.Row="1">
+      <TextBlock Text="Type"/>
+      <ComboBox ItemsSource="{Binding Types}"
+                  SelectedItem="{Binding Type}" />
+    </StackPanel>
+    <StackPanel Grid.Row="2">
+      <TextBlock Text="Price"/>
+      <TextBox Text="{Binding Price}"/>
+    </StackPanel>
+    <StackPanel Grid.Row="3">
+      <TextBlock Text="Amount"/>
+      <TextBox Text="{Binding Amount}"/>
+    </StackPanel>
+    <StackPanel Grid.Row="4">
+      <TextBlock Text="Note"/>
+      <TextBox Text="{Binding Note}"
+               AcceptsReturn="True" 
+               TextWrapping="Wrap"/>
+    </StackPanel>
+    <Grid Grid.Row="5"
+          ColumnDefinitions="*,*">
+      <Button Grid.Column="0"
+              HorizontalAlignment="Left"
+              Content="Apply"
+              Command="{Binding ApplyCommand}"/>
+
+      <Button Grid.Column="1"
+              HorizontalAlignment="Right"
+              Content="Cancel"
+              Command="{Binding CancelCommand}"/>
+    </Grid>
+  </Grid>
+</UserControl>

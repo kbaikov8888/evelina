@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\CTS\CTS.csproj" />
+    <ProjectReference Include="..\..\Common\evelina.Controls\evelina.Controls.csproj" />
+    <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
+    <ProjectReference Include="..\..\Interfaces\IPortfolio\PortfolioInterface.csproj" />
+    <PackageReference Include="ReactiveUI.Fody" />
+  </ItemGroup>
+  
+</Project>

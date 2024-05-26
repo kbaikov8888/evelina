@@ -1,4 +1,6 @@
-﻿namespace PortfolioInterface;
+﻿using System.Collections.Generic;
+
+namespace PortfolioInterface;
 
 public interface IAsset : IItem
 {

@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:PortfolioAvalonia.ViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PortfolioAvalonia.View.AssetsTableView"
+             x:DataType="viewModel:AssetsTableViewModel">
+
+  <DataGrid ItemsSource="{Binding Portfolio.Assets}"
+            SelectedItem="{Binding Portfolio.SelectedAsset, Mode=TwoWay}"
+            IsReadOnly="True"
+            CanUserReorderColumns="True"
+          CanUserResizeColumns="True"
+          CanUserSortColumns="True"
+          GridLinesVisibility="All"
+          BorderThickness="1"
+            BorderBrush="Gray">
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="Name"  Binding="{Binding Name}"/>
+      <DataGridTextColumn Header="Target Volume"  Binding="{Binding TargetVolume, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Volume"  Binding="{Binding Volume, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Buyed Volume"  Binding="{Binding BuyedVolume, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Target Share"  Binding="{Binding TargetShare, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Share"  Binding="{Binding Share, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Buyed Share"  Binding="{Binding BuyedShare, StringFormat={}{0:f2}}"/>
+      <DataGridTextColumn Header="Status"  Binding="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}"/>
+    </DataGrid.Columns>
+  </DataGrid>
+</UserControl>
