@@ -8,9 +8,20 @@
              x:Class="BookAvalonia.View.GraphPanelView"
              x:DataType="viewModel:GraphPanelViewModel">
 
-  <TabControl>
-    <TabItem Header="{Binding Total.Name}">
-      <view:GraphTabView DataContext="{Binding Total}"/>
-    </TabItem>
-  </TabControl>
+  <Grid>
+    <ComboBox SelectedItem="{Binding SelectedDateLevel}"
+              ItemsSource="{Binding DateLevels}"
+              HorizontalAlignment="Right"
+              Margin="5"
+              ZIndex="1"/>
+
+    <TabControl>
+      <TabItem Header="{Binding Total.Name}">
+        <view:GraphTabView DataContext="{Binding Total}"/>
+      </TabItem>
+      <TabItem Header="{Binding Invests.Name}">
+        <view:GraphTabView DataContext="{Binding Invests}"/>
+      </TabItem>
+    </TabControl>
+  </Grid>
 </UserControl>

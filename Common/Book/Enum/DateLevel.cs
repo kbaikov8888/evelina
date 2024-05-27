@@ -1,8 +1,9 @@
 ﻿using System;
 
 namespace BookImpl.Enum;
-internal enum DateLevel
+public enum DateLevel
 {
+    Year,
     Month,
 }
 
@@ -13,6 +14,10 @@ internal static class DateLevelExtension
         if (level == DateLevel.Month)
         {
             return d1.Year == d2.Year && d1.Month == d2.Month;
+        }
+        else if (level == DateLevel.Year)
+        {
+            return d1.Year == d2.Year;
         }
         else
         {

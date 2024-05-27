@@ -1,16 +1,36 @@
 ﻿using BookImpl;
 using BookImpl.Enum;
-using DynamicData;
 using evelina.Controls;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using ScottPlot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookAvalonia.ViewModel;
 
 public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 {
-    public GraphTabViewModel Total { get; }
+    public IEnumerable<DateLevel> DateLevels => Enum.GetValues(typeof(DateLevel)).Cast<DateLevel>();
+
+    private DateLevel _selectedDateLevel = DateLevel.Month;
+    public DateLevel SelectedDateLevel
+    {
+        get => _selectedDateLevel;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedDateLevel, value);
+            RefreshTabs();
+        }
+    }
+
+    [Reactive]
+    public GraphTabViewModel Total { get; set; }
+
+    [Reactive]
+    public GraphTabViewModel Invests { get; set; }
 
     private readonly Book _book;
 
@@ -19,16 +39,27 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
     {
         _book = book;
 
-        Total = CreateTotalTab(_book.CalculatedData.Months);
+        RefreshTabs();
     }
 
+    private void RefreshTabs()
+    {
+        var data = SelectedDateLevel switch
+        {
+            DateLevel.Year => _book.CalculatedData.Years,
+            DateLevel.Month => _book.CalculatedData.Months,
+            _ => throw new NotImplementedException(nameof(DateLevel))
+        };
+
+        Total = CreateTotalTab(data);
+        Invests = CreateInvestsTab(data);
+    }
 
     private GraphTabViewModel CreateTotalTab(BookDatedData data)
     {
         var plots = new List<Plot>();
 
-        var months = data.Dates;
-        var doubleMonths = months.Select(x => x.ToOADate()).ToArray();
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
         plots.Add(GetCumulativeResultsPlot());
         plots.Add(GetBarPlot(EntryType.Expense, data.Expenses));
@@ -40,23 +71,37 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         Plot GetCumulativeResultsPlot()
         {
-            var res = new double[months.Length];
+            var res = new double[data.Dates.Length];
+            var resWithInvest = new double[data.Dates.Length];
+
             for (int i = 0; i < res.Length; i++)
             {
                 if (i == 0)
                 {
                     res[i] = 0;
+                    resWithInvest[i] = 0;
                 }
                 else
                 {
                     res[i] = res[i - 1];
+                    resWithInvest[i] = resWithInvest[i - 1];
                 }
 
-                res[i] += _book.CalculatedData.Months.Results[i];
+                res[i] += data.Results[i];
+                resWithInvest[i] += data.Incomes[i] - data.Expenses[i];
             }
 
             var plot = new Plot();
-            plot.Add.Scatter(months, res);
+
+            var total = plot.Add.Scatter(data.Dates, res);
+            //total.FillY = true;
+            //total.FillYColor = total.Color.WithAlpha(.2);
+
+            var withInvest = plot.Add.Scatter(data.Dates, resWithInvest);
+            withInvest.Color = EntryType.Invest.GetScottPlotColor();
+            //withInvest.FillY = true;
+            //withInvest.FillYColor = withInvest.Color.WithAlpha(.2);
+
             plot.Axes.DateTimeTicksBottom();
 
             return plot;
@@ -65,13 +110,23 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
         Plot GetBarPlot(EntryType type, double[] values)
         {
             var plot = new Plot();
-            var barPlot = plot.Add.Bars(doubleMonths, values);
+            var barPlot = plot.Add.Bars(dateDoubles, values);
             barPlot.Color = type.GetScottPlotColor();
-            barPlot.SetSize(20);
+            barPlot.SetSize(20 * 51 / values.Length); // magic
             barPlot.SetBorderColor(type.GetScottPlotColor());
             plot.Axes.DateTimeTicksBottom();
 
             return plot;
         }
+    }
+
+    private GraphTabViewModel CreateInvestsTab(BookDatedData data)
+    {
+        var plots = new List<Plot>();
+
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
+
+        return new GraphTabViewModel("Invests", plots);
+
     }
 }
