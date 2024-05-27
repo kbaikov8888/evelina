@@ -128,7 +128,7 @@ internal class Transaction
         }
         else if (Type == TransactionType.transfer)
         {
-            var sender = ParentCategory ?? throw new InvalidOperationException();
+            var sender = PaymentAccount ?? throw new InvalidOperationException();
             var receiver = ReceivableAccount ?? throw new InvalidOperationException();
 
             var senderInvest = sender.StartsWith("_i");

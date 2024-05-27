@@ -16,6 +16,7 @@ public class BookDatedData : IDisposable
     public double[] Incomes { get; }
     public double[] Invests { get; }
     public double[] ReInvests { get; }
+    public double[] Results { get; }
 
     private readonly List<Entry> _entries;
 
@@ -30,6 +31,7 @@ public class BookDatedData : IDisposable
         Incomes = new double[Dates.Length];
         Invests = new double[Dates.Length];
         ReInvests = new double[Dates.Length];
+        Results = new double[Dates.Length];
 
         CalculateValues();
     }
@@ -41,14 +43,14 @@ public class BookDatedData : IDisposable
 
     private void CalculateValues()
     {
-        int lastDateIndex = 0;
+        int index = 0;
         foreach (var entry in _entries)
         {
-            for (int i = lastDateIndex; i < Dates.Length; i++)
+            for (int i = index; i < Dates.Length; i++)
             {
                 if (Level.IsEqual(entry.DateTime, Dates[i]))
                 {
-                    lastDateIndex = i;
+                    index = i;
                     break;
                 }
             }
@@ -56,14 +58,16 @@ public class BookDatedData : IDisposable
             switch (entry)
             {
                 case ExpenseEntry:
-                    Expenses[lastDateIndex] += entry.Amount; break;
+                    Expenses[index] += entry.Amount; break;
                 case IncomeEntry:
-                    Incomes[lastDateIndex] += entry.Amount; break;
+                    Incomes[index] += entry.Amount; break;
                 case InvestingEntry:
-                    Invests[lastDateIndex] += entry.Amount; break;
+                    Invests[index] += entry.Amount; break;
                 case ReInvestingEntry:
-                    ReInvests[lastDateIndex] += entry.Amount; break;
+                    ReInvests[index] += entry.Amount; break;
             }
+
+            Results[index] = Incomes[index] - Expenses[index] - Invests[index] + ReInvests[index];
         }
     }
 }

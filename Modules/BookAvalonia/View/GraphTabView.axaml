@@ -9,11 +9,16 @@
 
   <ScrollViewer>
     <ItemsControl ItemsSource="{Binding Plots}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <ContentControl MinHeight="300" MinWidth="300" Content="{Binding PlotView}"/>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid ColumnDefinitions="100,*">
+            <ContentControl Grid.Column="1" 
+                            MinHeight="300" 
+                            MinWidth="100" 
+                            Content="{Binding PlotView}"/>
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
     </ItemsControl>
   </ScrollViewer>
 </UserControl>
