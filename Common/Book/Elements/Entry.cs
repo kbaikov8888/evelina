@@ -88,6 +88,8 @@ public sealed class InvestingEntry : TransferEntry
 {
     public override EntryType Type => EntryType.Invest;
 
+    public InvestAccount InvestAccount => (InvestAccount)Receiver;
+
     public InvestingEntry(
         double amount,
         DateTime dateTime,
@@ -99,6 +101,8 @@ public sealed class InvestingEntry : TransferEntry
 public sealed class ReInvestingEntry : TransferEntry
 {
     public override EntryType Type => EntryType.ReInvest;
+
+    public InvestAccount InvestAccount => (InvestAccount)Sender;
 
     public ReInvestingEntry(
         double amount,

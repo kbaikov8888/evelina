@@ -16,18 +16,18 @@ public class BookCalculatedData
     {
         _book = book;
 
-        Years = new BookDatedData(DateLevel.Year, Array.Empty<DateTime>(), _book.GetEntriesFromLast());
-        Months = new BookDatedData(DateLevel.Month, Array.Empty<DateTime>(), _book.GetEntriesFromLast());
+        Years = new BookDatedData(DateLevel.Year, Array.Empty<DateTime>(), _book);
+        Months = new BookDatedData(DateLevel.Month, Array.Empty<DateTime>(), _book);
     }
 
 
     internal void Calculate()
     {
         Months.Dispose();
-        Months = new BookDatedData(DateLevel.Month, GetMonths(), _book.GetEntriesFromFirst());
+        Months = new BookDatedData(DateLevel.Month, GetMonths(), _book);
 
         Years.Dispose();
-        Years = new BookDatedData(DateLevel.Year, GetYears(), _book.GetEntriesFromFirst());
+        Years = new BookDatedData(DateLevel.Year, GetYears(), _book);
     }
 
     private DateTime[] GetMonths()

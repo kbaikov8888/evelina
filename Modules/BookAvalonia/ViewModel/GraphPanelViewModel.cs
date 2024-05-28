@@ -1,5 +1,7 @@
-﻿using BookImpl;
+﻿using BookAvalonia.Model;
+using BookImpl;
 using BookImpl.Enum;
+using DynamicData;
 using evelina.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -100,7 +102,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             var withInvest = plot.Add.Scatter(data.Dates, resWithInvest);
             withInvest.Color = EntryType.Invest.GetScottPlotColor();
             //withInvest.FillY = true;
-            //withInvest.FillYColor = withInvest.Color.WithAlpha(.2);
+            //withInvest.FillYColor = w0ithInvest.Color.WithAlpha(.2);
 
             plot.Axes.DateTimeTicksBottom();
 
@@ -112,7 +114,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             var plot = new Plot();
             var barPlot = plot.Add.Bars(dateDoubles, values);
             barPlot.Color = type.GetScottPlotColor();
-            barPlot.SetSize(20 * 51 / values.Length); // magic
+            barPlot.SetSize(1000 / values.Length); // magic
             barPlot.SetBorderColor(type.GetScottPlotColor());
             plot.Axes.DateTimeTicksBottom();
 
@@ -126,7 +128,28 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
+        plots.Add(GetAccountsArea());
+
         return new GraphTabViewModel("Invests", plots);
 
+        Plot GetAccountsArea()
+        {
+            var plot = new Plot();
+
+            var series = new List<(double[], SeriesInfo)>();
+
+            foreach (var (account, values) in data.InvestsByAccount)
+            {
+                var info = new SeriesInfo(account.Name, Color.RandomHue());
+
+                series.Add((values.CumulativeSum().ToArray(), info));
+            }
+
+            plot.AddArea(series, dateDoubles, true);
+            plot.Axes.DateTimeTicksBottom();
+
+            return plot;
+        }
     }
 }
+

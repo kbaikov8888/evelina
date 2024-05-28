@@ -11,15 +11,22 @@ public class Book
 
     public BookCalculatedData CalculatedData { get; }
 
-    private readonly List<Entry> _entries = new();
+    private readonly HashSet<Entry> _entries = new();
 
-    private readonly List<ExpenseCategory> _expenseCategories = new();
-    private readonly List<IncomeCategory> _incomeCategories = new();
+    public IReadOnlyList<ExpenseCategory> ExpenseCategories => _expenseCategories.ToList();
+    private readonly HashSet<ExpenseCategory> _expenseCategories = new();
 
-    private readonly List<BankAccount> _bankAccounts = new();
-    private readonly List<InvestAccount> _investAccounts = new();
+    public IReadOnlyList<IncomeCategory> IncomeCategories => _incomeCategories.ToList();
+    private readonly HashSet<IncomeCategory> _incomeCategories = new();
 
-    private readonly List<Project> _projects = new();
+    public IReadOnlyList<BankAccount> BankAccounts => _bankAccounts.ToList();
+    private readonly HashSet<BankAccount> _bankAccounts = new();
+
+    public IReadOnlyList<InvestAccount> InvestAccounts => _investAccounts.ToList();
+    private readonly HashSet<InvestAccount> _investAccounts = new();
+
+    public IReadOnlyList<Project> Projects => _projects.ToList();
+    private readonly HashSet<Project> _projects = new();
 
 
     public Book(string name)
@@ -29,6 +36,7 @@ public class Book
     }
 
 
+    // public
     public List<Entry> GetEntriesFromLast()
     {
         return _entries.ToList();
@@ -42,6 +50,7 @@ public class Book
         return res;
     }
 
+    // private
     internal void AddEntry(Entry entry)
     {
         if (_entries.Contains(entry))
