@@ -105,13 +105,17 @@ public class BookDatedData : IDisposable
                 }
             }
 
-            if (entry is InvestingEntry investing)
+            if (entry is TransferEntry transfer)
             {
-                InvestsByAccount[investing.InvestAccount][index] += entry.Amount;
-            }
-            else if (entry is ReInvestingEntry reInvesting)
-            {
-                InvestsByAccount[reInvesting.InvestAccount][index] -= entry.Amount;
+                if (transfer.Sender is InvestAccount from)
+                {
+                    InvestsByAccount[from][index] -= entry.Amount;
+                }
+
+                if (transfer.Receiver is InvestAccount to)
+                {
+                    InvestsByAccount[to][index] += entry.Amount;
+                }
             }
         }
     }
