@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using BookImpl.Elements;
+using BookImpl.Enum;
 
 namespace BookImpl.Reader;
 
 internal class Transaction
 {
     public TransactionType? Type { get; set; }
-    public string? Currency { get; set; }
+    public Currency? Currency { get; set; }
     public double? Amount { get; set; }
     public double? CurrencyRate { get; set; }
     public string? Project { get; set; }
@@ -27,6 +28,8 @@ internal class Transaction
     {
         if (Type is null ||
             Amount is null ||
+            Currency is null ||
+            CurrencyRate is null ||
             Category is null ||
             (Account is null && (PaymentAccount is null || ReceivableAccount is null)) ||
             Datetime is null)
@@ -49,9 +52,14 @@ internal class Transaction
         switch (role)
         {
             case FieldRole.type:
-                Type = SproutsHelper.FindType(s); break;
+                Type = SproutsHelper.FindType(s); 
+                break;
             case FieldRole.currency:
-                Currency = s; break;
+                if (System.Enum.TryParse(s, out Currency currency))
+                {
+                    Currency = currency;
+                }
+                break;
             case FieldRole.amount:
                 Amount = d; break;
             case FieldRole.currencyRate:
@@ -92,9 +100,9 @@ internal class Transaction
 
     internal void CreateEntry(Book book)
     {
-        var currencyRate = CurrencyRate ?? 1;
+        var currencyRate = CurrencyRate ?? throw new InvalidOperationException();
+        var currency = Currency ?? throw new InvalidOperationException();
         var amount = Amount ?? throw new InvalidOperationException();
-        amount *= currencyRate;
         var dateTime = Datetime ?? throw new InvalidOperationException();
 
         Entry entry;
@@ -106,7 +114,7 @@ internal class Transaction
 
             var project = Project != null ? book.GetOrCreateProject(Project) : null;
 
-            var bankAccount = book.GetOrCreateBankAccount(account);
+            var bankAccount = book.GetOrCreateBankAccount(account, currency);
 
             if (Type is TransactionType.expense)
             {
@@ -114,13 +122,13 @@ internal class Transaction
 
                 amount *= -1;
 
-                entry = new ExpenseEntry(amount, dateTime, bankAccount, expenseCategory);
+                entry = new ExpenseEntry(amount, dateTime, bankAccount, expenseCategory, currencyRate);
             }
             else
             {
                 var incomeCategory = book.GetOrCreateIncomeCategory(category, ParentCategory);
 
-                entry = new IncomeEntry(amount, dateTime, bankAccount, incomeCategory);
+                entry = new IncomeEntry(amount, dateTime, bankAccount, incomeCategory, currencyRate);
             }
 
             entry.Project = project;

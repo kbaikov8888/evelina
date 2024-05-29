@@ -1,25 +1,42 @@
-﻿namespace BookImpl.Elements;
+﻿using BookImpl.Enum;
+
+namespace BookImpl.Elements;
 
 public abstract class Account
 {
     public string Name { get; }
+    public Currency Currency { get; }
 
-    public Account(string name)
+    protected Account(string name, Currency currency)
     {
         Name = name;
+        Currency = currency;
     }
 }
 
 public sealed class BankAccount : Account
 {
-    public BankAccount(string name) : base(name)
+    public BankAccount(string name, Currency currency) : base(name, currency)
     {
     }
 }
 
 public sealed class InvestAccount : Account
 {
-    public InvestAccount(string name) : base(name)
+    public InvestAccountFamily Family { get; }
+
+    public InvestAccount(string name, Currency currency, InvestAccountFamily family) : base(name, currency)
     {
+        Family = family;
+    }
+}
+
+public sealed class InvestAccountFamily
+{
+    public string Name { get; }
+
+    public InvestAccountFamily(string name)
+    {
+        Name = name;
     }
 }

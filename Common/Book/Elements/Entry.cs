@@ -3,18 +3,18 @@ using BookImpl.Enum;
 
 namespace BookImpl.Elements;
 
+// Currency = CurrencyRate * DefaultCurrency
+
 public abstract class Entry
 {
     public DateTime DateTime { get; }
-    public double Amount { get; }
     public Project? Project { get; internal set; }
     public string? Note { get; internal set; }
 
     public abstract EntryType Type { get; }
 
-    protected Entry(double amount, DateTime dateTime)
+    protected Entry(DateTime dateTime)
     {
-        Amount = amount;
         DateTime = dateTime;
     }
 }
@@ -22,14 +22,19 @@ public abstract class Entry
 public abstract class ExternalEntry : Entry
 {
     public Account Account { get; }
+    public double Amount { get; }
+    public double CurrencyRate { get; } 
     public abstract Category Category { get; }
 
     protected ExternalEntry(
         double amount,
         DateTime dateTime,
-        Account account) : base(amount, dateTime)
+        Account account,
+        double currencyRate) : base(dateTime)
     {
+        Amount = amount;
         Account = account;
+        CurrencyRate = currencyRate;
     }
 }
 
@@ -44,7 +49,8 @@ public sealed class ExpenseEntry : ExternalEntry
         double amount,
         DateTime dateTime,
         Account account,
-        ExpenseCategory expenseCategory) : base(amount, dateTime, account)
+        ExpenseCategory expenseCategory,
+        double currencyRate) : base(amount, dateTime, account, currencyRate)
     {
         ExpenseCategory = expenseCategory;
     }
@@ -60,7 +66,8 @@ public sealed class IncomeEntry : ExternalEntry
         double amount,
         DateTime dateTime,
         Account account,
-        IncomeCategory incomeCategory) : base(amount, dateTime, account)
+        IncomeCategory incomeCategory,
+        double currencyRate) : base(amount, dateTime, account, currencyRate)
     {
         IncomeCategory = incomeCategory;
     }
@@ -69,18 +76,33 @@ public sealed class IncomeEntry : ExternalEntry
 public class TransferEntry : Entry
 {
     public Account Sender { get; }
+    public double SenderCurrencyRate { get; }
+    public double SenderAmount { get; }
+    public double SenderAmountInDefaultCurrency => SenderAmount * SenderCurrencyRate;
+
     public Account Receiver { get; }
+    public double ReceiverCurrencyRate { get; }
+    public double ReceiverAmount { get; }
+    public double ReceiverAmountInDefaultCurrency => ReceiverAmount * ReceiverCurrencyRate;
+
 
     public override EntryType Type => EntryType.Transfer;
 
     public TransferEntry(
-        double amount,
         DateTime dateTime,
+        double senderAmount,
+        double receiverAmount,
         Account sender,
-        Account receiver) : base(amount, dateTime)
+        Account receiver,
+        double senderCurrencyRate,
+        double receiverCurrencyRate) : base(dateTime)
     {
         Sender = sender;
         Receiver = receiver;
+        SenderCurrencyRate = senderCurrencyRate;
+        ReceiverCurrencyRate = receiverCurrencyRate;
+        SenderAmount = senderAmount;
+        ReceiverAmount = receiverAmount;
     }
 }
 
@@ -91,10 +113,13 @@ public sealed class InvestingEntry : TransferEntry
     public InvestAccount InvestAccount => (InvestAccount)Receiver;
 
     public InvestingEntry(
-        double amount,
         DateTime dateTime,
+        double senderAmount,
+        double receiverAmount,
         Account sender,
-        InvestAccount receiver) : base(amount, dateTime, sender, receiver)
+        InvestAccount receiver,
+        double senderCurrencyRate,
+        double receiverCurrencyRate) : base(dateTime, senderAmount, receiverAmount, sender, receiver, senderCurrencyRate, receiverCurrencyRate)
     {
     }
 }
@@ -105,10 +130,13 @@ public sealed class ReInvestingEntry : TransferEntry
     public InvestAccount InvestAccount => (InvestAccount)Sender;
 
     public ReInvestingEntry(
-        double amount,
         DateTime dateTime,
+        double senderAmount,
+        double receiverAmount,
         InvestAccount sender,
-        Account receiver) : base(amount, dateTime, sender, receiver)
+        Account receiver,
+        double senderCurrencyRate,
+        double receiverCurrencyRate) : base(dateTime, senderAmount, receiverAmount, sender, receiver, senderCurrencyRate, receiverCurrencyRate)
     {
     }
 }

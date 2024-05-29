@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookImpl.Elements;
+using BookImpl.Enum;
 
 namespace BookImpl;
 
 public class Book
 {
+    public static Currency DefaultCurrency = Currency.RUB;
+
     public string Name { get; }
 
     public BookCalculatedData CalculatedData { get; }
@@ -27,6 +30,9 @@ public class Book
 
     public IReadOnlyList<Project> Projects => _projects.ToList();
     private readonly HashSet<Project> _projects = new();
+
+    public IReadOnlyList<InvestAccountFamily> InvestAccountFamilies => _investAccountFamilies.ToList();
+    private readonly HashSet<InvestAccountFamily> _investAccountFamilies = new();
 
 
     public Book(string name)
@@ -117,20 +123,46 @@ public class Book
             return existed;
         }
 
-        existed = new BankAccount(name);
+        //TODO bank accounts not only with DefaultCurrency
+        existed = new BankAccount(name, DefaultCurrency);
         _bankAccounts.Add(existed);
         return existed;
     }
 
     internal InvestAccount GetOrCreateInvestAccount(string name)
     {
-        var existed = _investAccounts.FirstOrDefault(x => NamesEqual(x.Name, name));
+        if (!name.StartsWith("_i") || name.Length < 12 || name[2] != '(' || name[5] != ')')
+        {
+            throw new InvalidOperationException();
+        }
+
+        var familySubstring = name.Substring(3, 2);
+        var currencySubstring = name.Substring(name.Length - 3, 3);
+        var nameSubstring = name.Substring(7, name.Length - 11);
+
+        if (!System.Enum.TryParse(currencySubstring, out Currency currency))
+        {
+            throw new InvalidOperationException();
+        }
+
+        var family = _investAccountFamilies.FirstOrDefault(x => NamesEqual(x.Name, familySubstring));
+        if (family is null)
+        {
+            family = new InvestAccountFamily(familySubstring);
+        }
+
+        var existed = _investAccounts.FirstOrDefault(x => NamesEqual(x.Name, nameSubstring));
         if (existed is not null)
         {
+            if (existed.Currency != currency || existed.Family != family)
+            {
+                throw new InvalidOperationException();
+            }
+
             return existed;
         }
 
-        existed = new InvestAccount(name);
+        existed = new InvestAccount(nameSubstring, currency, family);
         _investAccounts.Add(existed);
         return existed;
     }
