@@ -104,6 +104,7 @@ internal class Transaction
         var currency = Currency ?? throw new InvalidOperationException();
         var amount = Amount ?? throw new InvalidOperationException();
         var dateTime = Datetime ?? throw new InvalidOperationException();
+        var project = Project != null ? book.GetOrCreateProject(Project) : null;
 
         Entry entry;
 
@@ -112,17 +113,13 @@ internal class Transaction
             var account = Account ?? throw new InvalidOperationException();
             var category = Category ?? throw new InvalidOperationException();
 
-            var project = Project != null ? book.GetOrCreateProject(Project) : null;
-
-            var bankAccount = book.GetOrCreateBankAccount(account, currency);
+            var bankAccount = book.GetOrCreateBankAccount(account);
 
             if (Type is TransactionType.expense)
             {
                 var expenseCategory = book.GetOrCreateExpenseCategory(category, ParentCategory);
 
-                amount *= -1;
-
-                entry = new ExpenseEntry(amount, dateTime, bankAccount, expenseCategory, currencyRate);
+                entry = new ExpenseEntry(-amount, dateTime, bankAccount, expenseCategory, currencyRate);
             }
             else
             {
@@ -130,9 +127,6 @@ internal class Transaction
 
                 entry = new IncomeEntry(amount, dateTime, bankAccount, incomeCategory, currencyRate);
             }
-
-            entry.Project = project;
-            entry.Note = Note;
         }
         else if (Type == TransactionType.transfer)
         {
@@ -145,17 +139,72 @@ internal class Transaction
             Account senderAccount = senderInvest ? book.GetOrCreateInvestAccount(sender) : book.GetOrCreateBankAccount(sender);
             Account receiverAccount = receiverInvest ? book.GetOrCreateInvestAccount(receiver) : book.GetOrCreateBankAccount(receiver);
 
-            if (senderInvest == receiverInvest)
+            // bruh
+            double senderCurrencyRate;
+            double receiverCurrencyRate;
+            double senderAmount;
+            double receiverAmount;
+            if (currency != Book.DefaultCurrency)
             {
-                entry = new TransferEntry(amount, dateTime, senderAccount, receiverAccount);
-            }
-            else if (senderInvest)
-            {
-                entry = new ReInvestingEntry(amount, dateTime, (InvestAccount)senderAccount, receiverAccount);
+                if (senderAccount.Currency == receiverAccount.Currency)
+                {
+                    senderAmount = amount;
+                    receiverAmount = amount;
+                    senderCurrencyRate = currencyRate;
+                    receiverCurrencyRate = currencyRate;
+                }
+                else if (senderAccount.Currency == currency)
+                {
+                    senderAmount = amount;
+                    senderCurrencyRate = currencyRate;
+
+                    if (receiverAccount.Currency == Book.DefaultCurrency)
+                    {
+                        receiverCurrencyRate = 1;
+                    }
+                    else
+                    {
+                        receiverCurrencyRate = FindLastCurrencyRateForAccount(receiverAccount);
+                    }
+
+                    receiverAmount = amount * senderCurrencyRate / receiverCurrencyRate;
+                }
+                else // receiverAccount.Currency == currency
+                {
+                    receiverAmount = amount;
+                    receiverCurrencyRate = currencyRate;
+
+                    if (senderAccount.Currency == Book.DefaultCurrency)
+                    {
+                        senderCurrencyRate = 1;
+                    }
+                    else
+                    {
+                        senderCurrencyRate = FindLastCurrencyRateForAccount(senderAccount);
+                    }
+
+                    senderAmount = amount * receiverCurrencyRate / senderCurrencyRate;
+                }
             }
             else
             {
-                entry = new InvestingEntry(amount, dateTime, senderAccount, (InvestAccount)receiverAccount);
+                senderAmount = amount;
+                receiverAmount = amount;
+                senderCurrencyRate = 1;
+                receiverCurrencyRate = 1;
+            }
+
+            if (senderInvest == receiverInvest)
+            {
+                entry = new TransferEntry(dateTime, senderAmount, receiverAmount, senderAccount, receiverAccount, senderCurrencyRate, receiverCurrencyRate);
+            }
+            else if (senderInvest)
+            {
+                entry = new ReInvestingEntry(dateTime, senderAmount, receiverAmount, (InvestAccount)senderAccount, receiverAccount, senderCurrencyRate, receiverCurrencyRate);
+            }
+            else
+            {
+                entry = new InvestingEntry(dateTime, senderAmount, receiverAmount, senderAccount, (InvestAccount)receiverAccount, senderCurrencyRate, receiverCurrencyRate);
             }
         }
         else
@@ -163,7 +212,18 @@ internal class Transaction
             throw new InvalidOperationException();
         }
 
+
+        entry.Project = project;
+        entry.Note = Note;
+
         book.AddEntry(entry);
+    }
+
+    // very bad, but sprouts make stupid csv...
+    private double FindLastCurrencyRateForAccount(Account account)
+    {
+        //TODO
+        return 1;
     }
 }
 

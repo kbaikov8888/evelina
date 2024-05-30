@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BookImpl;
 using System.Linq;
 using System.Windows.Input;
+using BookImpl.Elements;
 using ReactiveUI;
 
 namespace BookAvalonia.ViewModel;
@@ -25,7 +26,7 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
     public BookViewModel(Book book)
     {
         _book = book;
-        _entries = book.GetEntriesFromLast().Select(x => new EntryViewModel(x)).ToList();
+        _entries = book.GetEntriesFromLast().Where(x=> x is ExternalEntry).Select(x => new EntryViewModel(x)).ToList();
 
         ShowEntryTableCommand = ReactiveCommand.Create(ShowEntryTable);
         ShowGraphPanelCommand = ReactiveCommand.Create(ShowGraphPanel);

@@ -66,14 +66,14 @@ public class BookDatedData : IDisposable
 
             switch (entry)
             {
-                case ExpenseEntry:
-                    Expenses[index] += entry.Amount; break;
-                case IncomeEntry:
-                    Incomes[index] += entry.Amount; break;
-                case InvestingEntry:
-                    Invests[index] += entry.Amount; break;
-                case ReInvestingEntry:
-                    ReInvests[index] += entry.Amount; break;
+                case ExpenseEntry expense:
+                    Expenses[index] += expense.Amount; break;
+                case IncomeEntry income:
+                    Incomes[index] += income.Amount; break;
+                case InvestingEntry investing:
+                    Invests[index] += investing.ReceiverAmountInDefaultCurrency; break;
+                case ReInvestingEntry reInvesting:
+                    ReInvests[index] += reInvesting.SenderAmountInDefaultCurrency; break;
             }
 
             Results[index] = Incomes[index] - Expenses[index] - Invests[index] + ReInvests[index];
@@ -110,12 +110,12 @@ public class BookDatedData : IDisposable
             {
                 if (transfer.Sender is InvestAccount from)
                 {
-                    InvestsByAccount[from][index] -= entry.Amount;
+                    InvestsByAccount[from][index] -= transfer.SenderAmount;
                 }
 
                 if (transfer.Receiver is InvestAccount to)
                 {
-                    InvestsByAccount[to][index] += entry.Amount;
+                    InvestsByAccount[to][index] += transfer.ReceiverAmount;
                 }
             }
         }

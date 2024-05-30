@@ -8,12 +8,24 @@ namespace BookAvalonia.ViewModel;
 
 public class EntryViewModel : ReactiveObject
 {
-    public double Amount => _entry.Amount;
     public DateTime DateTime => _entry.DateTime;
     public string? ProjectName => _entry.Project?.Name;
     public string? Note => _entry.Note;
     public string? Type => _entry.Type.ToString();
     public Color Color => _entry.Type.GetColor();
+
+    public double Amount
+    {
+        get
+        {
+            return _entry switch
+            {
+                ExternalEntry externalEntry => externalEntry.Amount,
+                TransferEntry transferEntry => transferEntry.SenderAmountInDefaultCurrency,
+                _ => throw new NotImplementedException()
+            };
+        }
+    }
 
     public string? CategoryName
     {

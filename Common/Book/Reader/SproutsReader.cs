@@ -15,15 +15,9 @@ public class SproutsReader : IDisposable
 
     public Book? TryRead(string path)
     {
-        try
-        {
-            Read(path);
-            _book.CalculatedData.Calculate();
-        }
-        catch (Exception ex)
-        {
-            return null;
-        }
+        Read(path);
+
+        _book.CalculatedData.Calculate();
 
         return _book;
     }

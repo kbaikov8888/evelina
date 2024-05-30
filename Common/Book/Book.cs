@@ -145,10 +145,13 @@ public class Book
             throw new InvalidOperationException();
         }
 
+        nameSubstring = currency != DefaultCurrency ? $"{nameSubstring} {currency}" : nameSubstring;
+
         var family = _investAccountFamilies.FirstOrDefault(x => NamesEqual(x.Name, familySubstring));
         if (family is null)
         {
             family = new InvestAccountFamily(familySubstring);
+            _investAccountFamilies.Add(family);
         }
 
         var existed = _investAccounts.FirstOrDefault(x => NamesEqual(x.Name, nameSubstring));
