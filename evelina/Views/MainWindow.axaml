@@ -8,7 +8,8 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="evelina.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="evelina">
+        Title="evelina"
+        MinWidth="500">
   <dialogHostAvalonia:DialogHost>
     <dialogHostAvalonia:DialogHost.DataTemplates>
       <DataTemplate DataType="inputDialog:InputDialogViewModel">

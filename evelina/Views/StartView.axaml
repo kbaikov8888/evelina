@@ -7,21 +7,58 @@
              x:Class="evelina.Views.StartView"
              x:DataType="vm:StartViewModel">
 
-  <Border HorizontalAlignment="Center"
-        VerticalAlignment="Center">
-    <Grid RowDefinitions="*,*"
-          ColumnDefinitions="*,*">
-      <Button Grid.Row="0" Grid.Column="0"
-              Command="{Binding OpenPortfolioCommand}"
-              Content="Open portfolio"/>
+  <UserControl.Styles>
+    <Style Selector="Button">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="5"/>
+      <Setter Property="Height" Value="40"/>
+    </Style>
+
+    <Style Selector="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid HorizontalAlignment="Stretch"
+          Width="400"
+          VerticalAlignment="Center"
+          RowDefinitions="Auto,*">
+    <TextBlock Grid.Row="0" 
+               Text="evelina"
+               Margin="0,0,0,40"
+               Classes="h1"/>
+
+    <Grid Grid.Row="1" 
+          RowDefinitions="*,*,*"
+          ColumnDefinitions="*,Auto,*">
+
+      <TextBlock Grid.Row="0" Grid.Column="0"
+                 Classes="h4"
+                 Text="portfolio"/>
 
       <Button Grid.Row="1" Grid.Column="0"
-              Command="{Binding CreatePortfolioCommand}"
-              Content="Create portfolio"/>
+              Command="{Binding OpenPortfolioCommand}"
+              Content="Open portfolio..."/>
 
-      <Button Grid.Row="0" Grid.Column="1"
+      <Button Grid.Row="2" Grid.Column="0"
+              Command="{Binding CreatePortfolioCommand}"
+              Content="Create portfolio..."/>
+
+      <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
+              BorderThickness="1"
+              BorderBrush="LightGray"
+              Width="1"
+              Margin="10"/>
+
+      <TextBlock Grid.Row="0" Grid.Column="2"
+                 Classes="h4"
+                 Text="book"/>
+
+      <Button Grid.Row="1" Grid.Column="2"
               Command="{Binding ReadSproutsCommand}"
-              Content="Read Sprouts"/>
+              Content="Read Sprouts..."/>
     </Grid>
-  </Border>
+  </Grid>
 </UserControl>
