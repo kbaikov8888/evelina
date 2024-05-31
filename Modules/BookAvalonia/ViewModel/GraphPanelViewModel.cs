@@ -9,7 +9,6 @@ using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookAvalonia.ViewModel;
 
@@ -136,13 +135,18 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
         {
             var plot = new Plot();
 
-            var series = new List<(double[], SeriesInfo)>();
+            var series = new List<SeriesInfo>();
 
-            foreach (var (account, values) in data.InvestsByAccount)
+            foreach (var (family, values) in data.InvestsByFamilies)
             {
-                var info = new SeriesInfo(account.Name, Color.RandomHue());
+                var info = new SeriesInfo()
+                {
+                    Name = family.Name,
+                    Color = Color.RandomHue(),
+                    Values = values.CumulativeSum().ToArray()
+                };
 
-                series.Add((values.CumulativeSum().ToArray(), info));
+                series.Add(info);
             }
 
             plot.AddArea(series, dateDoubles, true);

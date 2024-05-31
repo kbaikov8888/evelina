@@ -25,26 +25,25 @@ public static class ScottPlotExtension
         }
     }
 
-    public static void AddArea(this Plot plot, List<(double[], SeriesInfo)> series, double[] x, bool cumulative)
+    public static void AddArea(this Plot plot, List<SeriesInfo> series, double[] x, bool cumulative)
     {
         if (cumulative && series.Count > 1)
         {
             for (int i = 1; i < series.Count; i++)
             {
-                double[] values = series[i].Item1;
+                double[] values = series[i].Values;
                 double[] newValues = new double[values.Length];
                 for (int j = 0; j < values.Length; j++)
                 {
-                    newValues[j] = values[j] + series[i - 1].Item1[j];
+                    newValues[j] = values[j] + series[i - 1].Values[j];
                 }
+
+                series[i].Values = newValues;
             }
         }
 
         for (int i = 0; i < series.Count; i++)
         {
-            double[] values = series[i].Item1;
-            SeriesInfo seriesInfo = series[i].Item2;
-
             double[] bottom;
             if (i == 0)
             {
@@ -52,13 +51,13 @@ public static class ScottPlotExtension
             }
             else
             {
-                bottom = series[i - 1].Item1;
+                bottom = series[i - 1].Values;
             }
 
-            var fill = plot.Add.FillY(x, bottom, values);
-            fill.FillColor = seriesInfo.Color;
-            fill.LineColor = seriesInfo.Color;
-            fill.LegendText = seriesInfo.Name;
+            var fill = plot.Add.FillY(x, bottom, series[i].Values);
+            fill.FillColor = series[i].Color;
+            fill.LineColor = series[i].Color;
+            fill.LegendText = series[i].Name;
         }
     }
 }

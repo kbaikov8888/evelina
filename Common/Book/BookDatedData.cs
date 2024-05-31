@@ -21,7 +21,7 @@ public class BookDatedData : IDisposable
     public double[] Results { get; }
 
     // categorical
-    public Dictionary<InvestAccount, double[]> InvestsByAccount { get; } = new();
+    public Dictionary<InvestAccountFamily, double[]> InvestsByFamilies { get; } = new();
 
     private readonly List<Entry> _entries;
     private readonly Book _book;
@@ -47,7 +47,7 @@ public class BookDatedData : IDisposable
 
     public void Dispose()
     {
-        InvestsByAccount.Clear();
+        InvestsByFamilies.Clear();
     }
 
     private void CalculateValues()
@@ -87,11 +87,11 @@ public class BookDatedData : IDisposable
 
     private void CalculateInvestsByAccount()
     {
-        InvestsByAccount.Clear();
+        InvestsByFamilies.Clear();
 
-        foreach (var account in _book.InvestAccounts)
+        foreach (var family in _book.InvestAccountFamilies)
         {
-            InvestsByAccount[account] = new double[Dates.Length];
+            InvestsByFamilies[family] = new double[Dates.Length];
         }
 
         int index = 0;
@@ -110,12 +110,12 @@ public class BookDatedData : IDisposable
             {
                 if (transfer.Sender is InvestAccount from)
                 {
-                    InvestsByAccount[from][index] -= transfer.SenderAmount;
+                    InvestsByFamilies[from.Family][index] -= transfer.SenderAmount;
                 }
 
                 if (transfer.Receiver is InvestAccount to)
                 {
-                    InvestsByAccount[to][index] += transfer.ReceiverAmount;
+                    InvestsByFamilies[to.Family][index] += transfer.ReceiverAmount;
                 }
             }
         }

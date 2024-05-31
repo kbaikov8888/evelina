@@ -2,14 +2,9 @@
 
 namespace BookAvalonia.Model;
 
-public struct SeriesInfo
+public class SeriesInfo
 {
-    public string Name { get; }
-    public Color Color { get; }
-
-    public SeriesInfo(string name, Color color)
-    {
-        Name = name;
-        Color = color;
-    }
+    public required string Name { get; init; }
+    public required Color Color { get; init; }
+    public required double[] Values { get; set; }
 }
