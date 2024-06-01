@@ -8,7 +8,7 @@
     <ProjectReference Include="..\..\Common\CTS\CTS.csproj" />
     <ProjectReference Include="..\..\Common\evelina.Controls\evelina.Controls.csproj" />
     <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
-    <ProjectReference Include="..\..\Interfaces\IPortfolio\PortfolioInterface.csproj" />
+    <ProjectReference Include="..\..\Core\PortfolioInterface\PortfolioInterface.csproj" />
     <PackageReference Include="ReactiveUI.Fody" />
     <PackageReference Include="ScottPlot.Avalonia" Version="5.0.34" />
   </ItemGroup>

@@ -1,15 +1,3 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Export\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Interfaces\IPortfolio\PortfolioInterface.csproj" />
-  </ItemGroup>
-
 </Project>

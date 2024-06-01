@@ -179,7 +179,7 @@ public class PortfolioViewModel : MainViewModelBase, IDisposable, IMenuCompatibl
             using (var importer = new CTSImporter(files[0].Path.AbsolutePath))
             {
                 importer.Read();
-                importer.AddToPortfolio(Model);
+                Model.AddToPortfolio(importer.Transactions);
             }
         }
         catch (Exception ex)

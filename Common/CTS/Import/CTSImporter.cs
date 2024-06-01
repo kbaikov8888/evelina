@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualBasic.FileIO;
-using PortfolioInterface;
 
 namespace CTS.Import;
 
 public class CTSImporter : IDisposable
 {
     private readonly string _path;
-    private readonly List<CTS> _transactions = new();
+    public readonly List<CTS> Transactions = new();
 
 
     public CTSImporter(string path)
@@ -64,35 +63,14 @@ public class CTSImporter : IDisposable
                     cts.SetField(field, fields[i]);
                 }
 
-                _transactions.Add(cts);
+                Transactions.Add(cts);
             }
         }
     }
 
     public void Dispose()
     {
-        _transactions.Clear();
-    }
-
-    public void AddToPortfolio(IPortfolio portfolio, bool createNewAssets = true)
-    {
-        foreach (var cts in _transactions)
-        {
-            var asset = portfolio.GetAsset(cts.Symbol);
-            if (asset is null)
-            {
-                if (!createNewAssets)
-                {
-                    continue;
-                }
-
-                asset = portfolio.CreateAsset(cts.Symbol);
-            }
-
-            var type = cts.Type == EType.buy ? ETransaction.Buy : ETransaction.Sell;
-
-            asset.CreateTransaction(cts.Datetime, type, cts.Price, cts.Amount);
-        }
+        Transactions.Clear();
     }
 
     private void CheckAllRequiredExist(IEnumerable<ECTSFields> source)
