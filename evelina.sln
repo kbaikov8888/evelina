@@ -34,6 +34,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "evelina.Controls", "Common\evelina.Controls\evelina.Controls.csproj", "{9E6C5C01-6265-438D-BA56-575DABEA96CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1A8823B-8E99-4F71-9FAE-990CF781445F}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Common\Tools\Tools.csproj", "{0FD392CC-790B-4E04-B4A8-8524881CE5B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +96,10 @@ Global
 		{9E6C5C01-6265-438D-BA56-575DABEA96CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E6C5C01-6265-438D-BA56-575DABEA96CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E6C5C01-6265-438D-BA56-575DABEA96CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD392CC-790B-4E04-B4A8-8524881CE5B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD392CC-790B-4E04-B4A8-8524881CE5B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD392CC-790B-4E04-B4A8-8524881CE5B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD392CC-790B-4E04-B4A8-8524881CE5B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,6 +114,7 @@ Global
 		{DA5AE6ED-4130-4E11-9E74-3B291A13A512} = {3F1AC140-DAE2-4E62-88F7-A4DC3B20875C}
 		{7885A169-CC94-47EA-96EB-A0BE36677722} = {3F1AC140-DAE2-4E62-88F7-A4DC3B20875C}
 		{9E6C5C01-6265-438D-BA56-575DABEA96CE} = {4B98FFA5-9FF6-4DA1-AAA2-3613FB5B9E86}
+		{0FD392CC-790B-4E04-B4A8-8524881CE5B8} = {4B98FFA5-9FF6-4DA1-AAA2-3613FB5B9E86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {081A83BE-D661-4A77-B245-8A0BE0CF17A0}

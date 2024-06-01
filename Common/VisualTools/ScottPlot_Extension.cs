@@ -1,15 +1,11 @@
-﻿using BookImpl.Enum;
-using ScottPlot;
+﻿using ScottPlot;
 using ScottPlot.Plottables;
 using System.Collections.Generic;
-using VisualTools;
 
-namespace BookAvalonia;
+namespace VisualTools;
 
-public static class ScottPlotExtension
+public static class ScottPlot_Extension
 {
-    public static Color GetScottPlotColor(this EntryType type) => Color.FromARGB(type.GetColor().ToUInt32());
-
     public static void SetSize(this BarPlot plot, double size)
     {
         foreach (var bar in plot.Bars)

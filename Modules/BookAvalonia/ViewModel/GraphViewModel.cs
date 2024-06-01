@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using BookAvalonia.Model;
-using BookImpl.Enum;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ScottPlot;
 using ScottPlot.Avalonia;
-using ScottPlot.Plottables;
 
 namespace BookAvalonia.ViewModel;
 

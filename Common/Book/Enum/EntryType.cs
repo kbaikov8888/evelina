@@ -11,7 +11,7 @@ public enum EntryType
     ReInvest,
 }
 
-public static class EntryTypeExtension
+public static class EntryType_Extension
 {
     public static Color GetColor(this EntryType type)
         => type switch
@@ -23,4 +23,6 @@ public static class EntryTypeExtension
             EntryType.ReInvest => Colors.DarkOrange,
             _ => throw new NotImplementedException(nameof(GetColor)),
         };
+
+    public static ScottPlot.Color GetScottPlotColor(this EntryType type) => ScottPlot.Color.FromARGB(type.GetColor().ToUInt32());
 }

@@ -10,14 +10,19 @@
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.ReactiveUI" />
     <PackageReference Include="ReactiveUI.Fody" />
-    <PackageReference Include="ScottPlot.Avalonia" Version="5.0.34" />
+    <PackageReference Include="ScottPlot.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Book\BookImpl.csproj" />
     <ProjectReference Include="..\..\Common\evelina.Controls\evelina.Controls.csproj" />
     <ProjectReference Include="..\..\Common\evelina.Styles\evelina.Styles.csproj" />
+    <ProjectReference Include="..\..\Common\Tools\Tools.csproj" />
     <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using BookAvalonia.Model;
-using BookImpl;
+﻿using BookImpl;
 using BookImpl.Enum;
 using DynamicData;
 using evelina.Controls;
@@ -9,6 +8,8 @@ using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tools;
+using VisualTools;
 
 namespace BookAvalonia.ViewModel;
 

@@ -1,6 +1,6 @@
 ﻿using ScottPlot;
 
-namespace BookAvalonia.Model;
+namespace VisualTools;
 
 public class SeriesInfo
 {
