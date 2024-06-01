@@ -1,5 +1,6 @@
 ﻿using BookImpl.Enum;
 using ScottPlot;
+using ScottPlot.Colormaps;
 using ScottPlot.Plottables;
 using System.Collections.Generic;
 using VisualTools;
@@ -25,15 +26,32 @@ public static class ScottPlotExtension
         }
     }
 
-    public static void AddArea(this Plot plot, List<SeriesInfo> series, double[] x, bool cumulative)
+    public static void AddArea(this Plot plot, List<SeriesInfo> series, double[] x, bool cumulative = false, bool normalize = false)
     {
+        if (normalize)
+        {
+            for (int j = 0; j < x.Length; j++)
+            {
+                double sum = 0;
+                for (int i = 0; i < series.Count; i++)
+                {
+                    sum += series[i].Values[j];
+                }
+
+                for (int i = 0; i < series.Count; i++)
+                {
+                    series[i].Values[j] = series[i].Values[j] / sum * 100;
+                }
+            }
+        }
+
         if (cumulative && series.Count > 1)
         {
             for (int i = 1; i < series.Count; i++)
             {
-                double[] values = series[i].Values;
-                double[] newValues = new double[values.Length];
-                for (int j = 0; j < values.Length; j++)
+                var values = series[i].Values;
+                var newValues = new double[x.Length];
+                for (int j = 0; j < x.Length; j++)
                 {
                     newValues[j] = values[j] + series[i - 1].Values[j];
                 }

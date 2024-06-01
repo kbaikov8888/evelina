@@ -128,29 +128,31 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
-        plots.Add(GetAccountsArea());
+        plots.Add(GetAccountsArea(false));
+        plots.Add(GetAccountsArea(true));
 
         return new GraphTabViewModel("Invests", plots);
 
-        Plot GetAccountsArea()
+        Plot GetAccountsArea(bool normalize)
         {
             var plot = new Plot();
 
             var series = new List<SeriesInfo>();
 
+            int counter = 0;
             foreach (var (family, values) in data.InvestsByFamilies)
             {
                 var info = new SeriesInfo()
                 {
                     Name = family.Name,
-                    Color = Color.RandomHue(),
+                    Color = Color.FromHex(PrettyColors.Hexs[counter++]),
                     Values = values.CumulativeSum().ToArray()
                 };
 
                 series.Add(info);
             }
 
-            plot.AddArea(series, dateDoubles, true);
+            plot.AddArea(series, dateDoubles, true, normalize);
             plot.Axes.DateTimeTicksBottom();
 
             return plot;
