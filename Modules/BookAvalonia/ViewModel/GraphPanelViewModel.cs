@@ -29,10 +29,10 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
     }
 
     [Reactive]
-    public GraphTabViewModel Total { get; set; }
+    public GraphTabViewModel? Total { get; set; }
 
     [Reactive]
-    public GraphTabViewModel Invests { get; set; }
+    public GraphTabViewModel? Invests { get; set; }
 
     private readonly Book _book;
 
@@ -53,7 +53,10 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             _ => throw new NotImplementedException(nameof(DateLevel))
         };
 
+        Total?.Dispose();
         Total = CreateTotalTab(data);
+
+        Invests?.Dispose();
         Invests = CreateInvestsTab(data);
     }
 
