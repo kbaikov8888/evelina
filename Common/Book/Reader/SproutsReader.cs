@@ -10,7 +10,16 @@ public class SproutsReader : IDisposable
     private readonly Dictionary<FieldRole, int> _columnIndexes = new();
     private readonly List<Transaction> _failedTransactions = new();
 
-    private Book _book = new("book");
+    private readonly Book _book = new("book");
+
+    private readonly bool _demoMode;
+    private readonly Random _random = new();
+
+
+    public SproutsReader(bool demoMode)
+    {
+        _demoMode = demoMode;
+    }
 
 
     public Book? TryRead(string path)
@@ -72,14 +81,6 @@ public class SproutsReader : IDisposable
                 throw new Exception("wrong header");
             }
         }
-
-        //foreach (var field in (FieldRole[])Enum.GetValues(typeof(FieldRole)))
-        //{
-        //    if (field.IsRequired() && !_columnIndexes.ContainsKey(field))
-        //    {
-        //        throw new Exception($"missed required column: {field}");
-        //    }
-        //}
     }
 
     private void ReadFields(string[] fields)
@@ -98,6 +99,11 @@ public class SproutsReader : IDisposable
         {
             _failedTransactions.Add(tr);
             return;
+        }
+
+        if (_demoMode)
+        {
+            tr.Amount *= _random.NextDouble() / 2;
         }
 
         tr.CreateEntry(_book);

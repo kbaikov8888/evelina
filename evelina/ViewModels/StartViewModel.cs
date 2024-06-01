@@ -14,6 +14,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ReactiveUI.Fody.Helpers;
 using VisualTools;
 
 namespace evelina.ViewModels;
@@ -26,6 +27,9 @@ public class StartViewModel : ReactiveObject
     public ICommand OpenPortfolioCommand { get; }
 
     public ICommand ReadSproutsCommand { get; }
+
+    [Reactive]
+    public bool DemoMode { get; set; }
 
 
     internal StartViewModel()
@@ -123,7 +127,7 @@ public class StartViewModel : ReactiveObject
             return;
         }
 
-        using (var reader = new SproutsReader())
+        using (var reader = new SproutsReader(DemoMode))
         {
             var book = reader.TryRead(files[0].Path.LocalPath);
             if (book is null) return;

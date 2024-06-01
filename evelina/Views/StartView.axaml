@@ -24,7 +24,7 @@
   <Grid HorizontalAlignment="Stretch"
           Width="400"
           VerticalAlignment="Center"
-          RowDefinitions="Auto,*">
+          RowDefinitions="Auto,*, Auto">
     <TextBlock Grid.Row="0" 
                Text="evelina"
                Margin="0,0,0,40"
@@ -60,5 +60,14 @@
               Command="{Binding ReadSproutsCommand}"
               Content="Read Sprouts..."/>
     </Grid>
+
+    <StackPanel Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="5">
+        <TextBlock Text="Demo mode"
+                   VerticalAlignment="Center"/>
+        <CheckBox IsChecked="{Binding DemoMode}"/>
+    </StackPanel>
   </Grid>
 </UserControl>
