@@ -7,7 +7,7 @@
              x:Class="BookAvalonia.View.GraphTabView"
              x:DataType="viewModel:GraphTabViewModel">
 
-  <ScrollViewer>
+  <ScrollViewer IsScrollChainingEnabled="False">
     <ItemsControl ItemsSource="{Binding Plots}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
@@ -15,7 +15,8 @@
             <ContentControl Grid.Column="1" 
                             MinHeight="300" 
                             MinWidth="100" 
-                            Content="{Binding PlotView}"/>
+                            Content="{Binding PlotView}"
+                            PointerWheelChanged="InputElement_OnPointerWheelChanged"/>
           </Grid>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
