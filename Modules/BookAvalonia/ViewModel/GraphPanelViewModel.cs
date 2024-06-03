@@ -8,6 +8,7 @@ using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookImpl.Elements;
 using Tools;
 using VisualTools;
 
@@ -34,6 +35,9 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
     [Reactive]
     public GraphTabViewModel? Invests { get; set; }
 
+    [Reactive]
+    public GraphTabViewModel? Categories { get; set; }
+
     private readonly Book _book;
 
 
@@ -58,6 +62,9 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         Invests?.Dispose();
         Invests = CreateInvestsTab(data);
+
+        Categories?.Dispose();
+        Categories = CreateCategoriesTab(data);
     }
 
     private GraphTabViewModel CreateTotalTab(BookDatedData data)
@@ -156,6 +163,44 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             }
 
             plot.AddArea(series, dateDoubles, true, normalize);
+            plot.Axes.DateTimeTicksBottom();
+
+            return plot;
+        }
+    }
+    
+    private GraphTabViewModel CreateCategoriesTab(BookDatedData data)
+    {
+        var plots = new List<Plot>();
+
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
+
+        plots.Add(GetCategorical(data.ParentIncomeCategories));
+        plots.Add(GetCategorical(data.ParentExpenseCategories));
+
+        return new GraphTabViewModel("Categories", plots);
+
+        Plot GetCategorical<T>(Dictionary<T, double[]> dict) where T : Category
+        {
+            var plot = new Plot();
+
+            var series = new List<SeriesInfo>();
+
+            int counter = 0;
+            foreach (var (category, values) in dict)
+            {
+                var info = new SeriesInfo()
+                {
+                    Name = category.Name,
+                    Color = Color.FromHex(PrettyColors.Hexs[counter++]),
+                    Values = values
+                };
+
+                series.Add(info);
+            }
+
+            plot.AddStackedBars(series, dateDoubles);
+
             plot.Axes.DateTimeTicksBottom();
 
             return plot;

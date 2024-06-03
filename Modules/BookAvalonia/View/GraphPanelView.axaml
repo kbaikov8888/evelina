@@ -22,6 +22,9 @@
       <TabItem Header="{Binding Invests.Name}">
         <view:GraphTabView DataContext="{Binding Invests}"/>
       </TabItem>
+      <TabItem Header="{Binding Categories.Name}">
+        <view:GraphTabView DataContext="{Binding Categories}"/>
+      </TabItem>
     </TabControl>
   </Grid>
 </UserControl>

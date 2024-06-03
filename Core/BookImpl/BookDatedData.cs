@@ -20,6 +20,8 @@ public class BookDatedData : IDisposable
 
     // categorical
     public Dictionary<InvestAccountFamily, double[]> InvestsByFamilies { get; } = new();
+    public Dictionary<IncomeCategory, double[]> ParentIncomeCategories { get; } = new();
+    public Dictionary<ExpenseCategory, double[]> ParentExpenseCategories { get; } = new();
 
     private readonly List<Entry> _entries;
     private readonly Book _book;
@@ -38,59 +40,25 @@ public class BookDatedData : IDisposable
         ReInvests = new double[Dates.Length];
         Results = new double[Dates.Length];
 
-        CalculateValues();
-        CalculateCategorical();
+        Calculate();
     }
 
 
     public void Dispose()
     {
-        InvestsByFamilies.Clear();
+        Clear();
     }
 
-    private void CalculateValues()
-    {
-        int index = 0;
-        foreach (var entry in _entries)
-        {
-            for (int i = index; i < Dates.Length; i++)
-            {
-                if (Level.IsEqual(entry.DateTime, Dates[i]))
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            switch (entry)
-            {
-                case ExpenseEntry expense:
-                    Expenses[index] += expense.Amount; break;
-                case IncomeEntry income:
-                    Incomes[index] += income.Amount; break;
-                case InvestingEntry investing:
-                    Invests[index] += investing.ReceiverAmountInDefaultCurrency; break;
-                case ReInvestingEntry reInvesting:
-                    ReInvests[index] += reInvesting.SenderAmountInDefaultCurrency; break;
-            }
-
-            Results[index] = Incomes[index] - Expenses[index] - Invests[index] + ReInvests[index];
-        }
-    }
-
-    private void CalculateCategorical()
-    {
-        CalculateInvestsByAccount();
-    }
-
-    private void CalculateInvestsByAccount()
+    private void Clear()
     {
         InvestsByFamilies.Clear();
+        ParentIncomeCategories.Clear();
+        ParentExpenseCategories.Clear();
+    }
 
-        foreach (var family in _book.InvestAccountFamilies)
-        {
-            InvestsByFamilies[family] = new double[Dates.Length];
-        }
+    private void Calculate()
+    {
+        Clear();
 
         int index = 0;
         foreach (var entry in _entries)
@@ -104,18 +72,79 @@ public class BookDatedData : IDisposable
                 }
             }
 
-            if (entry is TransferEntry transfer)
+            CalculateValues(entry, index);
+            CalculateInvestsByAccount(entry, index);
+            CalculateParentIncomeCategories(entry, index);
+            CalculateParentExpenseCategories(entry, index);
+        }
+    }
+
+    private void CalculateValues(Entry entry, int index)
+    {
+        switch (entry)
+        {
+            case ExpenseEntry expense:
+                Expenses[index] += expense.Amount; break;
+            case IncomeEntry income:
+                Incomes[index] += income.Amount; break;
+            case InvestingEntry investing:
+                Invests[index] += investing.ReceiverAmountInDefaultCurrency; break;
+            case ReInvestingEntry reInvesting:
+                ReInvests[index] += reInvesting.SenderAmountInDefaultCurrency; break;
+        }
+
+        Results[index] = Incomes[index] - Expenses[index] - Invests[index] + ReInvests[index];
+    }
+
+    private void CalculateInvestsByAccount(Entry entry, int index)
+    {
+        if (entry is TransferEntry transfer)
+        {
+            if (transfer.Sender is InvestAccount from)
             {
-                if (transfer.Sender is InvestAccount from)
+                if (!InvestsByFamilies.ContainsKey(from.Family))
                 {
-                    InvestsByFamilies[from.Family][index] -= transfer.SenderAmount;
+                    InvestsByFamilies[from.Family] = new double[Dates.Length];
                 }
 
-                if (transfer.Receiver is InvestAccount to)
-                {
-                    InvestsByFamilies[to.Family][index] += transfer.ReceiverAmount;
-                }
+                InvestsByFamilies[from.Family][index] -= transfer.SenderAmount;
             }
+
+            if (transfer.Receiver is InvestAccount to)
+            {
+                if (!InvestsByFamilies.ContainsKey(to.Family))
+                {
+                    InvestsByFamilies[to.Family] = new double[Dates.Length];
+                }
+
+                InvestsByFamilies[to.Family][index] += transfer.ReceiverAmount;
+            }
+        }
+    }
+
+    private void CalculateParentIncomeCategories(Entry entry, int index)
+    {
+        if (entry is IncomeEntry { Category.ParentCategory: IncomeCategory incomeCategory } income)
+        {
+            if (!ParentIncomeCategories.ContainsKey(incomeCategory))
+            {
+                ParentIncomeCategories[incomeCategory] = new double[Dates.Length];
+            }
+
+            ParentIncomeCategories[incomeCategory][index] += income.Amount;
+        }
+    }
+
+    private void CalculateParentExpenseCategories(Entry entry, int index)
+    {
+        if (entry is ExpenseEntry { Category.ParentCategory: ExpenseCategory expenseCategory } expense)
+        {
+            if (!ParentExpenseCategories.ContainsKey(expenseCategory))
+            {
+                ParentExpenseCategories[expenseCategory] = new double[Dates.Length];
+            }
+
+            ParentExpenseCategories[expenseCategory][index] += expense.Amount;
         }
     }
 }
