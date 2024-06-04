@@ -1,6 +1,8 @@
-﻿namespace BookImpl.Elements;
+﻿using Avalonia;
 
-public abstract class Category
+namespace BookImpl.Elements;
+
+public abstract class Category : INamed
 {
     public string Name { get; }
     public Category? ParentCategory { get; internal set; }
