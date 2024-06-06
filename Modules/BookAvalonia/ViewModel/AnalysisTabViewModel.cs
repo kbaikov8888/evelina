@@ -4,6 +4,8 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using DynamicData.Binding;
+using VisualTools;
 
 namespace BookAvalonia.ViewModel;
 
@@ -17,10 +19,20 @@ public class AnalysisTabViewModel<T> : ReactiveObject where T : Category
 
     public GraphViewModel Plot { get; }
 
+    private readonly Dictionary<T, double[]> _data;
+    private readonly Dictionary<T, string> _hexColors = new();
+
 
     public AnalysisTabViewModel(string name, Dictionary<T, double[]> data)
     {
         Name = name;
+        _data = data;
+
+        int counter = 0;
+        foreach (var cat in data.Keys)
+        {
+            _hexColors[cat] = PrettyColors.Hexs[counter++];
+        }
 
         CheckAllCommand = ReactiveCommand.Create(CheckAll);
         UncheckAllCommand = ReactiveCommand.Create(UncheckAll);
@@ -54,6 +66,8 @@ public class AnalysisTabViewModel<T> : ReactiveObject where T : Category
 
     private void UpdatePlot()
     {
+
+
 
     }
 }
