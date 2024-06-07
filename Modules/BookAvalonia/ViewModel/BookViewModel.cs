@@ -17,6 +17,9 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
     public ICommand ShowGraphPanelCommand { get; }
     private GraphPanelViewModel? _graphPanel;
 
+    public ICommand ShowAnalysisPanelCommand { get; }
+    private AnalysisPanelViewModel? _analysisPanel;
+
     public string Name => _book.Name;
 
     private readonly IReadOnlyList<EntryViewModel> _entries;
@@ -30,6 +33,7 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
 
         ShowEntryTableCommand = ReactiveCommand.Create(ShowEntryTable);
         ShowGraphPanelCommand = ReactiveCommand.Create(ShowGraphPanel);
+        ShowAnalysisPanelCommand = ReactiveCommand.Create(ShowAnalysisPanel);
 
         ShowEntryTable();
     }
@@ -51,6 +55,7 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
         ActiveWindow = _entryTable;
     }
 
+
     private void ShowGraphPanel()
     {
         if (ActiveWindow is GraphPanelViewModel)
@@ -61,6 +66,18 @@ public class BookViewModel : MainViewModelBase, IDisposable, IMenuCompatible
         _graphPanel ??= new GraphPanelViewModel(_book, this);
 
         ActiveWindow = _graphPanel;
+    }
+
+    private void ShowAnalysisPanel()
+    {
+        if (ActiveWindow is AnalysisPanelViewModel)
+        {
+            return;
+        }
+
+        _analysisPanel ??= new AnalysisPanelViewModel(_book, this);
+
+        ActiveWindow = _analysisPanel;
     }
 
     protected override void Close()

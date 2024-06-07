@@ -21,6 +21,16 @@ public class BookCalculatedData
     }
 
 
+    public BookDatedData GetData(DateLevel level)
+    {
+        return level switch
+        {
+            DateLevel.Year => _book.CalculatedData.Years,
+            DateLevel.Month => _book.CalculatedData.Months,
+            _ => throw new NotImplementedException(nameof(DateLevel))
+        };
+    }
+
     internal void Calculate()
     {
         Months.Dispose();

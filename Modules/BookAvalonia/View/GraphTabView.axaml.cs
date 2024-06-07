@@ -13,6 +13,6 @@ public partial class GraphTabView : ReactiveUserControl<GraphTabViewModel>
 
     private void InputElement_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        e.Handled= true;
+        e.Handled = true;
     }
 }

@@ -1,17 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
-    <PackageReference Include="Avalonia.Fonts.Inter"  />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.ReactiveUI" />
     <PackageReference Include="ReactiveUI.Fody" />
     <PackageReference Include="DialogHost.Avalonia" />
-    <PackageReference Include="FluentIcons.Avalonia"  />
+    <PackageReference Include="FluentIcons.Avalonia" />
     <PackageReference Include="MessageBox.Avalonia" />
   </ItemGroup>
 </Project>

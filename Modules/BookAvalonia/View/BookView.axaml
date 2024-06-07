@@ -78,6 +78,22 @@
               </Grid>
           </Button>
 
+          <Button Classes="inMenu"
+                  Command="{Binding ShowAnalysisPanelCommand}">
+              <Grid ColumnDefinitions="40, *">
+                  <Viewbox Grid.Column="0"
+                           Width="28"
+                           Height="28">
+                      <avalonia:SymbolIcon Symbol="SearchInfo"/>
+                  </Viewbox>
+
+                  <TextBlock Grid.Column="1"
+                             Margin="4,0,0,0"
+                             VerticalAlignment="Center"
+                             Text="Analysis"/>
+              </Grid>
+          </Button>
+
           <Separator/>
 
           <Button Classes="inMenu"

@@ -6,7 +6,7 @@ namespace evelina.Controls;
 
 public class SimpleCheckedViewModel : ReactiveObject
 {
-    public string Name => Source.Name;
+    public string? Name => Source.Name;
 
     [Reactive]
     public bool IsChecked { get; set; }

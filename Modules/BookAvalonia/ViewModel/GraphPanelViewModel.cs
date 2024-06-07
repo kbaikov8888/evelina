@@ -50,12 +50,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
     private void RefreshTabs()
     {
-        var data = SelectedDateLevel switch
-        {
-            DateLevel.Year => _book.CalculatedData.Years,
-            DateLevel.Month => _book.CalculatedData.Months,
-            _ => throw new NotImplementedException(nameof(DateLevel))
-        };
+        var data = _book.CalculatedData.GetData(SelectedDateLevel);
 
         Total?.Dispose();
         Total = CreateTotalTab(data);
@@ -175,36 +170,36 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
-        plots.Add(GetCategorical(data.ParentIncomeCategories));
-        plots.Add(GetCategorical(data.ParentExpenseCategories));
+        plots.Add(GetCategorical(data.ParentIncomeCategories, dateDoubles));
+        plots.Add(GetCategorical(data.ParentExpenseCategories, dateDoubles));
 
         return new GraphTabViewModel("Categories", plots);
+    }
 
-        Plot GetCategorical<T>(Dictionary<T, double[]> dict) where T : Category
+    public static Plot GetCategorical<T>(Dictionary<T, double[]> dict, double[] x) where T : Category
+    {
+        var plot = new Plot();
+
+        var series = new List<SeriesInfo>();
+
+        int counter = 0;
+        foreach (var (category, values) in dict)
         {
-            var plot = new Plot();
-
-            var series = new List<SeriesInfo>();
-
-            int counter = 0;
-            foreach (var (category, values) in dict)
+            var info = new SeriesInfo()
             {
-                var info = new SeriesInfo()
-                {
-                    Name = category.Name,
-                    Color = Color.FromHex(PrettyColors.Hexs[counter++]),
-                    Values = values
-                };
+                Name = category.Name,
+                Color = Color.FromHex(PrettyColors.Hexs[counter++]),
+                Values = values
+            };
 
-                series.Add(info);
-            }
-
-            plot.AddStackedBars(series, dateDoubles);
-
-            plot.Axes.DateTimeTicksBottom();
-
-            return plot;
+            series.Add(info);
         }
+
+        plot.AddStackedBars(series, x);
+
+        plot.Axes.DateTimeTicksBottom();
+
+        return plot;
     }
 }
 

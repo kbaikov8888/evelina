@@ -16,9 +16,17 @@ public class Book
 
     private readonly HashSet<Entry> _entries = new();
 
+    public IReadOnlyList<ExpenseCategory> ParentExpenseCategories =>
+        _expenseCategories.Select(x => x.ParentCategory)
+            .Where(x => x is not null)
+            .ToHashSet().Cast<ExpenseCategory>().ToList();
     public IReadOnlyList<ExpenseCategory> ExpenseCategories => _expenseCategories.ToList();
     private readonly HashSet<ExpenseCategory> _expenseCategories = new();
 
+    public IReadOnlyList<IncomeCategory> ParentIncomeCategories =>
+        _incomeCategories.Select(x => x.ParentCategory)
+            .Where(x => x is not null)
+            .ToHashSet().Cast<IncomeCategory>().ToList();
     public IReadOnlyList<IncomeCategory> IncomeCategories => _incomeCategories.ToList();
     private readonly HashSet<IncomeCategory> _incomeCategories = new();
 

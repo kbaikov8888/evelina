@@ -1,12 +1,11 @@
 ﻿using BookImpl;
-using BookImpl.Elements;
 using BookImpl.Enum;
 using evelina.Controls;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookImpl.Elements;
 
 namespace BookAvalonia.ViewModel;
 
@@ -25,11 +24,9 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
         }
     }
 
-    [Reactive]
-    public AnalysisTabViewModel<IncomeCategory>? Incomes { get; set; }
+    public AnalysisTabViewModel Incomes { get; } 
 
-    [Reactive]
-    public AnalysisTabViewModel<ExpenseCategory>? Expenses { get; set; }
+    public AnalysisTabViewModel Expenses { get; }
 
     private readonly Book _book;
     
@@ -37,19 +34,21 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
     public AnalysisPanelViewModel(Book book, IMainViewModel main) : base(main)
     {
         _book = book;
+
+        Incomes = new AnalysisTabViewModel("Incomes", _book.ParentIncomeCategories);
+        Expenses = new AnalysisTabViewModel("Expenses", _book.ParentExpenseCategories);
+
+        RefreshTabs();
     }
 
 
     private void RefreshTabs()
     {
-        var data = SelectedDateLevel switch
-        {
-            DateLevel.Year => _book.CalculatedData.Years,
-            DateLevel.Month => _book.CalculatedData.Months,
-            _ => throw new NotImplementedException(nameof(DateLevel))
-        };
+        var data = _book.CalculatedData.GetData(SelectedDateLevel);
 
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
-
+        Incomes.UpdateData(data.ParentIncomeCategories, dateDoubles);
+        Expenses.UpdateData(data.ParentExpenseCategories, dateDoubles);
     }
 }
