@@ -1,16 +1,28 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:evelina.Controls">
+                    xmlns:i="using:Avalonia.Xaml.Interactivity"
+                    xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+                    xmlns:simpleCheckedList="clr-namespace:evelina.Controls.SimpleCheckedList">
 
-    <DataTemplate x:DataType="controls:SimpleCheckedViewModel"
+    <DataTemplate x:DataType="simpleCheckedList:SimpleCheckedViewModel"
                   x:Key="DefaultSimpleChecked">
-        <Grid ColumnDefinitions="Auto, *">
+        <Grid ColumnDefinitions="Auto, *" 
+              x:Name="item"
+              Background="Transparent">
             <CheckBox Grid.Column="0" 
                       IsChecked="{Binding IsChecked}"/>
 
             <TextBlock Grid.Column="1"
                        VerticalAlignment="Center"
                        Text="{Binding Name}"/>
+
+            <i:Interaction.Behaviors>
+                <ia:EventTriggerBehavior EventName="PointerPressed"
+                                         SourceObject="{Binding #item}">
+                    <ia:InvokeCommandAction Command="{Binding DoubleClickCommand}"
+                                            PassEventArgsToCommand="True"/>
+                </ia:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

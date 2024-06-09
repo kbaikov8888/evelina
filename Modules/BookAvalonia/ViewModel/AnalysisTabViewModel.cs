@@ -2,16 +2,13 @@
 using BookImpl.Elements;
 using DynamicData;
 using DynamicData.Binding;
-using evelina.Controls;
+using evelina.Controls.SimpleCheckedList;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using System.Windows.Input;
 using VisualTools;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookAvalonia.ViewModel;
 
@@ -19,9 +16,7 @@ public class AnalysisTabViewModel : ReactiveObject
 {
     public string Name { get; }
 
-    public ICommand CheckAllCommand { get; }
-    public ICommand UncheckAllCommand { get; }
-    public ObservableCollection<SimpleCheckedViewModel> Settings { get; } = new();
+    public SimpleCheckedListViewModel Settings { get; }
 
     [Reactive]
     public GraphViewModel? Plot { get; private set; }
@@ -37,21 +32,21 @@ public class AnalysisTabViewModel : ReactiveObject
     {
         Name = name;
 
+        var items = new List<SimpleCheckedViewModel>();
         int counter = 0;
         foreach (var cat in categories)
         {
             if (cat is null) continue;
 
-            Settings.Add(new SimpleCheckedViewModel(cat));
+            items.Add(new SimpleCheckedViewModel(cat));
             _hexColors[cat] = PrettyColors.Hexs[counter++];
         }
 
-        CheckAllCommand = ReactiveCommand.Create(CheckAll);
-        UncheckAllCommand = ReactiveCommand.Create(UncheckAll);
+        Settings = new SimpleCheckedListViewModel(items);
 
         _updatePlot.Tick += UpdatePlotOnTick;
 
-        Settings.ToObservableChangeSet()
+        Settings.Items.ToObservableChangeSet()
             .SubscribeMany(x => x.WhenAnyValue(y => y.IsChecked).Subscribe(_ => UpdatePlot()))
             .Subscribe();
     }
@@ -63,7 +58,7 @@ public class AnalysisTabViewModel : ReactiveObject
 
         var filtered = new Dictionary<Category, double[]>();
 
-        foreach (var setting in Settings)
+        foreach (var setting in Settings.Items)
         {
             if (!setting.IsChecked) continue;
 
@@ -88,22 +83,6 @@ public class AnalysisTabViewModel : ReactiveObject
         }
 
         UpdatePlot();
-    }
-
-    private void CheckAll()
-    {
-        foreach (var setting in Settings)
-        {
-            setting.IsChecked = true;
-        }
-    }
-
-    private void UncheckAll()
-    {
-        foreach (var setting in Settings)
-        {
-            setting.IsChecked = false;
-        }
     }
 
     private void UpdatePlot()

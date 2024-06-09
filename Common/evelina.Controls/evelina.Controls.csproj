@@ -5,6 +5,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" />
     <PackageReference Include="ReactiveUI.Fody" />
     <PackageReference Include="DialogHost.Avalonia" />
     <PackageReference Include="FluentIcons.Avalonia" />
