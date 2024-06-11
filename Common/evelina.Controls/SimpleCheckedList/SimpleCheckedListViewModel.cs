@@ -25,8 +25,7 @@ public class SimpleCheckedListViewModel : ReactiveObject
     {
         Items = new ObservableCollection<SimpleCheckedViewModel>(items);
 
-        Items.ToObservableChangeSet()
-            .AutoRefresh(model => model.IsEnabled)
+        Items.ToObservableChangeSet().AutoRefresh(model => model.IsEnabled)
             .Filter(model => model.IsEnabled)
             .Sort(new SimpleCheckedViewModelComparer())
             .Bind(out var filtered)

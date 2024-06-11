@@ -1,18 +1,22 @@
 ﻿using Avalonia.Threading;
+using BookImpl;
 using BookImpl.Elements;
+using BookImpl.Enum;
 using DynamicData;
 using DynamicData.Binding;
+using evelina.Controls;
 using evelina.Controls.SimpleCheckedList;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using VisualTools;
 
 namespace BookAvalonia.ViewModel;
 
-public class AnalysisTabViewModel : ReactiveObject
+public class AnalysisTabViewModel : WindowViewModelBase, IMenuCompatible
 {
     public string Name { get; }
 
@@ -21,6 +25,10 @@ public class AnalysisTabViewModel : ReactiveObject
     [Reactive]
     public GraphViewModel? Plot { get; private set; }
 
+    private readonly Book _book;
+
+    private readonly IMainViewModel _main;
+
     private readonly Dictionary<Category, double[]> _data = new();
     private readonly Dictionary<Category, string> _hexColors = new();
     private double[] _x = Array.Empty<double>();
@@ -28,9 +36,11 @@ public class AnalysisTabViewModel : ReactiveObject
     private readonly DispatcherTimer _updatePlot = new() { Interval = new TimeSpan(0, 0, 0, 0, 50) };
 
 
-    public AnalysisTabViewModel(string name, IEnumerable<Category?> categories)
+    public AnalysisTabViewModel(string name, IEnumerable<Category?> categories, Book book, IMainViewModel main) : base(main)
     {
         Name = name;
+        _book = book;
+        _main = main;
 
         var items = new List<SimpleCheckedViewModel>();
         int counter = 0;
@@ -38,7 +48,10 @@ public class AnalysisTabViewModel : ReactiveObject
         {
             if (cat is null) continue;
 
-            items.Add(new SimpleCheckedViewModel(cat));
+            var item = new SimpleCheckedViewModel(cat);
+            item.DoubleClickedEvent += ItemOnDoubleClickedEvent;
+
+            items.Add(item);
             _hexColors[cat] = PrettyColors.Hexs[counter++];
         }
 
@@ -51,6 +64,30 @@ public class AnalysisTabViewModel : ReactiveObject
             .Subscribe();
     }
 
+
+    private void ItemOnDoubleClickedEvent(SimpleCheckedViewModel obj)
+    {
+        if (obj.Source is not Category category) return;
+
+        var categories = _book.AllCategories.Where(x => x.ParentCategory == category);
+
+        var vm = new AnalysisTabViewModel(string.Empty, categories, _book, _main);
+
+        //TODO
+        var data = _book.CalculatedData.GetData(DateLevel.Month);
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
+
+        if (category is ExpenseCategory)
+        {
+            vm.UpdateData(data.ExpenseCategories, dateDoubles);
+        }
+        else if (category is IncomeCategory)
+        {
+            vm.UpdateData(data.IncomeCategories, dateDoubles);
+        }
+
+        Main.ActiveWindow = vm;
+    }
 
     private void UpdatePlotOnTick(object? sender, EventArgs e)
     {

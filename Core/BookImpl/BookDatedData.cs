@@ -22,6 +22,8 @@ public class BookDatedData : IDisposable
     public Dictionary<InvestAccountFamily, double[]> InvestsByFamilies { get; } = new();
     public Dictionary<IncomeCategory, double[]> ParentIncomeCategories { get; } = new();
     public Dictionary<ExpenseCategory, double[]> ParentExpenseCategories { get; } = new();
+    public Dictionary<IncomeCategory, double[]> IncomeCategories { get; } = new();
+    public Dictionary<ExpenseCategory, double[]> ExpenseCategories { get; } = new();
 
     private readonly List<Entry> _entries;
     private readonly Book _book;
@@ -54,6 +56,8 @@ public class BookDatedData : IDisposable
         InvestsByFamilies.Clear();
         ParentIncomeCategories.Clear();
         ParentExpenseCategories.Clear();
+        IncomeCategories.Clear();
+        ExpenseCategories.Clear();
     }
 
     private void Calculate()
@@ -76,6 +80,8 @@ public class BookDatedData : IDisposable
             CalculateInvestsByAccount(entry, index);
             CalculateParentIncomeCategories(entry, index);
             CalculateParentExpenseCategories(entry, index);
+            CalculateIncomeCategories(entry, index);
+            CalculateExpenseCategories(entry, index);
         }
     }
 
@@ -145,6 +151,31 @@ public class BookDatedData : IDisposable
             }
 
             ParentExpenseCategories[expenseCategory][index] += expense.Amount;
+        }
+    }
+    private void CalculateIncomeCategories(Entry entry, int index)
+    {
+        if (entry is IncomeEntry { Category: IncomeCategory incomeCategory } income)
+        {
+            if (!IncomeCategories.ContainsKey(incomeCategory))
+            {
+                IncomeCategories[incomeCategory] = new double[Dates.Length];
+            }
+
+            IncomeCategories[incomeCategory][index] += income.Amount;
+        }
+    }
+
+    private void CalculateExpenseCategories(Entry entry, int index)
+    {
+        if (entry is ExpenseEntry { Category: ExpenseCategory expenseCategory } expense)
+        {
+            if (!ExpenseCategories.ContainsKey(expenseCategory))
+            {
+                ExpenseCategories[expenseCategory] = new double[Dates.Length];
+            }
+
+            ExpenseCategories[expenseCategory][index] += expense.Amount;
         }
     }
 }

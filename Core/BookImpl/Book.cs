@@ -1,8 +1,8 @@
-﻿using System;
+﻿using BookImpl.Elements;
+using BookImpl.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookImpl.Elements;
-using BookImpl.Enum;
 
 namespace BookImpl;
 
@@ -15,6 +15,9 @@ public class Book
     public BookCalculatedData CalculatedData { get; }
 
     private readonly HashSet<Entry> _entries = new();
+
+    public IReadOnlyList<Category> AllCategories =>
+        _expenseCategories.Concat(_incomeCategories.Cast<Category>()).ToList();
 
     public IReadOnlyList<ExpenseCategory> ParentExpenseCategories =>
         _expenseCategories.Select(x => x.ParentCategory)

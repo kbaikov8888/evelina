@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,6 +10,8 @@ namespace evelina.Controls.SimpleCheckedList;
 
 public class SimpleCheckedViewModel : ReactiveObject
 {
+    public event Action<SimpleCheckedViewModel>? DoubleClickedEvent;
+
     public ICommand DoubleClickCommand { get; }
 
     public string? Name => Source.Name;
@@ -34,7 +37,7 @@ public class SimpleCheckedViewModel : ReactiveObject
     {
         if (args.ClickCount == 2)
         {
-            //TODO
+            DoubleClickedEvent?.Invoke(this);
         }
     }
 }

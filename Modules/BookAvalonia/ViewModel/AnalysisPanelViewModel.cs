@@ -35,8 +35,8 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
     {
         _book = book;
 
-        Incomes = new AnalysisTabViewModel("Incomes", _book.ParentIncomeCategories);
-        Expenses = new AnalysisTabViewModel("Expenses", _book.ParentExpenseCategories);
+        Incomes = new AnalysisTabViewModel("Incomes", _book.ParentIncomeCategories, book, main);
+        Expenses = new AnalysisTabViewModel("Expenses", _book.ParentExpenseCategories, book, main);
 
         RefreshTabs();
     }
