@@ -1,7 +1,5 @@
 ﻿using Avalonia.Threading;
-using BookImpl;
 using BookImpl.Elements;
-using BookImpl.Enum;
 using DynamicData;
 using DynamicData.Binding;
 using evelina.Controls;
@@ -10,24 +8,23 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using VisualTools;
 
 namespace BookAvalonia.ViewModel;
 
-public class AnalysisTabViewModel : WindowViewModelBase, IMenuCompatible
+public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
 {
-    public string Name { get; }
+    public event Action? GoBackEvent;
+    public event Action<Category>? CategoryChoosedEvent;
+    
+    public ICommand GoBackCommand { get; }
 
-    public SimpleCheckedListViewModel Settings { get; }
+    public SimpleCheckedListViewModel Settings { get; private set; }
 
     [Reactive]
     public GraphViewModel? Plot { get; private set; }
-
-    private readonly Book _book;
-
-    private readonly IMainViewModel _main;
 
     private readonly Dictionary<Category, double[]> _data = new();
     private readonly Dictionary<Category, string> _hexColors = new();
@@ -36,29 +33,13 @@ public class AnalysisTabViewModel : WindowViewModelBase, IMenuCompatible
     private readonly DispatcherTimer _updatePlot = new() { Interval = new TimeSpan(0, 0, 0, 0, 50) };
 
 
-    public AnalysisTabViewModel(string name, IEnumerable<Category?> categories, Book book, IMainViewModel main) : base(main)
+    public CategoryAnalysisViewModel()
     {
-        Name = name;
-        _book = book;
-        _main = main;
-
-        var items = new List<SimpleCheckedViewModel>();
-        int counter = 0;
-        foreach (var cat in categories)
-        {
-            if (cat is null) continue;
-
-            var item = new SimpleCheckedViewModel(cat);
-            item.DoubleClickedEvent += ItemOnDoubleClickedEvent;
-
-            items.Add(item);
-            _hexColors[cat] = PrettyColors.Hexs[counter++];
-        }
-
-        Settings = new SimpleCheckedListViewModel(items);
+        GoBackCommand = ReactiveCommand.Create(() => GoBackEvent?.Invoke());
 
         _updatePlot.Tick += UpdatePlotOnTick;
 
+        Settings = new SimpleCheckedListViewModel();
         Settings.Items.ToObservableChangeSet()
             .SubscribeMany(x => x.WhenAnyValue(y => y.IsChecked).Subscribe(_ => UpdatePlot()))
             .Subscribe();
@@ -69,24 +50,7 @@ public class AnalysisTabViewModel : WindowViewModelBase, IMenuCompatible
     {
         if (obj.Source is not Category category) return;
 
-        var categories = _book.AllCategories.Where(x => x.ParentCategory == category);
-
-        var vm = new AnalysisTabViewModel(string.Empty, categories, _book, _main);
-
-        //TODO
-        var data = _book.CalculatedData.GetData(DateLevel.Month);
-        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
-
-        if (category is ExpenseCategory)
-        {
-            vm.UpdateData(data.ExpenseCategories, dateDoubles);
-        }
-        else if (category is IncomeCategory)
-        {
-            vm.UpdateData(data.IncomeCategories, dateDoubles);
-        }
-
-        Main.ActiveWindow = vm;
+        CategoryChoosedEvent?.Invoke(category);
     }
 
     private void UpdatePlotOnTick(object? sender, EventArgs e)
@@ -108,11 +72,24 @@ public class AnalysisTabViewModel : WindowViewModelBase, IMenuCompatible
         Plot = new GraphViewModel(plot);
     }
 
-    public void UpdateData<T>(Dictionary<T, double[]> data, double[] x) where T : Category
+    public void UpdateData(Dictionary<Category, double[]> data, double[] x)
     {
+        Settings.Items.Clear();
+        _hexColors.Clear();
         _data.Clear();
-
         _x = x;
+
+        var categories = data.Keys;
+
+        int counter = 0;
+        foreach (var cat in categories)
+        {
+            var item = new SimpleCheckedViewModel(cat);
+            item.DoubleClickedEvent += ItemOnDoubleClickedEvent;
+
+            Settings.Items.Add(item);
+            _hexColors[cat] = PrettyColors.Hexs[counter++];
+        }
 
         foreach (var (cat, val) in data)
         {

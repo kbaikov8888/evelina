@@ -1,17 +1,17 @@
 ﻿using BookImpl;
+using BookImpl.Elements;
 using BookImpl.Enum;
 using evelina.Controls;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookImpl.Elements;
 
 namespace BookAvalonia.ViewModel;
 
 public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
 {
-    public IEnumerable<DateLevel> DateLevels => Enum.GetValues(typeof(DateLevel)).Cast<DateLevel>();
+    public static IEnumerable<DateLevel> DateLevels { get; } = Enum.GetValues(typeof(DateLevel)).Cast<DateLevel>();
 
     private DateLevel _selectedDateLevel = DateLevel.Month;
     public DateLevel SelectedDateLevel
@@ -20,13 +20,24 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedDateLevel, value);
-            RefreshTabs();
+            UpdateData();
         }
     }
 
-    public AnalysisTabViewModel Incomes { get; } 
+    public static IEnumerable<EntryType> EntryTypes { get; } = new List<EntryType> { EntryType.Expense, EntryType.Income };
 
-    public AnalysisTabViewModel Expenses { get; }
+    private EntryType _selectedEntryType = EntryType.Expense;
+    public EntryType SelectedEntryType
+    {
+        get => _selectedEntryType;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedEntryType, value);
+            UpdateData();
+        }
+    }
+
+    public CategoryAnalysisViewModel CategoryAnalysis { get; } 
 
     private readonly Book _book;
     
@@ -35,20 +46,67 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
     {
         _book = book;
 
-        Incomes = new AnalysisTabViewModel("Incomes", _book.ParentIncomeCategories, book, main);
-        Expenses = new AnalysisTabViewModel("Expenses", _book.ParentExpenseCategories, book, main);
+        CategoryAnalysis = new CategoryAnalysisViewModel();
+        CategoryAnalysis.GoBackEvent += UpdateData;
+        CategoryAnalysis.CategoryChoosedEvent += CategoryChoosed;
 
-        RefreshTabs();
+        UpdateData();
     }
 
 
-    private void RefreshTabs()
+    private void UpdateData()
     {
         var data = _book.CalculatedData.GetData(SelectedDateLevel);
-
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
-        Incomes.UpdateData(data.ParentIncomeCategories, dateDoubles);
-        Expenses.UpdateData(data.ParentExpenseCategories, dateDoubles);
+        Dictionary<Category, double[]> vals;
+
+        if (SelectedEntryType == EntryType.Expense)
+        {
+            vals = data.ParentExpenseCategories.ToDictionary(x => x.Key as Category, x => x.Value);
+        }
+        else if (SelectedEntryType == EntryType.Income)
+        {
+            vals = data.IncomeCategories.ToDictionary(x => x.Key as Category, x => x.Value);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        CategoryAnalysis.UpdateData(vals, dateDoubles);
+    }
+
+    private void CategoryChoosed(Category category)
+    {
+        var data = _book.CalculatedData.GetData(SelectedDateLevel);
+        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
+
+        var categories = _book.AllCategories.Where(x => x.ParentCategory == category);
+
+        var vals = new Dictionary<Category, double[]>();
+
+        if (category is ExpenseCategory)
+        {
+            foreach (var (cat, val) in data.ExpenseCategories)
+            {
+                if (categories.Contains(cat))
+                {
+                    vals[cat] = val;
+                }
+            }
+        }
+        else if (category is IncomeCategory)
+        {
+            foreach (var (cat, val) in data.IncomeCategories)
+            {
+                if (categories.Contains(cat))
+                {
+                    vals[cat] = val;
+                }
+            }
+        }
+
+        CategoryAnalysis.UpdateData(vals, dateDoubles);
     }
 }

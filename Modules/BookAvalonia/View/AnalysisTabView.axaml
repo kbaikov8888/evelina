@@ -4,20 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModel="clr-namespace:BookAvalonia.ViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BookAvalonia.View.AnalysisTabView"
-             x:DataType="viewModel:AnalysisTabViewModel">
+             x:Class="BookAvalonia.View.CategoryAnalysisView"
+             x:DataType="viewModel:CategoryAnalysisViewModel">
 
   <Grid ColumnDefinitions="*,5*">
-    <ListBox Grid.Column="0"
-             ItemsSource="{Binding Settings.VisibleItems}"
-             ItemTemplate="{StaticResource DefaultSimpleChecked}">
+    <StackPanel Grid.Column="0"
+                Orientation="Vertical">
+      <Button Content="Back"
+              Command="{Binding GoBackCommand}"
+              HorizontalAlignment="Stretch"/>
+
+      <ListBox ItemsSource="{Binding Settings.VisibleItems}"
+               ItemTemplate="{StaticResource DefaultSimpleChecked}">
         <ListBox.Styles>
-            <Style Selector="ListBoxItem">
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            </Style>
+          <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+          </Style>
         </ListBox.Styles>
-    </ListBox>
+      </ListBox>
+    </StackPanel>
 
     <ContentControl Grid.Column="1"
                     HorizontalAlignment="Stretch"

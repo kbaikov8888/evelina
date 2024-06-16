@@ -8,20 +8,24 @@
              x:Class="BookAvalonia.View.AnalysisPanelView"
              x:DataType="viewModel:AnalysisPanelViewModel">
 
-    <Grid>
+  <Grid RowDefinitions="Auto, *">
+    <Grid Grid.Row="0">
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Right">
         <ComboBox SelectedItem="{Binding SelectedDateLevel}"
                   ItemsSource="{Binding DateLevels}"
-                  HorizontalAlignment="Right"
-                  Margin="5"
-                  ZIndex="1"/>
+                  Margin="5"/>
+      </StackPanel>
 
-        <TabControl>
-            <TabItem Header="{Binding Incomes.Name}">
-              <view:AnalysisTabView DataContext="{Binding Incomes}"/>
-            </TabItem>
-            <TabItem Header="{Binding Expenses.Name}">
-              <view:AnalysisTabView DataContext="{Binding Expenses}"/>
-            </TabItem>
-        </TabControl>
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Left">
+        <ComboBox SelectedItem="{Binding SelectedEntryType}"
+                  ItemsSource="{Binding EntryTypes}"
+                  Margin="5"/>
+      </StackPanel>
     </Grid>
+
+    <view:CategoryAnalysisView Grid.Row="1"
+                               DataContext="{Binding CategoryAnalysis}"/>
+  </Grid>
 </UserControl>

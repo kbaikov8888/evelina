@@ -1,11 +1,10 @@
-﻿using DynamicData;
+﻿using Avalonia;
+using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Avalonia;
 
 namespace evelina.Controls.SimpleCheckedList;
 
@@ -21,9 +20,9 @@ public class SimpleCheckedListViewModel : ReactiveObject
     private bool _internalChangind;
 
 
-    public SimpleCheckedListViewModel(IEnumerable<SimpleCheckedViewModel> items)
+    public SimpleCheckedListViewModel()
     {
-        Items = new ObservableCollection<SimpleCheckedViewModel>(items);
+        Items = new ObservableCollection<SimpleCheckedViewModel>();
 
         Items.ToObservableChangeSet().AutoRefresh(model => model.IsEnabled)
             .Filter(model => model.IsEnabled)

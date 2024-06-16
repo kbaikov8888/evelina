@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace BookAvalonia.View
 {
-    public partial class AnalysisTabView : UserControl
+    public partial class CategoryAnalysisView : UserControl
     {
-        public AnalysisTabView()
+        public CategoryAnalysisView()
         {
             InitializeComponent();
         }
