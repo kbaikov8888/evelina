@@ -74,7 +74,7 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
             throw new NotImplementedException();
         }
 
-        CategoryAnalysis.UpdateData(vals, dateDoubles);
+        CategoryAnalysis.UpdateData(vals, dateDoubles, false);
     }
 
     private void CategoryChoosed(Category category)
@@ -107,6 +107,8 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
             }
         }
 
-        CategoryAnalysis.UpdateData(vals, dateDoubles);
+        if (vals.Count == 0) return;
+
+        CategoryAnalysis.UpdateData(vals, dateDoubles, true);
     }
 }

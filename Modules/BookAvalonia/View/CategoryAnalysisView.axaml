@@ -11,6 +11,7 @@
     <StackPanel Grid.Column="0"
                 Orientation="Vertical">
       <Button Content="Back"
+              IsVisible="{Binding ShowBackButton}"
               Command="{Binding GoBackCommand}"
               HorizontalAlignment="Stretch"/>
 

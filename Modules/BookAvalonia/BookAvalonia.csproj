@@ -17,4 +17,10 @@
     <ProjectReference Include="..\..\Core\BookImpl\BookImpl.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="View\CategoryAnalysisView.axaml.cs">
+      <DependentUpon>CategoryAnalysisView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

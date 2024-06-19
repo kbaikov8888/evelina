@@ -21,7 +21,10 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
     
     public ICommand GoBackCommand { get; }
 
-    public SimpleCheckedListViewModel Settings { get; private set; }
+    [Reactive]
+    public bool ShowBackButton { get; private set; }
+
+    public SimpleCheckedListViewModel Settings { get; }
 
     [Reactive]
     public GraphViewModel? Plot { get; private set; }
@@ -68,12 +71,16 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
             filtered[cat] = _data[cat];
         }
 
+        //TODO _hexColors
+
         var plot = GraphPanelViewModel.GetCategorical(filtered, _x);
         Plot = new GraphViewModel(plot);
     }
 
-    public void UpdateData(Dictionary<Category, double[]> data, double[] x)
+    public void UpdateData(Dictionary<Category, double[]> data, double[] x, bool showBackButton)
     {
+        ShowBackButton = showBackButton;
+
         Settings.Items.Clear();
         _hexColors.Clear();
         _data.Clear();
