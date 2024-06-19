@@ -1,4 +1,4 @@
-﻿using ScottPlot;
+﻿using Avalonia.Media;
 
 namespace PlotWrapper.Models;
 

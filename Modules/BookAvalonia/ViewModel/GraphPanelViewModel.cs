@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BookImpl.Elements;
 using PlotWrapper.Models;
+using PlotWrapper.Wrappers.ScottPlot;
 using Tools;
 using VisualTools;
 
@@ -105,8 +106,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             //total.FillY = true;
             //total.FillYColor = total.Color.WithAlpha(.2);
 
-            var withInvest = plot.Add.Scatter(data.Dates, resWithInvest);
-            withInvest.Color = EntryType.Invest.GetScottPlotColor();
+            var withInvest = plot.Add.Scatter(data.Dates, resWithInvest, EntryType.Invest.GetScottPlotColor());
             //withInvest.FillY = true;
             //withInvest.FillYColor = w0ithInvest.Color.WithAlpha(.2);
 

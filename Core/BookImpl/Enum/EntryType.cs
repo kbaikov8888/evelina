@@ -23,6 +23,4 @@ public static class EntryType_Extension
             EntryType.ReInvest => Colors.DarkOrange,
             _ => throw new NotImplementedException(nameof(GetColor)),
         };
-
-    public static ScottPlot.Color GetScottPlotColor(this EntryType type) => ScottPlot.Color.FromARGB(type.GetColor().ToUInt32());
 }
