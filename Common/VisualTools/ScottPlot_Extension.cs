@@ -2,6 +2,7 @@
 using ScottPlot.Colormaps;
 using ScottPlot.Plottables;
 using System.Collections.Generic;
+using PlotWrapper.Models;
 
 namespace VisualTools;
 

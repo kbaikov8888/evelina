@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookImpl.Elements;
+using PlotWrapper.Models;
 using Tools;
 using VisualTools;
 

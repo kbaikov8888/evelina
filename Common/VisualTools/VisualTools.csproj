@@ -9,4 +9,8 @@
     <PackageReference Include="ScottPlot.Avalonia" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PlotWrapper\PlotWrapper.csproj" />
+  </ItemGroup>
+
 </Project>

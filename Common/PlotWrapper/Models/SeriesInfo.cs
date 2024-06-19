@@ -1,6 +1,6 @@
 ﻿using ScottPlot;
 
-namespace VisualTools;
+namespace PlotWrapper.Models;
 
 public class SeriesInfo
 {

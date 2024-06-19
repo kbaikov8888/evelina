@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioImpl", "Core\Portf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioInterface", "Core\PortfolioInterface\PortfolioInterface.csproj", "{838DD329-A1BF-4134-A3E0-0D959D815F40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotWrapper", "Common\PlotWrapper\PlotWrapper.csproj", "{DB624D4D-5287-4FE8-832F-C698F08E55DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{838DD329-A1BF-4134-A3E0-0D959D815F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{838DD329-A1BF-4134-A3E0-0D959D815F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{838DD329-A1BF-4134-A3E0-0D959D815F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB624D4D-5287-4FE8-832F-C698F08E55DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB624D4D-5287-4FE8-832F-C698F08E55DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB624D4D-5287-4FE8-832F-C698F08E55DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB624D4D-5287-4FE8-832F-C698F08E55DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{4DB2E40F-FB2F-49DE-8EAC-87FEBB12AF15} = {2022F36E-9BE4-4E6E-B772-EEDC6D57701E}
 		{CF2A57D2-1282-4BCE-9629-C836C3C47B79} = {2022F36E-9BE4-4E6E-B772-EEDC6D57701E}
 		{838DD329-A1BF-4134-A3E0-0D959D815F40} = {2022F36E-9BE4-4E6E-B772-EEDC6D57701E}
+		{DB624D4D-5287-4FE8-832F-C698F08E55DA} = {4B98FFA5-9FF6-4DA1-AAA2-3613FB5B9E86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {081A83BE-D661-4A77-B245-8A0BE0CF17A0}

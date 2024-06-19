@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\evelina.Controls\evelina.Controls.csproj" />
     <ProjectReference Include="..\..\Common\evelina.Styles\evelina.Styles.csproj" />
+    <ProjectReference Include="..\..\Common\PlotWrapper\PlotWrapper.csproj" />
     <ProjectReference Include="..\..\Common\Tools\Tools.csproj" />
     <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
     <ProjectReference Include="..\..\Core\BookImpl\BookImpl.csproj" />
