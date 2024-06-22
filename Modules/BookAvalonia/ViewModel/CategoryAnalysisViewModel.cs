@@ -1,9 +1,11 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Media;
+using Avalonia.Threading;
 using BookImpl.Elements;
 using DynamicData;
 using DynamicData.Binding;
 using evelina.Controls;
 using evelina.Controls.SimpleCheckedList;
+using PlotWrapper.Interfaces;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -27,10 +29,10 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
     public SimpleCheckedListViewModel Settings { get; }
 
     [Reactive]
-    public GraphViewModel? Plot { get; private set; }
+    public IPlot? Plot { get; private set; }
 
     private readonly Dictionary<Category, double[]> _data = new();
-    private readonly Dictionary<Category, string> _hexColors = new();
+    private readonly Dictionary<Category, Color> _colors = new();
     private double[] _x = Array.Empty<double>();
 
     private readonly DispatcherTimer _updatePlot = new() { Interval = new TimeSpan(0, 0, 0, 0, 50) };
@@ -73,8 +75,7 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
 
         //TODO _hexColors
 
-        var plot = GraphPanelViewModel.GetCategorical(filtered, _x);
-        Plot = new GraphViewModel(plot);
+        Plot = GraphPanelViewModel.GetCategorical(filtered, _x);
     }
 
     public void UpdateData(Dictionary<Category, double[]> data, double[] x, bool showBackButton)
@@ -82,7 +83,7 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
         ShowBackButton = showBackButton;
 
         Settings.Items.Clear();
-        _hexColors.Clear();
+        _colors.Clear();
         _data.Clear();
         _x = x;
 
@@ -95,7 +96,7 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
             item.DoubleClickedEvent += ItemOnDoubleClickedEvent;
 
             Settings.Items.Add(item);
-            _hexColors[cat] = PrettyColors.Hexs[counter++];
+            _colors[cat] = PrettyColors.Get(counter++);
         }
 
         foreach (var (cat, val) in data)

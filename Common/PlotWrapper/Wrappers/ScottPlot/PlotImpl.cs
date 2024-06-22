@@ -1,18 +1,27 @@
-﻿using PlotWrapper.Interfaces;
+﻿using Avalonia.Controls;
+using PlotWrapper.Interfaces;
 using PlotWrapper.Models;
 using ScottPlot;
+using ScottPlot.Avalonia;
 using System.Collections.Generic;
 
 namespace PlotWrapper.Wrappers.ScottPlot;
 
 internal class PlotImpl : IPlot
 {
+    public Control View => _plotView;
+
     private readonly Plot _plot;
+    private readonly AvaPlot _plotView;
 
 
     public PlotImpl()
     {
         _plot = new Plot();
+        _plotView = new AvaPlot();
+
+        _plotView.Reset(_plot);
+        _plotView.Refresh();
     }
 
 

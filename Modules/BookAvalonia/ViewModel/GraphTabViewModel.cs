@@ -1,26 +1,26 @@
-﻿using System;
+﻿using PlotWrapper;
+using PlotWrapper.Interfaces;
 using ReactiveUI;
-using ScottPlot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using VisualTools;
 
 namespace BookAvalonia.ViewModel;
 
 public class GraphTabViewModel : ReactiveObject, IDisposable
 {
     public string Name { get; }
-    public IReadOnlyList<GraphViewModel> Plots { get; }
+    public IReadOnlyList<IPlot> Plots { get; }
 
-    private readonly ScottPlotSyncer _syncer;
+    private readonly IDisposable _syncer;
 
 
-    internal GraphTabViewModel(string name, ICollection<Plot> plots)
+    internal GraphTabViewModel(string name, ICollection<IPlot> plots)
     {
         Name = name;
-        Plots = plots.Select(p => new GraphViewModel(p)).ToList();
+        Plots = plots.ToList();
 
-        _syncer = new ScottPlotSyncer(Plots.Select(x => x.PlotView), true, false);
+        _syncer = PlotFabric.SyncPlots(plots, true, false);
     }
 
 

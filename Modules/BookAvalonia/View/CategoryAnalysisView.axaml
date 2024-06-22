@@ -31,6 +31,6 @@
                     VerticalAlignment="Stretch"
                     MinHeight="100"
                     MinWidth="100"
-                    Content="{Binding Plot.PlotView}"/>
+                    Content="{Binding Plot.View}"/>
   </Grid>
 </UserControl>

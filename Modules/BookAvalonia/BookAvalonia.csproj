@@ -6,7 +6,6 @@
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.ReactiveUI" />
     <PackageReference Include="ReactiveUI.Fody" />
-    <PackageReference Include="ScottPlot.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,12 +15,6 @@
     <ProjectReference Include="..\..\Common\Tools\Tools.csproj" />
     <ProjectReference Include="..\..\Common\VisualTools\VisualTools.csproj" />
     <ProjectReference Include="..\..\Core\BookImpl\BookImpl.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="View\CategoryAnalysisView.axaml.cs">
-      <DependentUpon>CategoryAnalysisView.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
 </Project>
