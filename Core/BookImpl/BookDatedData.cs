@@ -2,6 +2,7 @@
 using BookImpl.Enum;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BookImpl;
 
@@ -10,6 +11,7 @@ public class BookDatedData : IDisposable
     internal DateLevel Level { get; }
 
     public DateTime[] Dates { get; }
+    public double[] DatesAsDoubles { get; }
 
     // values
     public double[] Expenses { get; }
@@ -33,6 +35,7 @@ public class BookDatedData : IDisposable
     {
         Level = level;
         Dates = dates;
+        DatesAsDoubles = dates.Select(x => x.ToOADate()).ToArray();
         _entries = book.GetEntriesFromFirst();
         _book = book;
 

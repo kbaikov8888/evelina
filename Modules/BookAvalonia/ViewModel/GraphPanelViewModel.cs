@@ -1,14 +1,17 @@
-﻿using BookImpl;
+﻿using Avalonia.Media;
+using BookImpl;
+using BookImpl.Elements;
 using BookImpl.Enum;
 using DynamicData;
 using evelina.Controls;
+using PlotWrapper;
+using PlotWrapper.Interfaces;
+using PlotWrapper.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookImpl.Elements;
 using Tools;
 using VisualTools;
 
@@ -64,7 +67,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
     private GraphTabViewModel CreateTotalTab(BookDatedData data)
     {
-        var plots = new List<Plot>();
+        var plots = new List<IPlot>();
 
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
@@ -76,7 +79,7 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         return new GraphTabViewModel("Total", plots);
 
-        Plot GetCumulativeResultsPlot()
+        IPlot GetCumulativeResultsPlot()
         {
             var res = new double[data.Dates.Length];
             var resWithInvest = new double[data.Dates.Length];
@@ -98,30 +101,34 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
                 resWithInvest[i] += data.Incomes[i] - data.Expenses[i];
             }
 
-            var plot = new Plot();
+            var plot = PlotFabric.CreatePlot();
 
-            var total = plot.Add.Scatter(data.Dates, res);
+            plot.AddScatter(data.DatesAsDoubles, new SeriesInfo("Res", Colors.Blue, res));
             //total.FillY = true;
             //total.FillYColor = total.Color.WithAlpha(.2);
 
-            var withInvest = plot.Add.Scatter(data.Dates, resWithInvest);
-            withInvest.Color = EntryType.Invest.GetScottPlotColor();
+            plot.AddScatter(data.DatesAsDoubles, new SeriesInfo("ResWithInvest", EntryType.Invest.GetColor(), resWithInvest));
             //withInvest.FillY = true;
             //withInvest.FillYColor = w0ithInvest.Color.WithAlpha(.2);
 
-            plot.Axes.DateTimeTicksBottom();
+            plot.SetDateTimeX();
 
             return plot;
         }
 
-        Plot GetBarPlot(EntryType type, double[] values)
+        IPlot GetBarPlot(EntryType type, double[] values)
         {
-            var plot = new Plot();
-            var barPlot = plot.Add.Bars(dateDoubles, values);
-            barPlot.Color = type.GetScottPlotColor();
-            barPlot.SetSize(1000 / values.Length); // magic
-            barPlot.SetBorderColor(type.GetScottPlotColor());
-            plot.Axes.DateTimeTicksBottom();
+            var plot = PlotFabric.CreatePlot();
+
+            var info = new SeriesInfo()
+            {
+                Color = type.GetColor(),
+                Name = type.ToString(),
+                Values = values
+            };
+
+            plot.AddBars(dateDoubles, info);
+            plot.SetDateTimeX();
 
             return plot;
         }
@@ -129,18 +136,17 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
 
     private GraphTabViewModel CreateInvestsTab(BookDatedData data)
     {
-        var plots = new List<Plot>();
-
-        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
-
-        plots.Add(GetAccountsArea(false));
-        plots.Add(GetAccountsArea(true));
+        var plots = new List<IPlot>
+        {
+            GetAccountsArea(false),
+            GetAccountsArea(true)
+        };
 
         return new GraphTabViewModel("Invests", plots);
 
-        Plot GetAccountsArea(bool normalize)
+        IPlot GetAccountsArea(bool normalize)
         {
-            var plot = new Plot();
+            var plot = PlotFabric.CreatePlot();
 
             var series = new List<SeriesInfo>();
 
@@ -150,15 +156,15 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
                 var info = new SeriesInfo()
                 {
                     Name = family.Name,
-                    Color = Color.FromHex(PrettyColors.Hexs[counter++]),
+                    Color = PrettyColors.Get(counter++),
                     Values = values.CumulativeSum().ToArray()
                 };
 
                 series.Add(info);
             }
 
-            plot.AddArea(series, dateDoubles, true, normalize);
-            plot.Axes.DateTimeTicksBottom();
+            plot.AddArea(data.DatesAsDoubles, series, true, normalize);
+            plot.SetDateTimeX();
 
             return plot;
         }
@@ -166,19 +172,18 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
     
     private GraphTabViewModel CreateCategoriesTab(BookDatedData data)
     {
-        var plots = new List<Plot>();
-
-        var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
-
-        plots.Add(GetCategorical(data.ParentIncomeCategories, dateDoubles));
-        plots.Add(GetCategorical(data.ParentExpenseCategories, dateDoubles));
+        var plots = new List<IPlot>
+        {
+            GetCategorical(data.ParentIncomeCategories, data.DatesAsDoubles),
+            GetCategorical(data.ParentExpenseCategories, data.DatesAsDoubles)
+        };
 
         return new GraphTabViewModel("Categories", plots);
     }
 
-    public static Plot GetCategorical<T>(Dictionary<T, double[]> dict, double[] x) where T : Category
+    public static IPlot GetCategorical<T>(Dictionary<T, double[]> dict, double[] x) where T : Category
     {
-        var plot = new Plot();
+        var plot = PlotFabric.CreatePlot();
 
         var series = new List<SeriesInfo>();
 
@@ -188,18 +193,16 @@ public class GraphPanelViewModel : WindowViewModelBase, IMenuCompatible
             var info = new SeriesInfo()
             {
                 Name = category.Name,
-                Color = Color.FromHex(PrettyColors.Hexs[counter++]),
+                Color = PrettyColors.Get(counter++),
                 Values = values
             };
 
             series.Add(info);
         }
 
-        plot.AddStackedBars(series, x);
-
-        plot.Axes.DateTimeTicksBottom();
+        plot.AddStackedBars(x, series);
+        plot.SetDateTimeX();
 
         return plot;
     }
 }
-

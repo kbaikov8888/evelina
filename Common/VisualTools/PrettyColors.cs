@@ -1,8 +1,10 @@
-﻿namespace VisualTools;
+﻿using Avalonia.Media;
+
+namespace VisualTools;
 
 public static class PrettyColors
 {
-    public static string[] Hexs = {
+    static string[] Hexs = {
         "#C71585","#3CB371","#808000","#DAA520","#00CED1","#D2691E","#2F4F4F","#5F9EA0","#6A5ACD","#808080",
         "#FF4500","#1E90FF","#32CD32","#ffba69","#6b5e6e","#ffff8e","#9dd400","#136900","#190ccb","#cccc00",
         "#cccccc","#111f6f","#ffd452","#a1006b","#ffa000","#fc7b7b","#f87600","#ffeffe","#eafafb","#9b5766",
@@ -14,4 +16,16 @@ public static class PrettyColors
         "#4c4c4c","#d7b0b1","#c29290","#991b38","#414d58","#e70f0f","#f2f0fb","#47c2cc","#f28517","#ee38af",
         "#96ceb4","#ffcc5c","#ff6f69","#ced07d","#0e9aa7","#181770","#edff37","#b3c1ff","#ffd641","#d409cc"
     };
+
+    public static int Length => Hexs.Length;
+
+    public static Color Get(int index)
+    {
+        if (index < 0 || index >= Length || !Color.TryParse(Hexs[index], out var res))
+        {
+            return Colors.Red;
+        }
+
+        return res;
+    }
 }

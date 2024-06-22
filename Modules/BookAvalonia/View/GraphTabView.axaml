@@ -15,7 +15,7 @@
             <ContentControl Grid.Column="1" 
                             MinHeight="300" 
                             MinWidth="100" 
-                            Content="{Binding PlotView}"
+                            Content="{Binding View}"
                             PointerWheelChanged="InputElement_OnPointerWheelChanged"/>
           </Grid>
         </DataTemplate>

@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Avalonia.Threading;
 using ScottPlot;
+using ScottPlot.Avalonia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Threading;
-using ScottPlot.Avalonia;
 
-namespace VisualTools;
+namespace PlotWrapper.Wrappers.ScottPlot;
 
-public class ScottPlotSyncer : IDisposable
+internal class ScottPlotSyncer : IDisposable
 {
-    private readonly HashSet<AvaPlot> _plots;
     private readonly DispatcherTimer _updateAxisLimits = new() { Interval = new TimeSpan(0, 0, 0, 0, 5) };
+    private readonly HashSet<AvaPlot> _plots = new();
     private readonly bool _syncX;
     private readonly bool _syncY;
 
     private Plot? _lastChanged;
-    private bool _inChanging;
+    private bool _inChanging = false;
 
 
     public ScottPlotSyncer(IEnumerable<AvaPlot> plots, bool syncX, bool syncY)
