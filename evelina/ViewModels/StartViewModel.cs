@@ -14,6 +14,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BookImpl.Generator;
 using ReactiveUI.Fody.Helpers;
 using VisualTools;
 
@@ -27,6 +28,7 @@ public class StartViewModel : ReactiveObject
     public ICommand OpenPortfolioCommand { get; }
 
     public ICommand ReadSproutsCommand { get; }
+    public ICommand GenerateDemoBookCommand { get; }
 
     [Reactive]
     public bool DemoMode { get; set; }
@@ -37,6 +39,7 @@ public class StartViewModel : ReactiveObject
         CreatePortfolioCommand = ReactiveCommand.Create(CreatePortfolio);
         OpenPortfolioCommand = ReactiveCommand.Create(OpenPortfolio);
         ReadSproutsCommand = ReactiveCommand.Create(ReadSprouts);
+        GenerateDemoBookCommand = ReactiveCommand.Create(GenerateDemoBook);
     }
 
 
@@ -131,6 +134,16 @@ public class StartViewModel : ReactiveObject
         {
             var book = reader.TryRead(files[0].Path.LocalPath);
             if (book is null) return;
+
+            SetNewModel?.Invoke(new BookViewModel(book));
+        }
+    }
+
+    private void GenerateDemoBook()
+    {
+        using (var generator = new BookDemoGenerator(1234, new GeneratorParameters()))
+        {
+            var book = generator.Generate();
 
             SetNewModel?.Invoke(new BookViewModel(book));
         }

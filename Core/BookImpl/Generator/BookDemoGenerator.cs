@@ -7,7 +7,7 @@ using MathNet.Numerics.Distributions;
 
 namespace BookImpl.Generator;
 
-internal class SproutsDemoGenerator : IDisposable
+public class BookDemoGenerator : IDisposable
 {
     private readonly Book _book = new("book");
 
@@ -19,7 +19,7 @@ internal class SproutsDemoGenerator : IDisposable
 
     private uint _currentTransaction;
 
-    public SproutsDemoGenerator(int seed, GeneratorParameters parameters)
+    public BookDemoGenerator(int seed, GeneratorParameters parameters)
     {
         _random = new Random(seed);
         _parameters = parameters;
@@ -32,6 +32,8 @@ internal class SproutsDemoGenerator : IDisposable
         GenerateDates();
         GenerateTransactions();
 
+        _book.CalculatedData.Calculate();
+
         return _book;
     }
 
@@ -41,15 +43,14 @@ internal class SproutsDemoGenerator : IDisposable
 
     private void GenerateDates()
     {
-        var start = _parameters.StartDate.TimeOfDay;
-        var end = _parameters.EndDate.TimeOfDay;
+        var start = _parameters.StartDate.Ticks;
+        var end = _parameters.EndDate.Ticks;
 
         var delta = end - start;
 
         for (uint i = 0; i < _parameters.TransactionsCount; i++)
         {
-            var newSpan = new TimeSpan(0, _random.Next(0, (int)delta.TotalMinutes), 0);
-            _dates[i] = new DateTime((start + newSpan).Ticks);
+            _dates[i] = new DateTime(start + _random.NextInt64(delta));
         }
 
         _dates = _dates.OrderBy(x => x.Ticks).ToArray();

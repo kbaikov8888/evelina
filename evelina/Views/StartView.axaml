@@ -59,15 +59,19 @@
       <Button Grid.Row="1" Grid.Column="2"
               Command="{Binding ReadSproutsCommand}"
               Content="Read Sprouts..."/>
+
+      <Button Grid.Row="2" Grid.Column="2"
+              Command="{Binding GenerateDemoBookCommand}"
+              Content="Generate Demo Book"/>
     </Grid>
 
-    <StackPanel Grid.Row="2"
+    <!--<StackPanel Grid.Row="2"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 Spacing="5">
         <TextBlock Text="Demo mode"
                    VerticalAlignment="Center"/>
         <CheckBox IsChecked="{Binding DemoMode}"/>
-    </StackPanel>
+    </StackPanel>-->
   </Grid>
 </UserControl>
