@@ -14,7 +14,8 @@ public class Book
 
     public BookCalculatedData CalculatedData { get; }
 
-    private readonly HashSet<Entry> _entries = new();
+    // First entry - last by time
+    private HashSet<Entry> _entries = new();
 
     public IReadOnlyList<Category> AllCategories =>
         _expenseCategories.Concat(_incomeCategories.Cast<Category>()).ToList();
@@ -76,6 +77,11 @@ public class Book
         }
 
         _entries.Add(entry);
+    }
+
+    internal void SortEntries()
+    {
+        _entries = _entries.ToList().OrderByDescending(x => x.DateTime).ToHashSet();
     }
 
     private static T GetOrCreateCategory<T>(ICollection<T> source, string name, string? parentName, Func<string, T> createFunc) where T : Category

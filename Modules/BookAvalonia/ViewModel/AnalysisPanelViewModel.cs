@@ -67,7 +67,7 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
         }
         else if (SelectedEntryType == EntryType.Income)
         {
-            vals = data.IncomeCategories.ToDictionary(x => x.Key as Category, x => x.Value);
+            vals = data.ParentIncomeCategories.ToDictionary(x => x.Key as Category, x => x.Value);
         }
         else
         {
