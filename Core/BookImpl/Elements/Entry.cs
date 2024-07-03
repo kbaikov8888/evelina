@@ -29,7 +29,7 @@ public abstract class ExternalEntry : Entry
     protected ExternalEntry(
         double amount,
         DateTime dateTime,
-        Account account,
+        BankAccount account,
         double currencyRate) : base(dateTime)
     {
         Amount = amount;
@@ -48,7 +48,7 @@ public sealed class ExpenseEntry : ExternalEntry
     public ExpenseEntry(
         double amount,
         DateTime dateTime,
-        Account account,
+        BankAccount account,
         ExpenseCategory expenseCategory,
         double currencyRate) : base(amount, dateTime, account, currencyRate)
     {
@@ -65,7 +65,7 @@ public sealed class IncomeEntry : ExternalEntry
     public IncomeEntry(
         double amount,
         DateTime dateTime,
-        Account account,
+        BankAccount account,
         IncomeCategory incomeCategory,
         double currencyRate) : base(amount, dateTime, account, currencyRate)
     {

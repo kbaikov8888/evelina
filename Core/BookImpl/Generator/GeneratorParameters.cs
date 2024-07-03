@@ -18,8 +18,8 @@ public readonly struct GeneratorParameters
         (EntryType.Invest, 2),
         (EntryType.ReInvest, 1),
     };
-    public uint ProbabilityToGenerateNewCategory { get; init; } = 10;
-    public uint ProbabilityToGenerateNewAccount { get; init; } = 5;
+    public uint ProbabilityToGenerateNewCategory { get; init; } = 10; //%
+    public uint ProbabilityToGenerateNewAccount { get; init; } = 5; //%
 
     public DateTime StartDate => new(StartYear, 0, 0);
     public DateTime EndDate => new(EndYear, 12, 31);

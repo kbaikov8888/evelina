@@ -3,6 +3,7 @@ using BookImpl.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.Distributions;
 
 namespace BookImpl.Generator;
 
@@ -12,6 +13,7 @@ internal class SproutsDemoGenerator : IDisposable
 
     private readonly Random _random;
     private readonly GeneratorParameters _parameters;
+    private readonly IContinuousDistribution _amountDistr;
 
     private DateTime[] _dates;
 
@@ -22,6 +24,7 @@ internal class SproutsDemoGenerator : IDisposable
         _random = new Random(seed);
         _parameters = parameters;
         _dates = new DateTime[parameters.TransactionsCount];
+        _amountDistr = new Normal(10000, 1000, _random);
     }
 
     public Book Generate()
@@ -103,51 +106,95 @@ internal class SproutsDemoGenerator : IDisposable
         };
     }
 
-    private ExpenseEntry CreateExpenseEntry()
+    private T GetCategory<T>(IEnumerable<T> categories, IEnumerable<T> parentCategories, Func<string, T> createFunc) where T : Category
     {
-        var cat = GetElement(_book.ExpenseCategories.Where(x => x.ParentCategory is not null));
+        var cat = GetElement(categories.Where(x => x.ParentCategory is not null));
         if (_random.Next(100) < _parameters.ProbabilityToGenerateNewCategory || cat is null)
         {
-            cat = new ExpenseCategory($"cat{_currentTransaction}");
+            cat = createFunc($"cat{_currentTransaction}");
 
-            var parent = GetElement(_book.ParentExpenseCategories);
+            var parent = GetElement(parentCategories);
             if (parent is null)
             {
-                parent = new ExpenseCategory($"pCat{_currentTransaction}");
+                parent = createFunc($"pCat{_currentTransaction}");
             }
 
             cat.ParentCategory = parent;
         }
 
+        return cat;
+    }
+
+    private BankAccount GetBankAccount()
+    {
         var acc = GetElement(_book.BankAccounts);
         if (_random.Next(100) < _parameters.ProbabilityToGenerateNewAccount || acc is null)
         {
             acc = new BankAccount($"acc{_currentTransaction}", Book.DefaultCurrency);
         }
 
-        //TODO normal distribution
-        var amount = _random.Next(10000);
+        return acc;
+    }
 
-        return new ExpenseEntry(amount, _dates[_currentTransaction], acc, cat, 1);
+    private InvestAccount GetInvestAccount()
+    {
+        var acc = GetElement(_book.InvestAccounts);
+        if (_random.Next(100) < _parameters.ProbabilityToGenerateNewAccount || acc is null)
+        {
+            var family = GetElement(_book.InvestAccountFamilies);
+            if (family is null)
+            {
+                family = new InvestAccountFamily($"fam{_currentTransaction}");
+            }
+
+            acc = new InvestAccount($"acc{_currentTransaction}", Book.DefaultCurrency, family);
+        }
+
+        return acc;
+    }
+
+    private ExpenseEntry CreateExpenseEntry()
+    {
+        var cat = GetCategory(_book.ExpenseCategories, _book.ParentExpenseCategories,
+            s => new ExpenseCategory(s));
+        var acc = GetBankAccount();
+
+        return new ExpenseEntry(_amountDistr.Sample(), _dates[_currentTransaction], acc, cat, 1);
     }
 
     private IncomeEntry CreateIncomeEntry()
     {
+        var cat = GetCategory(_book.IncomeCategories, _book.ParentIncomeCategories,
+            s => new IncomeCategory(s));
+        var acc = GetBankAccount();
 
+        return new IncomeEntry(_amountDistr.Sample(), _dates[_currentTransaction], acc, cat, 1);
     }
 
     private TransferEntry CreateTransferEntry()
     {
+        var acc1 = GetBankAccount();
+        var acc2 = GetBankAccount();
+        var amount = _amountDistr.Sample();
 
+        return new TransferEntry(_dates[_currentTransaction], amount, amount, acc1, acc2, 1, 1);
     }
 
     private InvestingEntry CreateInvestingEntry()
     {
+        var acc1 = GetBankAccount();
+        var acc2 = GetInvestAccount();
+        var amount = _amountDistr.Sample();
 
+        return new InvestingEntry(_dates[_currentTransaction], amount, amount, acc1, acc2, 1, 1);
     }
 
     private ReInvestingEntry CreateRevestingEntry()
     {
+        var acc1 = GetBankAccount();
+        var acc2 = GetInvestAccount();
+        var amount = _amountDistr.Sample();
 
+        return new ReInvestingEntry(_dates[_currentTransaction], amount, amount, acc2, acc1, 1, 1);
     }
 }
