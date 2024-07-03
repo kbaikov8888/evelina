@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BookImpl.Elements.Entry" Collapsed="true">
+    <Position X="9.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAQAAQAAAAEAAAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.ExternalEntry" Collapsed="true">
+    <Position X="7.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAQAAAAAAAAAAACEA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.ExpenseEntry" Collapsed="true">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAACAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.IncomeEntry" Collapsed="true">
+    <Position X="6.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAQAAAAAACAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.TransferEntry" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAABAAAAAAAAAAAAAAABQEABACAQAAAAAIAAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.InvestingEntry" Collapsed="true">
+    <Position X="13" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.ReInvestingEntry" Collapsed="true">
+    <Position X="10.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Elements\Entry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.Category" Collapsed="true">
+    <Position X="16.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Elements\Category.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BookImpl.Elements.IncomeCategory" Collapsed="true">
+    <Position X="17.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elements\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.ExpenseCategory" Collapsed="true">
+    <Position X="15.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elements\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.Account" Collapsed="true">
+    <Position X="16" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elements\Account.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.BankAccount" Collapsed="true">
+    <Position X="17" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elements\Account.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.InvestAccount" Collapsed="true">
+    <Position X="14.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Elements\Account.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookImpl.Elements.InvestAccountFamily" Collapsed="true">
+    <Position X="19.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elements\Account.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

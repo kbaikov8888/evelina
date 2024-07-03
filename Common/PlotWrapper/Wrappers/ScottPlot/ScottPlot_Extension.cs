@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using PlotWrapper.Models;
-using ScottPlot;
+﻿using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace PlotWrapper.Wrappers.ScottPlot;
