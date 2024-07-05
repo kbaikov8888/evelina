@@ -9,7 +9,7 @@ namespace BookImpl.Generator;
 
 public class BookDemoGenerator : IDisposable
 {
-    private readonly Book _book = new("book");
+    private readonly Book _book = new("demo");
 
     private readonly Random _random;
     private readonly GeneratorParameters _parameters;
@@ -43,9 +43,7 @@ public class BookDemoGenerator : IDisposable
         GenerateDates();
         GenerateTransactions();
 
-        _book.SortEntries();
-
-        _book.CalculatedData.Calculate();
+        _book.Finilize();
 
         return _book;
     }

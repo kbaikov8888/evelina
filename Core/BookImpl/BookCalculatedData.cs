@@ -16,8 +16,8 @@ public class BookCalculatedData
     {
         _book = book;
 
-        Years = new BookDatedData(DateLevel.Year, Array.Empty<DateTime>(), _book);
-        Months = new BookDatedData(DateLevel.Month, Array.Empty<DateTime>(), _book);
+        Years = new BookDatedData(DateLevel.Year, book);
+        Months = new BookDatedData(DateLevel.Month, book);
     }
 
 
@@ -33,11 +33,8 @@ public class BookCalculatedData
 
     internal void Calculate()
     {
-        Months.Dispose();
-        Months = new BookDatedData(DateLevel.Month, GetMonths(), _book);
-
-        Years.Dispose();
-        Years = new BookDatedData(DateLevel.Year, GetYears(), _book);
+        Months.Calculate(GetMonths());
+        Years.Calculate(GetYears());
     }
 
     private DateTime[] GetMonths()

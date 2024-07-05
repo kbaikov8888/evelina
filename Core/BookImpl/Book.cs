@@ -14,6 +14,8 @@ public class Book
 
     public BookCalculatedData CalculatedData { get; }
 
+    public BookStat TotalStat { get; }
+
     // First entry - last by time
     private HashSet<Entry> _entries = new();
 
@@ -46,22 +48,29 @@ public class Book
     public IReadOnlyList<InvestAccountFamily> InvestAccountFamilies => _investAccountFamilies.ToList();
     private readonly HashSet<InvestAccountFamily> _investAccountFamilies = new();
 
+    private bool _finilized;
+
 
     public Book(string name)
     {
         Name = name;
         CalculatedData = new BookCalculatedData(this);
+        TotalStat = new BookStat(this);
     }
 
 
     // public
     public List<Entry> GetEntriesFromLast()
     {
+        if (!_finilized) throw new InvalidOperationException("Book not finilized!");
+
         return _entries.ToList();
     }
 
     public List<Entry> GetEntriesFromFirst()
     {
+        if (!_finilized) throw new InvalidOperationException("Book not finilized!");
+
         var res = _entries.ToList();
         res.Reverse();
 
@@ -77,11 +86,17 @@ public class Book
         }
 
         _entries.Add(entry);
+
+        _finilized = false;
     }
 
-    internal void SortEntries()
+    internal void Finilize()
     {
         _entries = _entries.ToList().OrderByDescending(x => x.DateTime).ToHashSet();
+        _finilized = true;
+
+        CalculatedData.Calculate();
+        TotalStat.Calculate();
     }
 
     private static T GetOrCreateCategory<T>(ICollection<T> source, string name, string? parentName, Func<string, T> createFunc) where T : Category

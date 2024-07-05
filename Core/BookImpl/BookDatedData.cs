@@ -6,19 +6,19 @@ using System.Linq;
 
 namespace BookImpl;
 
-public class BookDatedData : IDisposable
+public class BookDatedData
 {
-    internal DateLevel Level { get; }
+    public DateLevel Level { get; }
 
-    public DateTime[] Dates { get; }
-    public double[] DatesAsDoubles { get; }
+    public DateTime[] Dates { get; private set; } = Array.Empty<DateTime>();
+    public double[] DatesAsDoubles { get; private set; } = Array.Empty<double>();
 
     // values
-    public double[] Expenses { get; }
-    public double[] Incomes { get; }
-    public double[] Invests { get; }
-    public double[] ReInvests { get; }
-    public double[] Results { get; }
+    public double[] Expenses { get; private set; } = Array.Empty<double>();
+    public double[] Incomes { get; private set; } = Array.Empty<double>();
+    public double[] Invests { get; private set; } = Array.Empty<double>();
+    public double[] ReInvests { get; private set; } = Array.Empty<double>();
+    public double[] Results { get; private set; } = Array.Empty<double>();
 
     // categorical
     public Dictionary<InvestAccountFamily, double[]> InvestsByFamilies { get; } = new();
@@ -27,32 +27,15 @@ public class BookDatedData : IDisposable
     public Dictionary<IncomeCategory, double[]> IncomeCategories { get; } = new();
     public Dictionary<ExpenseCategory, double[]> ExpenseCategories { get; } = new();
 
-    private readonly List<Entry> _entries;
     private readonly Book _book;
 
 
-    internal BookDatedData(DateLevel level, DateTime[] dates, Book book)
+    internal BookDatedData(DateLevel level, Book book)
     {
         Level = level;
-        Dates = dates;
-        DatesAsDoubles = dates.Select(x => x.ToOADate()).ToArray();
-        _entries = book.GetEntriesFromFirst();
         _book = book;
-
-        Expenses = new double[Dates.Length];
-        Incomes = new double[Dates.Length];
-        Invests = new double[Dates.Length];
-        ReInvests = new double[Dates.Length];
-        Results = new double[Dates.Length];
-
-        Calculate();
     }
 
-
-    public void Dispose()
-    {
-        Clear();
-    }
 
     private void Clear()
     {
@@ -63,12 +46,23 @@ public class BookDatedData : IDisposable
         ExpenseCategories.Clear();
     }
 
-    private void Calculate()
+    public void Calculate(DateTime[] dates)
     {
         Clear();
 
+        Dates = dates;
+        DatesAsDoubles = dates.Select(x => x.ToOADate()).ToArray();
+
+        Expenses = new double[Dates.Length];
+        Incomes = new double[Dates.Length];
+        Invests = new double[Dates.Length];
+        ReInvests = new double[Dates.Length];
+        Results = new double[Dates.Length];
+
+        var entries = _book.GetEntriesFromFirst();
+
         int index = 0;
-        foreach (var entry in _entries)
+        foreach (var entry in entries)
         {
             for (int i = index; i < Dates.Length; i++)
             {

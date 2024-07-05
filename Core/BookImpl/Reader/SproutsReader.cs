@@ -25,9 +25,7 @@ public class SproutsReader : IDisposable
     public Book? TryRead(string path)
     {
         Read(path);
-        _book.SortEntries();
-
-        _book.CalculatedData.Calculate();
+        _book.Finilize();
 
         return _book;
     }
