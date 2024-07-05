@@ -1,11 +1,13 @@
 ﻿using BookImpl.Elements;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BookImpl;
 
 public class BookStat
 {
+    [Description("Total Amount")]
     public double TotalAmount { get; private set; } 
     public double IncomesAmount { get; private set; } 
     public double ExpenseAmount { get; private set; } 
