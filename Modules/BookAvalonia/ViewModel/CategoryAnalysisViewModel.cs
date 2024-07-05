@@ -18,8 +18,8 @@ namespace BookAvalonia.ViewModel;
 
 public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
 {
-    public event Action? GoBackEvent;
-    public event Action<Category>? CategoryChoosedEvent;
+    public event Action<CategoryAnalysisViewModel>? GoBackEvent;
+    public event Action<CategoryAnalysisViewModel, Category>? CategoryChoosedEvent;
     
     public ICommand GoBackCommand { get; }
 
@@ -40,7 +40,7 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
 
     public CategoryAnalysisViewModel()
     {
-        GoBackCommand = ReactiveCommand.Create(() => GoBackEvent?.Invoke());
+        GoBackCommand = ReactiveCommand.Create(() => GoBackEvent?.Invoke(this));
 
         _updatePlot.Tick += UpdatePlotOnTick;
 
@@ -55,7 +55,7 @@ public class CategoryAnalysisViewModel : ReactiveObject, IMenuCompatible
     {
         if (obj.Source is not Category category) return;
 
-        CategoryChoosedEvent?.Invoke(category);
+        CategoryChoosedEvent?.Invoke(this, category);
     }
 
     private void UpdatePlotOnTick(object? sender, EventArgs e)

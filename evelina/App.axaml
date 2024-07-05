@@ -3,7 +3,7 @@
              xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              xmlns:local="clr-namespace:evelina"
              x:Class="evelina.App"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Light">
   <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
   <Application.DataTemplates>

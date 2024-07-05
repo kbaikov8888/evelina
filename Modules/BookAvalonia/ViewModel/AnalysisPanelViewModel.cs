@@ -20,24 +20,15 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedDateLevel, value);
-            UpdateData();
+            UpdateData(ExpenseAnalysis);
+            UpdateData(IncomeAnalysis);
         }
     }
 
     public static IEnumerable<EntryType> EntryTypes { get; } = new List<EntryType> { EntryType.Expense, EntryType.Income };
 
-    private EntryType _selectedEntryType = EntryType.Expense;
-    public EntryType SelectedEntryType
-    {
-        get => _selectedEntryType;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _selectedEntryType, value);
-            UpdateData();
-        }
-    }
-
-    public CategoryAnalysisViewModel CategoryAnalysis { get; } 
+    public CategoryAnalysisViewModel ExpenseAnalysis { get; } 
+    public CategoryAnalysisViewModel IncomeAnalysis { get; } 
 
     private readonly Book _book;
     
@@ -46,26 +37,31 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
     {
         _book = book;
 
-        CategoryAnalysis = new CategoryAnalysisViewModel();
-        CategoryAnalysis.GoBackEvent += UpdateData;
-        CategoryAnalysis.CategoryChoosedEvent += CategoryChoosed;
+        ExpenseAnalysis = new CategoryAnalysisViewModel();
+        ExpenseAnalysis.GoBackEvent += UpdateData;
+        ExpenseAnalysis.CategoryChoosedEvent += CategoryChoosed;
 
-        UpdateData();
+        IncomeAnalysis = new CategoryAnalysisViewModel();
+        IncomeAnalysis.GoBackEvent += UpdateData;
+        IncomeAnalysis.CategoryChoosedEvent += CategoryChoosed;
+
+        UpdateData(ExpenseAnalysis);
+        UpdateData(IncomeAnalysis);
     }
 
 
-    private void UpdateData()
+    private void UpdateData(CategoryAnalysisViewModel sender)
     {
         var data = _book.CalculatedData.GetData(SelectedDateLevel);
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
 
         Dictionary<Category, double[]> vals;
 
-        if (SelectedEntryType == EntryType.Expense)
+        if (sender == ExpenseAnalysis)
         {
             vals = data.ParentExpenseCategories.ToDictionary(x => x.Key as Category, x => x.Value);
         }
-        else if (SelectedEntryType == EntryType.Income)
+        else if (sender == IncomeAnalysis)
         {
             vals = data.ParentIncomeCategories.ToDictionary(x => x.Key as Category, x => x.Value);
         }
@@ -74,10 +70,10 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
             throw new NotImplementedException();
         }
 
-        CategoryAnalysis.UpdateData(vals, dateDoubles, false);
+        sender.UpdateData(vals, dateDoubles, false);
     }
 
-    private void CategoryChoosed(Category category)
+    private void CategoryChoosed(CategoryAnalysisViewModel sender, Category category)
     {
         var data = _book.CalculatedData.GetData(SelectedDateLevel);
         var dateDoubles = data.Dates.Select(x => x.ToOADate()).ToArray();
@@ -109,6 +105,6 @@ public class AnalysisPanelViewModel : WindowViewModelBase, IMenuCompatible
 
         if (vals.Count == 0) return;
 
-        CategoryAnalysis.UpdateData(vals, dateDoubles, true);
+        sender.UpdateData(vals, dateDoubles, true);
     }
 }

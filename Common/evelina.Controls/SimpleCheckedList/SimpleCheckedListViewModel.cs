@@ -12,7 +12,7 @@ public class SimpleCheckedListViewModel : ReactiveObject
 {
     public ReadOnlyObservableCollection<SimpleCheckedViewModel> VisibleItems { get; }
     public ObservableCollection<SimpleCheckedViewModel> Items { get; }
-    private static ObservableCollection<SimpleCheckedViewModel> CheckAllItem { get; } = new()
+    private ObservableCollection<SimpleCheckedViewModel> CheckAllItem { get; } = new()
     {
         new SimpleCheckedViewModel(new SelectAllItem())
     };
